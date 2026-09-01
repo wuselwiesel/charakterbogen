@@ -882,7 +882,7 @@
     color: var(--text);
     -webkit-text-fill-color: var(--text);
   }
-  .sheet .paper:not(#page-wuerfelverlauf) button:disabled { display: none; }
+  .sheet .paper:not(#page-wuerfelverlauf):not(#page-kommentare) button:disabled { display: none; }
   .sheet .rte-toolbar:has(button:disabled) { display: none; }
   .field-row input:disabled, .custom-field-row input:disabled, .custom-field-row input.custom-label-input:disabled,
   .text-block-label:disabled {
@@ -1112,6 +1112,33 @@
   .rollpage-detail { font-size: 12px; color: var(--muted); }
   .rollpage-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
   .rollpage-time { font-size: 11px; color: var(--muted); white-space: nowrap; }
+
+  /* ===== Kommentare ===== */
+  .comment-compose { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+  .comment-compose textarea {
+    width: 100%; resize: vertical; min-height: 56px;
+    border: 1px solid var(--field-border); border-radius: 8px;
+    padding: 10px 12px; font-family: inherit; font-size: 13.5px;
+    background: #fff; color: var(--text);
+  }
+  .comment-compose textarea:focus { outline: none; box-shadow: inset 0 0 0 2px rgba(122,90,166,0.25); }
+  .comment-compose .roll-btn { align-self: flex-end; width: auto; padding: 9px 22px; }
+  .comment-list { display: flex; flex-direction: column; gap: 8px; }
+  .comment-entry {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    border: 1px solid var(--border); border-radius: 9px;
+    padding: 10px 14px; background: var(--row-light);
+  }
+  .comment-main { min-width: 0; flex: 1; }
+  .comment-author { font-size: 12.5px; font-weight: 700; margin-bottom: 2px; }
+  .comment-text { font-size: 13px; color: var(--text); white-space: pre-wrap; word-break: break-word; }
+  .comment-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+  .comment-time { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .comment-delete {
+    border: none; background: transparent; color: var(--muted);
+    cursor: pointer; font-size: 13px; padding: 2px 4px; border-radius: 4px;
+  }
+  .comment-delete:hover { color: #B23A3A; background: #FBEAEC; }
 </style>
 </head>
 <body>
@@ -1183,6 +1210,7 @@
         <button class="tab-btn" data-page="talente">Talente</button>
         <button class="tab-btn" data-page="notizen">Notizen</button>
         <button class="tab-btn" data-page="wuerfelverlauf">Würfelverlauf</button>
+        <button class="tab-btn" data-page="kommentare">Kommentare</button>
       </div>
 
       <div class="sidebar-footer">
@@ -1316,6 +1344,17 @@
         <button type="button" class="rollpage-clear-btn" id="clearRollHistoryBtn">Verlauf löschen</button>
       </div>
       <div class="rollpage-list" id="rollHistoryPage"></div>
+    </section>
+
+    <!-- SEITE 8: KOMMENTARE -->
+    <section class="paper" id="page-kommentare">
+      <div class="page-title"><h2>Kommentare</h2></div>
+      <p class="hint">Nachrichten an alle angemeldeten Spieler.</p>
+      <div class="comment-compose">
+        <textarea id="commentInput" maxlength="500" rows="2" placeholder="Nachricht an die Runde …"></textarea>
+        <button type="button" class="roll-btn" id="commentSendBtn">Senden</button>
+      </div>
+      <div class="comment-list" id="commentList"></div>
     </section>
 
   </div>
@@ -3459,8 +3498,10 @@
       stopPresenceHeartbeat();
       onlineMap = {};
       rollHistoryList = [];
+      commentsList = [];
       renderOnlineList();
       renderRollHistory();
+      renderComments();
     }
   });
 
@@ -3841,12 +3882,96 @@
     }, function(){ /* ignore transient errors */ });
   }
 
+  var commentsUnsub = null;
+  var commentsList = [];
+  var commentInput = document.getElementById("commentInput");
+  var commentSendBtn = document.getElementById("commentSendBtn");
+  var commentList = document.getElementById("commentList");
+
+  function subscribeComments(){
+    if (commentsUnsub) commentsUnsub();
+    commentsUnsub = db.collection("comments").orderBy("createdAt", "desc").limit(150).onSnapshot(function(snap){
+      commentsList = [];
+      snap.forEach(function(docSnap){
+        var d = docSnap.data();
+        commentsList.push({
+          id: docSnap.id,
+          uid: d.uid,
+          author: d.nickname || d.username || "Unbekannt",
+          text: d.text || "",
+          createdAt: d.createdAt
+        });
+      });
+      renderComments();
+    }, function(){ /* ignore transient errors */ });
+  }
+
+  function renderComments(){
+    commentList.innerHTML = "";
+    if (!commentsList.length){
+      commentList.innerHTML = '<div class="lib-empty">Noch keine Kommentare.</div>';
+      return;
+    }
+    commentsList.forEach(function(entry){
+      var row = document.createElement("div");
+      row.className = "comment-entry";
+      var whenStr = entry.createdAt ? formatUpdatedAt(entry.createdAt) : "";
+      var deleteHtml = (currentUser && entry.uid === currentUser.uid)
+        ? '<button type="button" class="comment-delete" title="Löschen">✕</button>'
+        : "";
+      row.innerHTML =
+        '<div class="comment-main">' +
+          '<div class="comment-author">' + escapeAttr(entry.author) + '</div>' +
+          '<div class="comment-text">' + escapeAttr(entry.text) + '</div>' +
+        '</div>' +
+        '<div class="comment-meta">' +
+          '<span class="comment-time">' + escapeAttr(whenStr) + '</span>' +
+          deleteHtml +
+        '</div>';
+      if (deleteHtml){
+        row.querySelector(".comment-delete").addEventListener("click", function(){
+          db.collection("comments").doc(entry.id).delete().catch(function(err){
+            showStatus("Löschen fehlgeschlagen: " + (err && err.message ? err.message : err));
+          });
+        });
+      }
+      commentList.appendChild(row);
+    });
+  }
+
+  function sendComment(){
+    var text = commentInput.value.trim();
+    if (!text || !currentUser || !myProfile) return;
+    commentSendBtn.disabled = true;
+    db.collection("comments").add({
+      uid: currentUser.uid,
+      nickname: myProfile.nickname || null,
+      username: myProfile.username || null,
+      text: text,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function(){
+      commentInput.value = "";
+    }).catch(function(err){
+      showStatus("Kommentar konnte nicht gesendet werden: " + (err && err.message ? err.message : err));
+    }).then(function(){
+      commentSendBtn.disabled = false;
+    });
+  }
+  commentSendBtn.addEventListener("click", sendComment);
+  commentInput.addEventListener("keydown", function(e){
+    if (e.key === "Enter" && !e.shiftKey){
+      e.preventDefault();
+      sendComment();
+    }
+  });
+
   function startPresenceHeartbeat(){
     sendHeartbeat();
     clearInterval(presenceInterval);
     presenceInterval = setInterval(sendHeartbeat, PRESENCE_INTERVAL_MS);
     subscribePresence();
     subscribeRolls();
+    subscribeComments();
   }
 
   function stopPresenceHeartbeat(){
@@ -3854,6 +3979,7 @@
     presenceInterval = null;
     if (presenceUnsub){ presenceUnsub(); presenceUnsub = null; }
     if (rollsUnsub){ rollsUnsub(); rollsUnsub = null; }
+    if (commentsUnsub){ commentsUnsub(); commentsUnsub = null; }
     if (currentUser){
       db.collection("presence").doc(currentUser.uid).delete().catch(function(){});
     }
@@ -3869,7 +3995,7 @@
 
   function applyEditModeToDom(){
     var editable = isEditMode;
-    var scope = document.querySelectorAll(".sheet .paper:not(#page-wuerfelverlauf)");
+    var scope = document.querySelectorAll(".sheet .paper:not(#page-wuerfelverlauf):not(#page-kommentare)");
     scope.forEach(function(paper){
       paper.querySelectorAll("input, textarea, select, button").forEach(function(el){
         el.disabled = !editable;
