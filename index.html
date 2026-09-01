@@ -1113,32 +1113,67 @@
   .rollpage-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
   .rollpage-time { font-size: 11px; color: var(--muted); white-space: nowrap; }
 
-  /* ===== Kommentare ===== */
-  .comment-compose { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
-  .comment-compose textarea {
-    width: 100%; resize: vertical; min-height: 56px;
-    border: 1px solid var(--field-border); border-radius: 8px;
-    padding: 10px 12px; font-family: inherit; font-size: 13.5px;
-    background: #fff; color: var(--text);
+  /* ===== Kommentare: Beiträge (Posts) ===== */
+  .post-compose {
+    border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+    margin-bottom: 20px; background: #fff;
   }
-  .comment-compose textarea:focus { outline: none; box-shadow: inset 0 0 0 2px rgba(122,90,166,0.25); }
-  .comment-compose .roll-btn { align-self: flex-end; width: auto; padding: 9px 22px; }
-  .comment-list { display: flex; flex-direction: column; gap: 8px; }
-  .comment-entry {
-    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
-    border: 1px solid var(--border); border-radius: 9px;
-    padding: 10px 14px; background: var(--row-light);
+  .post-compose-label { font-weight: 700; font-size: 13px; padding: 10px 12px; display: block; }
+  .post-compose .rte-editor { min-height: 90px; }
+  .post-send-btn { width: 100%; border-radius: 0; }
+  .post-feed { display: flex; flex-direction: column; gap: 14px; }
+  .post-card {
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; background: var(--row-light);
   }
-  .comment-main { min-width: 0; flex: 1; }
-  .comment-author { font-size: 12.5px; font-weight: 700; margin-bottom: 2px; }
-  .comment-text { font-size: 13px; color: var(--text); white-space: pre-wrap; word-break: break-word; }
-  .comment-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
-  .comment-time { font-size: 11px; color: var(--muted); white-space: nowrap; }
-  .comment-delete {
+  .post-header { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+  .post-author { font-weight: 700; font-size: 13.5px; }
+  .post-time { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .post-body { font-size: 13.5px; color: var(--text); word-break: break-word; }
+  .post-body p { margin: 0 0 8px; }
+  .post-body p:last-child { margin-bottom: 0; }
+  .post-body h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 19px; font-weight: 600; margin: 6px 0 6px; }
+  .post-body h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 16px; font-weight: 600; margin: 6px 0 4px; }
+  .post-body ul, .post-body ol { margin: 0 0 8px; padding-left: 20px; }
+  .post-body hr { border: none; border-top: 1.5px solid var(--border); margin: 10px 0; }
+  .post-body img { max-width: 100%; height: auto; border-radius: 6px; margin: 6px 0; }
+  .post-body table { border-collapse: collapse; width: 100%; margin: 8px 0; }
+  .post-body table td { border: 1px solid var(--border); padding: 5px 7px; }
+  .post-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; }
+  .post-comment-toggle {
+    border: none; background: transparent; color: var(--accent-strong);
+    font-family: inherit; font-weight: 600; font-size: 12px; cursor: pointer; padding: 4px 0;
+  }
+  .post-comment-toggle:hover { text-decoration: underline; }
+  .post-delete {
     border: none; background: transparent; color: var(--muted);
-    cursor: pointer; font-size: 13px; padding: 2px 4px; border-radius: 4px;
+    cursor: pointer; font-size: 13px; padding: 3px 6px; border-radius: 4px;
   }
-  .comment-delete:hover { color: #B23A3A; background: #FBEAEC; }
+  .post-delete:hover { color: #B23A3A; background: #FBEAEC; }
+  .post-comments { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .post-comments-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+  .post-comment-entry {
+    display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap;
+    font-size: 12.5px; padding: 4px 0;
+  }
+  .post-comment-entry .comment-author { font-weight: 700; flex-shrink: 0; }
+  .post-comment-entry .post-comment-text { color: var(--text); word-break: break-word; flex: 1; min-width: 0; }
+  .post-comment-entry .comment-delete {
+    border: none; background: transparent; color: var(--muted);
+    cursor: pointer; font-size: 12px; padding: 1px 4px; border-radius: 4px; flex-shrink: 0;
+  }
+  .post-comment-entry .comment-delete:hover { color: #B23A3A; background: #FBEAEC; }
+  .post-comment-compose { display: flex; gap: 6px; }
+  .post-comment-input {
+    flex: 1; min-width: 0; border: 1px solid var(--field-border); border-radius: 999px;
+    padding: 7px 12px; font-family: inherit; font-size: 12.5px; background: #fff; color: var(--text);
+  }
+  .post-comment-input:focus { outline: none; box-shadow: inset 0 0 0 2px rgba(122,90,166,0.25); }
+  .post-comment-send {
+    border: none; background: var(--accent); color: #fff; font-family: inherit;
+    font-weight: 700; font-size: 12px; padding: 7px 14px; border-radius: 999px; cursor: pointer; flex-shrink: 0;
+  }
+  .post-comment-send:hover { background: var(--accent-strong); }
 </style>
 </head>
 <body>
@@ -1349,12 +1384,16 @@
     <!-- SEITE 8: KOMMENTARE -->
     <section class="paper" id="page-kommentare">
       <div class="page-title"><h2>Kommentare</h2></div>
-      <p class="hint">Nachrichten an alle angemeldeten Spieler.</p>
-      <div class="comment-compose">
-        <textarea id="commentInput" maxlength="500" rows="2" placeholder="Nachricht an die Runde …"></textarea>
-        <button type="button" class="roll-btn" id="commentSendBtn">Senden</button>
+      <p class="hint">Poste etwas für die Runde – andere können darauf antworten.</p>
+
+      <div class="post-compose">
+        <div class="text-block-head"><span class="post-compose-label">Neuer Beitrag</span></div>
+        <div id="postToolbarWrap"></div>
+        <div class="rte-editor" id="postEditor" contenteditable="true" data-placeholder="Was gibt's Neues? …"></div>
+        <button type="button" class="roll-btn post-send-btn" id="postSendBtn">Posten</button>
       </div>
-      <div class="comment-list" id="commentList"></div>
+
+      <div class="post-feed" id="postFeed"></div>
     </section>
 
   </div>
@@ -1736,6 +1775,54 @@
     }
   }, true);
 
+  function buildRteToolbarHtml(){
+    return '<div class="rte-toolbar">' +
+        '<button type="button" data-cmd="bold" title="Fett"><b>B</b></button>' +
+        '<button type="button" data-cmd="italic" title="Kursiv"><i>I</i></button>' +
+        '<button type="button" data-cmd="underline" title="Unterstrichen"><u>U</u></button>' +
+        '<span class="rte-sep"></span>' +
+        '<select class="rte-font-family" title="Schriftart">' +
+          '<option value="Inter, system-ui, sans-serif">Inter</option>' +
+          '<option value="&quot;Cormorant Garamond&quot;, Georgia, serif">Cormorant Garamond</option>' +
+          '<option value="Georgia, serif">Georgia</option>' +
+          '<option value="Arial, sans-serif">Arial</option>' +
+          '<option value="&quot;Courier New&quot;, monospace">Courier New</option>' +
+        '</select>' +
+        '<select class="rte-font-size" title="Schriftgröße">' +
+          '<option value="11">11</option>' +
+          '<option value="12">12</option>' +
+          '<option value="14" selected>14</option>' +
+          '<option value="16">16</option>' +
+          '<option value="18">18</option>' +
+          '<option value="20">20</option>' +
+          '<option value="24">24</option>' +
+          '<option value="28">28</option>' +
+          '<option value="32">32</option>' +
+        '</select>' +
+        '<span class="rte-sep"></span>' +
+        '<button type="button" data-cmd="heading" data-value="&lt;h2&gt;" title="Überschrift groß">H2</button>' +
+        '<button type="button" data-cmd="heading" data-value="&lt;h3&gt;" title="Überschrift klein">H3</button>' +
+        '<button type="button" data-cmd="heading" data-value="&lt;p&gt;" title="Normaler Text">¶</button>' +
+        '<span class="rte-sep"></span>' +
+        '<button type="button" data-cmd="ul" title="Aufzählung">• Liste</button>' +
+        '<button type="button" data-cmd="ol" title="Nummerierte Liste">1. Liste</button>' +
+        '<span class="rte-sep"></span>' +
+        '<button type="button" data-cmd="hr" title="Trennlinie">—</button>' +
+        '<button type="button" data-cmd="table" title="Tabelle einfügen">⊞ Tabelle</button>' +
+        '<button type="button" data-cmd="image" title="Bild einfügen">🖼 Bild</button>' +
+        '<span class="rte-sep"></span>' +
+        '<span class="rte-colors">' +
+          '<button type="button" data-cmd="color" data-value="#211D28" style="background:#211D28" title="Schwarz"></button>' +
+          '<button type="button" data-cmd="color" data-value="#A3312F" style="background:#A3312F" title="Rot"></button>' +
+          '<button type="button" data-cmd="color" data-value="#B5651D" style="background:#B5651D" title="Orange"></button>' +
+          '<button type="button" data-cmd="color" data-value="#256B3A" style="background:#256B3A" title="Grün"></button>' +
+          '<button type="button" data-cmd="color" data-value="#2A5DB0" style="background:#2A5DB0" title="Blau"></button>' +
+          '<button type="button" data-cmd="color" data-value="#7A5AA6" style="background:#7A5AA6" title="Lila"></button>' +
+        '</span>' +
+        '<input type="file" class="rte-image-input" accept="image/png,image/jpeg,image/webp" style="display:none;">' +
+      '</div>';
+  }
+
   function createNotesSection(wrapId, addBtnId, defaultLabel, placeholder){
     var blocks = [{ id: "blk0", label: defaultLabel, html: "" }];
     var counter = 0;
@@ -1761,51 +1848,7 @@
             '<input type="text" class="text-block-label" id="'+bid+'_label" placeholder="Bezeichnung" value="'+escapeAttr(b.label)+'">' +
             '<button type="button" class="custom-remove-btn" title="Feld entfernen" aria-label="Feld entfernen">\u2715</button>' +
           '</div>' +
-          '<div class="rte-toolbar">' +
-            '<button type="button" data-cmd="bold" title="Fett"><b>B</b></button>' +
-            '<button type="button" data-cmd="italic" title="Kursiv"><i>I</i></button>' +
-            '<button type="button" data-cmd="underline" title="Unterstrichen"><u>U</u></button>' +
-            '<span class="rte-sep"></span>' +
-            '<select class="rte-font-family" title="Schriftart">' +
-              '<option value="Inter, system-ui, sans-serif">Inter</option>' +
-              '<option value="&quot;Cormorant Garamond&quot;, Georgia, serif">Cormorant Garamond</option>' +
-              '<option value="Georgia, serif">Georgia</option>' +
-              '<option value="Arial, sans-serif">Arial</option>' +
-              '<option value="&quot;Courier New&quot;, monospace">Courier New</option>' +
-            '</select>' +
-            '<select class="rte-font-size" title="Schriftgr\u00F6\u00DFe">' +
-              '<option value="11">11</option>' +
-              '<option value="12">12</option>' +
-              '<option value="14" selected>14</option>' +
-              '<option value="16">16</option>' +
-              '<option value="18">18</option>' +
-              '<option value="20">20</option>' +
-              '<option value="24">24</option>' +
-              '<option value="28">28</option>' +
-              '<option value="32">32</option>' +
-            '</select>' +
-            '<span class="rte-sep"></span>' +
-            '<button type="button" data-cmd="heading" data-value="&lt;h2&gt;" title="\u00DCberschrift gro\u00DF">H2</button>' +
-            '<button type="button" data-cmd="heading" data-value="&lt;h3&gt;" title="\u00DCberschrift klein">H3</button>' +
-            '<button type="button" data-cmd="heading" data-value="&lt;p&gt;" title="Normaler Text">\u00B6</button>' +
-            '<span class="rte-sep"></span>' +
-            '<button type="button" data-cmd="ul" title="Aufz\u00E4hlung">\u2022 Liste</button>' +
-            '<button type="button" data-cmd="ol" title="Nummerierte Liste">1. Liste</button>' +
-            '<span class="rte-sep"></span>' +
-            '<button type="button" data-cmd="hr" title="Trennlinie">\u2014</button>' +
-            '<button type="button" data-cmd="table" title="Tabelle einf\u00FCgen">\u229E Tabelle</button>' +
-            '<button type="button" data-cmd="image" title="Bild einf\u00FCgen">\uD83D\uDDBC Bild</button>' +
-            '<span class="rte-sep"></span>' +
-            '<span class="rte-colors">' +
-              '<button type="button" data-cmd="color" data-value="#211D28" style="background:#211D28" title="Schwarz"></button>' +
-              '<button type="button" data-cmd="color" data-value="#A3312F" style="background:#A3312F" title="Rot"></button>' +
-              '<button type="button" data-cmd="color" data-value="#B5651D" style="background:#B5651D" title="Orange"></button>' +
-              '<button type="button" data-cmd="color" data-value="#256B3A" style="background:#256B3A" title="Gr\u00FCn"></button>' +
-              '<button type="button" data-cmd="color" data-value="#2A5DB0" style="background:#2A5DB0" title="Blau"></button>' +
-              '<button type="button" data-cmd="color" data-value="#7A5AA6" style="background:#7A5AA6" title="Lila"></button>' +
-            '</span>' +
-            '<input type="file" class="rte-image-input" accept="image/png,image/jpeg,image/webp" style="display:none;">' +
-          '</div>' +
+          buildRteToolbarHtml() +
           '<div class="rte-editor" id="'+bid+'_editor" contenteditable="true" data-placeholder="'+escapeAttr(placeholder)+'"></div>';
 
         var editor = block.querySelector(".rte-editor");
@@ -3498,10 +3541,11 @@
       stopPresenceHeartbeat();
       onlineMap = {};
       rollHistoryList = [];
-      commentsList = [];
+      postsList = [];
+      expandedPostIds = {};
       renderOnlineList();
       renderRollHistory();
-      renderComments();
+      renderPosts();
     }
   });
 
@@ -3882,88 +3926,232 @@
     }, function(){ /* ignore transient errors */ });
   }
 
-  var commentsUnsub = null;
-  var commentsList = [];
-  var commentInput = document.getElementById("commentInput");
-  var commentSendBtn = document.getElementById("commentSendBtn");
-  var commentList = document.getElementById("commentList");
+  /* ---- Sichere Wiedergabe von fremdem Rich-Text (kein rohes HTML rendern!) ---- */
+  function safeColor(c){
+    if (!c) return null;
+    var s = String(c).trim();
+    if (/^#[0-9a-fA-F]{3}$/.test(s) || /^#[0-9a-fA-F]{6}$/.test(s)) return s;
+    if (/^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(,\s*[01](\.\d+)?\s*)?\)$/.test(s)) return s;
+    return null;
+  }
+  function safeImgSrc(src){
+    if (typeof src !== "string") return null;
+    return /^data:image\/(png|jpeg|jpg|webp);base64,[A-Za-z0-9+/=]+$/.test(src) ? src : null;
+  }
+  function runToSafeHtml(run){
+    if (run.brk) return "<br>";
+    var text = escapeAttr(run.text || "");
+    var style = "";
+    var col = safeColor(run.color);
+    if (col) style += "color:" + col + ";";
+    var fs = parseFloat(run.fontSize);
+    if (fs && fs > 0 && fs <= 72) style += "font-size:" + fs + "px;";
+    var html = style ? '<span style="' + style + '">' + text + '</span>' : text;
+    if (run.bold) html = "<b>" + html + "</b>";
+    if (run.italic) html = "<i>" + html + "</i>";
+    if (run.underline) html = "<u>" + html + "</u>";
+    return html;
+  }
+  function renderRunsToSafeHtml(runs){
+    return (runs || []).map(runToSafeHtml).join("");
+  }
+  function renderBlocksToSafeHtml(blocks){
+    return (blocks || []).map(function(b){
+      if (b.type === "heading") return "<h" + (b.level === 3 ? "3" : "2") + ">" + renderRunsToSafeHtml(b.runs) + "</h" + (b.level === 3 ? "3" : "2") + ">";
+      if (b.type === "paragraph") return "<p>" + renderRunsToSafeHtml(b.runs) + "</p>";
+      if (b.type === "listitem") return (b.ordered ? "<ol>" : "<ul>") + "<li>" + renderRunsToSafeHtml(b.runs) + "</li>" + (b.ordered ? "</ol>" : "</ul>");
+      if (b.type === "hr") return "<hr>";
+      if (b.type === "image"){
+        var src = safeImgSrc(b.src);
+        return src ? '<img src="' + src + '" alt="">' : "";
+      }
+      if (b.type === "table"){
+        var rowsHtml = (b.rows || []).map(function(cells){
+          return "<tr>" + (cells || []).map(function(runs){ return "<td>" + renderRunsToSafeHtml(runs) + "</td>"; }).join("") + "</tr>";
+        }).join("");
+        return "<table><tbody>" + rowsHtml + "</tbody></table>";
+      }
+      return "";
+    }).join("");
+  }
 
-  function subscribeComments(){
-    if (commentsUnsub) commentsUnsub();
-    commentsUnsub = db.collection("comments").orderBy("createdAt", "desc").limit(150).onSnapshot(function(snap){
-      commentsList = [];
+  /* ---- Beiträge (Posts) ---- */
+  var postsUnsub = null;
+  var postsList = [];
+  var postCommentUnsubs = {};
+  var expandedPostIds = {};
+  var postEditor = document.getElementById("postEditor");
+  var postToolbarWrap = document.getElementById("postToolbarWrap");
+  var postSendBtn = document.getElementById("postSendBtn");
+  var postFeed = document.getElementById("postFeed");
+
+  postToolbarWrap.innerHTML = buildRteToolbarHtml();
+  wireRichToolbar(postToolbarWrap.querySelector(".rte-toolbar"), postEditor);
+  postEditor.addEventListener("input", function(){ updateEditorEmptyState(postEditor); });
+  updateEditorEmptyState(postEditor);
+
+  function subscribePosts(){
+    if (postsUnsub) postsUnsub();
+    postsUnsub = db.collection("posts").orderBy("createdAt", "desc").limit(50).onSnapshot(function(snap){
+      postsList = [];
       snap.forEach(function(docSnap){
         var d = docSnap.data();
-        commentsList.push({
+        var blocks = [];
+        try { blocks = JSON.parse(d.contentJson || "[]"); } catch(e){ blocks = []; }
+        postsList.push({
           id: docSnap.id,
           uid: d.uid,
           author: d.nickname || d.username || "Unbekannt",
-          text: d.text || "",
+          blocks: blocks,
           createdAt: d.createdAt
         });
       });
-      renderComments();
+      renderPosts();
     }, function(){ /* ignore transient errors */ });
   }
 
-  function renderComments(){
-    commentList.innerHTML = "";
-    if (!commentsList.length){
-      commentList.innerHTML = '<div class="lib-empty">Noch keine Kommentare.</div>';
+  function unsubscribePostComments(postId){
+    if (postCommentUnsubs[postId]){ postCommentUnsubs[postId](); delete postCommentUnsubs[postId]; }
+  }
+
+  function subscribePostComments(postId){
+    if (postCommentUnsubs[postId]) return;
+    postCommentUnsubs[postId] = db.collection("posts").doc(postId).collection("comments")
+      .orderBy("createdAt", "asc").limit(200).onSnapshot(function(snap){
+        var items = [];
+        snap.forEach(function(docSnap){
+          var d = docSnap.data();
+          items.push({ id: docSnap.id, uid: d.uid, author: d.nickname || d.username || "Unbekannt", text: d.text || "", createdAt: d.createdAt });
+        });
+        var listEl = document.getElementById("postCommentsList_" + postId);
+        if (!listEl) return;
+        listEl.innerHTML = "";
+        if (!items.length){
+          listEl.innerHTML = '<div class="lib-empty">Noch keine Kommentare.</div>';
+          return;
+        }
+        items.forEach(function(entry){
+          var row = document.createElement("div");
+          row.className = "post-comment-entry";
+          var delHtml = (currentUser && entry.uid === currentUser.uid)
+            ? '<button type="button" class="comment-delete" title="Löschen">✕</button>'
+            : "";
+          row.innerHTML =
+            '<span class="comment-author">' + escapeAttr(entry.author) + '</span>' +
+            '<span class="post-comment-text">' + escapeAttr(entry.text) + '</span>' +
+            delHtml;
+          if (delHtml){
+            row.querySelector(".comment-delete").addEventListener("click", function(){
+              db.collection("posts").doc(postId).collection("comments").doc(entry.id).delete().catch(function(){});
+            });
+          }
+          listEl.appendChild(row);
+        });
+      }, function(){ /* ignore transient errors */ });
+  }
+
+  function renderPosts(){
+    Object.keys(postCommentUnsubs).forEach(function(pid){ postCommentUnsubs[pid](); });
+    postCommentUnsubs = {};
+
+    postFeed.innerHTML = "";
+    if (!postsList.length){
+      postFeed.innerHTML = '<div class="lib-empty">Noch keine Beiträge.</div>';
       return;
     }
-    commentsList.forEach(function(entry){
-      var row = document.createElement("div");
-      row.className = "comment-entry";
-      var whenStr = entry.createdAt ? formatUpdatedAt(entry.createdAt) : "";
-      var deleteHtml = (currentUser && entry.uid === currentUser.uid)
-        ? '<button type="button" class="comment-delete" title="Löschen">✕</button>'
+    postsList.forEach(function(post){
+      var card = document.createElement("div");
+      card.className = "post-card";
+      var whenStr = post.createdAt ? formatUpdatedAt(post.createdAt) : "";
+      var deleteHtml = (currentUser && post.uid === currentUser.uid)
+        ? '<button type="button" class="post-delete" title="Löschen">✕</button>'
         : "";
-      row.innerHTML =
-        '<div class="comment-main">' +
-          '<div class="comment-author">' + escapeAttr(entry.author) + '</div>' +
-          '<div class="comment-text">' + escapeAttr(entry.text) + '</div>' +
-        '</div>' +
-        '<div class="comment-meta">' +
-          '<span class="comment-time">' + escapeAttr(whenStr) + '</span>' +
+      var isExpanded = !!expandedPostIds[post.id];
+      card.innerHTML =
+        '<div class="post-header"><span class="post-author">' + escapeAttr(post.author) + '</span><span class="post-time">' + escapeAttr(whenStr) + '</span></div>' +
+        '<div class="post-body">' + renderBlocksToSafeHtml(post.blocks) + '</div>' +
+        '<div class="post-footer">' +
+          '<button type="button" class="post-comment-toggle">💬 Kommentare ' + (isExpanded ? "verbergen" : "anzeigen") + '</button>' +
           deleteHtml +
+        '</div>' +
+        '<div class="post-comments" id="postComments_' + post.id + '"' + (isExpanded ? "" : " hidden") + '>' +
+          '<div class="post-comments-list" id="postCommentsList_' + post.id + '"></div>' +
+          '<div class="post-comment-compose">' +
+            '<input type="text" class="post-comment-input" maxlength="300" placeholder="Kommentieren …">' +
+            '<button type="button" class="post-comment-send">Senden</button>' +
+          '</div>' +
         '</div>';
+
       if (deleteHtml){
-        row.querySelector(".comment-delete").addEventListener("click", function(){
-          db.collection("comments").doc(entry.id).delete().catch(function(err){
+        card.querySelector(".post-delete").addEventListener("click", function(){
+          if (!window.confirm("Beitrag wirklich unwiderruflich löschen?")) return;
+          db.collection("posts").doc(post.id).delete().catch(function(err){
             showStatus("Löschen fehlgeschlagen: " + (err && err.message ? err.message : err));
           });
         });
       }
-      commentList.appendChild(row);
+
+      var toggleBtn = card.querySelector(".post-comment-toggle");
+      var commentsBox = card.querySelector(".post-comments");
+      if (isExpanded) subscribePostComments(post.id);
+      toggleBtn.addEventListener("click", function(){
+        var willShow = commentsBox.hidden;
+        commentsBox.hidden = !willShow;
+        toggleBtn.textContent = "💬 Kommentare " + (willShow ? "verbergen" : "anzeigen");
+        if (willShow){ expandedPostIds[post.id] = true; subscribePostComments(post.id); }
+        else { delete expandedPostIds[post.id]; unsubscribePostComments(post.id); }
+      });
+
+      var commentInputEl = card.querySelector(".post-comment-input");
+      function sendPostComment(){
+        var text = commentInputEl.value.trim();
+        if (!text || !currentUser || !myProfile) return;
+        db.collection("posts").doc(post.id).collection("comments").add({
+          uid: currentUser.uid,
+          nickname: myProfile.nickname || null,
+          username: myProfile.username || null,
+          text: text,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(function(){
+          commentInputEl.value = "";
+        }).catch(function(err){
+          showStatus("Kommentar konnte nicht gesendet werden: " + (err && err.message ? err.message : err));
+        });
+      }
+      card.querySelector(".post-comment-send").addEventListener("click", sendPostComment);
+      commentInputEl.addEventListener("keydown", function(e){
+        if (e.key === "Enter"){ e.preventDefault(); sendPostComment(); }
+      });
+
+      postFeed.appendChild(card);
     });
   }
 
-  function sendComment(){
-    var text = commentInput.value.trim();
-    if (!text || !currentUser || !myProfile) return;
-    commentSendBtn.disabled = true;
-    db.collection("comments").add({
+  function sendPost(){
+    if (!currentUser || !myProfile) return;
+    var blocks = parseRichBlocks(postEditor);
+    var hasContent = blocks.some(function(b){
+      return b.type === "image" || b.type === "hr" || b.type === "table" ||
+        (b.runs && b.runs.some(function(r){ return r.text && r.text.trim(); }));
+    });
+    if (!hasContent) return;
+    postSendBtn.disabled = true;
+    db.collection("posts").add({
       uid: currentUser.uid,
       nickname: myProfile.nickname || null,
       username: myProfile.username || null,
-      text: text,
+      contentJson: JSON.stringify(blocks),
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     }).then(function(){
-      commentInput.value = "";
+      postEditor.innerHTML = "";
+      updateEditorEmptyState(postEditor);
     }).catch(function(err){
-      showStatus("Kommentar konnte nicht gesendet werden: " + (err && err.message ? err.message : err));
+      showStatus("Beitrag konnte nicht gesendet werden: " + (err && err.message ? err.message : err));
     }).then(function(){
-      commentSendBtn.disabled = false;
+      postSendBtn.disabled = false;
     });
   }
-  commentSendBtn.addEventListener("click", sendComment);
-  commentInput.addEventListener("keydown", function(e){
-    if (e.key === "Enter" && !e.shiftKey){
-      e.preventDefault();
-      sendComment();
-    }
-  });
+  postSendBtn.addEventListener("click", sendPost);
 
   function startPresenceHeartbeat(){
     sendHeartbeat();
@@ -3971,7 +4159,7 @@
     presenceInterval = setInterval(sendHeartbeat, PRESENCE_INTERVAL_MS);
     subscribePresence();
     subscribeRolls();
-    subscribeComments();
+    subscribePosts();
   }
 
   function stopPresenceHeartbeat(){
@@ -3979,7 +4167,9 @@
     presenceInterval = null;
     if (presenceUnsub){ presenceUnsub(); presenceUnsub = null; }
     if (rollsUnsub){ rollsUnsub(); rollsUnsub = null; }
-    if (commentsUnsub){ commentsUnsub(); commentsUnsub = null; }
+    if (postsUnsub){ postsUnsub(); postsUnsub = null; }
+    Object.keys(postCommentUnsubs).forEach(function(pid){ postCommentUnsubs[pid](); });
+    postCommentUnsubs = {};
     if (currentUser){
       db.collection("presence").doc(currentUser.uid).delete().catch(function(){});
     }
