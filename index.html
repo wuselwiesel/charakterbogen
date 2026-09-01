@@ -889,6 +889,39 @@
   .roll-history-entry .rh-tag.success { background: #E4F3E8; color: #2E7D46; }
   .roll-history-entry .rh-tag.fail { background: #FBEBEC; color: #B23A3A; }
   .roll-history-entry .rh-tag.plain { background: var(--row-light); color: var(--muted); }
+
+  /* ===== Profil ===== */
+  .profile-overlay {
+    position: fixed; inset: 0; z-index: 190; display: none;
+    align-items: center; justify-content: center;
+    background: rgba(20,15,30,0.6); padding: 20px;
+  }
+  .profile-overlay.show { display: flex; }
+  .profile-card {
+    width: 100%; max-width: 360px; background: var(--paper);
+    border-radius: 14px; box-shadow: var(--shadow); padding: 26px 24px;
+  }
+  .profile-card h2 { margin: 0 0 4px; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 24px; color: var(--accent-strong); text-align: center; }
+  .profile-sub { text-align: center; color: var(--muted); font-size: 12.5px; margin: 0 0 18px; }
+  .profile-error { color: #B23A3A; font-size: 12px; text-align: center; min-height: 1em; margin-bottom: 8px; }
+  .profile-skip { display: block; margin: 10px auto 0; border: none; background: none; color: var(--muted); font-size: 12px; cursor: pointer; text-decoration: underline; }
+
+  /* ===== Online-Anzeige ===== */
+  .online-wrap { position: relative; }
+  .online-panel {
+    position: absolute; top: calc(100% + 6px); right: 0;
+    min-width: 170px; max-width: 240px;
+    background: var(--paper); border: 1px solid var(--border);
+    border-radius: 10px; box-shadow: var(--shadow); padding: 10px 12px;
+    display: none; z-index: 60;
+  }
+  .online-panel.show { display: block; }
+  .online-panel-head { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .online-list { display: flex; flex-direction: column; gap: 5px; max-height: 180px; overflow-y: auto; }
+  .online-item { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--text); }
+  .online-item .dot { width: 7px; height: 7px; border-radius: 50%; background: #3FAE63; flex-shrink: 0; }
+  .online-empty { font-size: 12px; color: var(--muted); }
+  .rh-player { color: var(--muted); font-weight: 400; font-size: 11px; }
 </style>
 </head>
 <body>
@@ -916,9 +949,35 @@
   <div class="user-bar" id="userBar">
     <span class="user-email" id="userEmailLabel"></span>
     <span class="save-indicator" id="saveIndicator"></span>
+    <div class="online-wrap">
+      <button type="button" id="onlineBtn">👥 0</button>
+      <div class="online-panel" id="onlinePanel">
+        <div class="online-panel-head">Online</div>
+        <div class="online-list" id="onlineList"></div>
+      </div>
+    </div>
+    <button type="button" id="profileEditBtn">Profil</button>
     <button type="button" id="myCharsBtn">Meine Charaktere</button>
     <button type="button" id="newCharBtn">+ Neuer Charakter</button>
     <button type="button" id="logoutBtn">Abmelden</button>
+  </div>
+
+  <div class="profile-overlay" id="profileOverlay">
+    <div class="profile-card">
+      <h2>Profil einrichten</h2>
+      <p class="profile-sub">Damit andere dich in der Online-Liste und im Würfelverlauf erkennen.</p>
+      <div class="roll-field">
+        <label for="profileUsername">Benutzername</label>
+        <input type="text" id="profileUsername" maxlength="24" placeholder="z. B. wuselwiesel">
+      </div>
+      <div class="roll-field">
+        <label for="profileNickname">Spitzname (Anzeigename)</label>
+        <input type="text" id="profileNickname" maxlength="24" placeholder="z. B. Sophie">
+      </div>
+      <div class="profile-error" id="profileError"></div>
+      <button type="button" class="roll-btn" id="profileSaveBtn">Speichern</button>
+      <button type="button" class="profile-skip" id="profileCloseBtn" hidden>Schließen</button>
+    </div>
   </div>
   <div class="headline">
     <h1>Charakterbogen</h1>
@@ -2798,8 +2857,11 @@
   /* ---- Charakter-Speicher (Firestore) ---- */
   var currentUser = null;
   var activeCharacterId = null;
+  var activeCharacterName = null;
   var autosaveTimer = null;
   var isApplyingCharacter = false;
+  var myProfile = null;
+  var onlineMap = {};
 
   function userDocRef(){ return db.collection("users").doc(currentUser.uid); }
   function charsColRef(){ return userDocRef().collection("characters"); }
@@ -2836,8 +2898,9 @@
     });
   }
 
-  function setActiveCharacter(id, data){
+  function setActiveCharacter(id, name, data){
     activeCharacterId = id;
+    activeCharacterName = name || "Unbenannt";
     isApplyingCharacter = true;
     applyCharacterData(data);
     isApplyingCharacter = false;
@@ -2882,7 +2945,7 @@
     if (name === null) return;
     var data = defaultCharacterData();
     createCharacter(name, data).then(function(ref){
-      setActiveCharacter(ref.id, data);
+      setActiveCharacter(ref.id, name, data);
       closeLibrary();
       showStatus("Neuer Charakter „" + name + "“ erstellt.");
     }).catch(function(err){
@@ -2930,13 +2993,16 @@
           '</div>';
 
         card.querySelector('[data-action="open"]').addEventListener("click", function(){
-          setActiveCharacter(docSnap.id, charData);
+          setActiveCharacter(docSnap.id, d.name, charData);
           closeLibrary();
         });
         card.querySelector('[data-action="rename"]').addEventListener("click", function(){
           var newName = window.prompt("Neuer Name:", d.name || "");
           if (newName === null || !newName.trim()) return;
-          charsColRef().doc(docSnap.id).update({ name: newName.trim() }).then(renderLibrary);
+          charsColRef().doc(docSnap.id).update({ name: newName.trim() }).then(function(){
+            if (docSnap.id === activeCharacterId) activeCharacterName = newName.trim();
+            renderLibrary();
+          });
         });
         card.querySelector('[data-action="duplicate"]').addEventListener("click", function(){
           createCharacter((d.name || "Charakter") + " (Kopie)", charData).then(renderLibrary);
@@ -2993,12 +3059,12 @@
     return charsColRef().orderBy("updatedAt", "desc").limit(1).get().then(function(snap){
       if (!snap.empty){
         var docSnap = snap.docs[0];
-        setActiveCharacter(docSnap.id, docSnap.data().data || defaultCharacterData());
+        setActiveCharacter(docSnap.id, docSnap.data().name, docSnap.data().data || defaultCharacterData());
         return;
       }
       var data = defaultCharacterData();
       return createCharacter("Charakter 1", data).then(function(ref){
-        setActiveCharacter(ref.id, data);
+        setActiveCharacter(ref.id, "Charakter 1", data);
       });
     });
   }
@@ -3009,7 +3075,7 @@
       if (savedActiveId){
         return charsColRef().doc(savedActiveId).get().then(function(charDoc){
           if (charDoc.exists){
-            setActiveCharacter(charDoc.id, charDoc.data().data || defaultCharacterData());
+            setActiveCharacter(charDoc.id, charDoc.data().name, charDoc.data().data || defaultCharacterData());
             return;
           }
           return findOrCreateFallbackCharacter();
@@ -3029,11 +3095,20 @@
       userEmailLabel.textContent = user.email || "";
       authForm.reset();
       loadInitialCharacter();
+      checkProfile();
     } else {
       appRoot.style.display = "none";
       authGate.style.display = "flex";
       activeCharacterId = null;
+      activeCharacterName = null;
+      myProfile = null;
       closeLibrary();
+      closeProfileModal();
+      stopPresenceHeartbeat();
+      onlineMap = {};
+      rollHistoryList = [];
+      renderOnlineList();
+      renderRollHistory();
     }
   });
 
@@ -3154,23 +3229,24 @@
     return { success: roll <= gesamt, detail: "Wurf " + roll + " ≤ Wert " + gesamt };
   }
 
-  function addRollHistory(entry){
-    rollHistoryList.unshift(entry);
-    if (rollHistoryList.length > 8) rollHistoryList.pop();
-    renderRollHistory();
-  }
-
   function renderRollHistory(){
     rollHistoryEl.innerHTML = "";
+    if (!rollHistoryList.length){
+      rollHistoryEl.innerHTML = '<div class="online-empty">Noch keine Würfe.</div>';
+      return;
+    }
     rollHistoryList.forEach(function(entry){
       var row = document.createElement("div");
       row.className = "roll-history-entry";
-      var label = entry.targetLabel || "Freier Wurf";
       var rollDisplay = entry.sides === "2" ? formatD2(entry.roll) + " (" + entry.roll + ")" : entry.roll;
+      var whatLabel = entry.rollLabel ? (escapeAttr(entry.rollLabel) + " · ") : "";
       row.innerHTML =
-        '<span>' + escapeAttr(label) + ' · ' + diceLabel(entry.sides) + ': ' + rollDisplay + '</span>' +
-        '<span class="rh-tag ' + (entry.result ? (entry.result.success ? "success" : "fail") : "plain") + '">' +
-          (entry.result ? (entry.result.success ? "Geschafft" : "Nicht geschafft") : "Wurf") +
+        '<span><strong>' + escapeAttr(entry.characterName || "Unbenannt") + '</strong>' +
+          (entry.nickname ? ' <span class="rh-player">(' + escapeAttr(entry.nickname) + ')</span>' : '') +
+          ' — ' + whatLabel + diceLabel(entry.sides) + ': ' + rollDisplay +
+        '</span>' +
+        '<span class="rh-tag ' + (entry.success === null || entry.success === undefined ? "plain" : (entry.success ? "success" : "fail")) + '">' +
+          (entry.success === null || entry.success === undefined ? "Wurf" : (entry.success ? "Geschafft" : "Nicht geschafft")) +
         '</span>';
       rollHistoryEl.appendChild(row);
     });
@@ -3192,8 +3268,22 @@
       rollResultEl.className = "roll-result";
     }
 
-    var opt = rollTargetSel.options[rollTargetSel.selectedIndex];
-    addRollHistory({ sides: sides, roll: roll, result: result, targetLabel: targetKey ? opt.textContent : null });
+    if (currentUser && myProfile){
+      var opt = rollTargetSel.options[rollTargetSel.selectedIndex];
+      db.collection("rolls").add({
+        uid: currentUser.uid,
+        nickname: myProfile.nickname,
+        characterName: activeCharacterName || "Unbenannt",
+        rollLabel: targetKey ? opt.textContent : null,
+        sides: sides,
+        roll: roll,
+        success: result ? result.success : null,
+        detail: result ? result.detail : null,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).catch(function(err){
+        showStatus("Wurf konnte nicht geteilt werden: " + (err && err.message ? err.message : err));
+      });
+    }
   }
 
   rollBtn.addEventListener("click", function(){
@@ -3208,6 +3298,165 @@
         finishDiceRoll(sides);
       }
     }, 45);
+  });
+
+  /* ===================== Profil ===================== */
+  var profileOverlay = document.getElementById("profileOverlay");
+  var profileUsernameInput = document.getElementById("profileUsername");
+  var profileNicknameInput = document.getElementById("profileNickname");
+  var profileError = document.getElementById("profileError");
+  var profileSaveBtn = document.getElementById("profileSaveBtn");
+  var profileCloseBtn = document.getElementById("profileCloseBtn");
+  var profileEditBtn = document.getElementById("profileEditBtn");
+
+  function openProfileModal(isFirstSetup){
+    profileUsernameInput.value = (myProfile && myProfile.username) || "";
+    profileNicknameInput.value = (myProfile && myProfile.nickname) || "";
+    profileError.textContent = "";
+    profileCloseBtn.hidden = !!isFirstSetup;
+    profileOverlay.classList.add("show");
+  }
+  function closeProfileModal(){ profileOverlay.classList.remove("show"); }
+
+  profileCloseBtn.addEventListener("click", closeProfileModal);
+  profileEditBtn.addEventListener("click", function(){ openProfileModal(false); });
+
+  profileSaveBtn.addEventListener("click", function(){
+    var username = profileUsernameInput.value.trim();
+    var nickname = profileNicknameInput.value.trim();
+    if (!username || !nickname){
+      profileError.textContent = "Bitte beides ausfüllen.";
+      return;
+    }
+    profileSaveBtn.disabled = true;
+    userDocRef().set({ profile: { username: username, nickname: nickname } }, { merge: true }).then(function(){
+      myProfile = { username: username, nickname: nickname };
+      profileSaveBtn.disabled = false;
+      closeProfileModal();
+      startPresenceHeartbeat();
+    }).catch(function(err){
+      profileSaveBtn.disabled = false;
+      profileError.textContent = "Speichern fehlgeschlagen: " + (err && err.message ? err.message : err);
+    });
+  });
+
+  function checkProfile(){
+    userDocRef().get().then(function(userDoc){
+      var data = userDoc.exists ? userDoc.data() : {};
+      myProfile = data.profile || null;
+      if (!myProfile){
+        openProfileModal(true);
+      } else {
+        startPresenceHeartbeat();
+      }
+    }).catch(function(){});
+  }
+
+  /* ===================== Online-Anzeige (Presence) ===================== */
+  var onlineBtn = document.getElementById("onlineBtn");
+  var onlinePanel = document.getElementById("onlinePanel");
+  var onlineList = document.getElementById("onlineList");
+  var ONLINE_THRESHOLD_MS = 45000;
+  var PRESENCE_INTERVAL_MS = 20000;
+  var presenceInterval = null;
+  var presenceUnsub = null;
+  var rollsUnsub = null;
+
+  onlineBtn.addEventListener("click", function(e){
+    e.stopPropagation();
+    onlinePanel.classList.toggle("show");
+  });
+  document.addEventListener("click", function(e){
+    if (!onlinePanel.contains(e.target) && e.target !== onlineBtn){
+      onlinePanel.classList.remove("show");
+    }
+  });
+
+  function sendHeartbeat(){
+    if (!currentUser || !myProfile) return;
+    db.collection("presence").doc(currentUser.uid).set({
+      nickname: myProfile.nickname,
+      username: myProfile.username,
+      lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(function(){});
+  }
+
+  function subscribePresence(){
+    if (presenceUnsub) presenceUnsub();
+    presenceUnsub = db.collection("presence").onSnapshot(function(snap){
+      onlineMap = {};
+      snap.forEach(function(docSnap){
+        var d = docSnap.data();
+        onlineMap[docSnap.id] = {
+          nickname: d.nickname || "?",
+          lastSeen: (d.lastSeen && d.lastSeen.toMillis) ? d.lastSeen.toMillis() : Date.now()
+        };
+      });
+      renderOnlineList();
+    }, function(){ /* ignore transient errors */ });
+  }
+
+  function renderOnlineList(){
+    var now = Date.now();
+    var names = [];
+    Object.keys(onlineMap).forEach(function(uid){
+      var entry = onlineMap[uid];
+      if (now - entry.lastSeen < ONLINE_THRESHOLD_MS) names.push(entry.nickname);
+    });
+    onlineBtn.textContent = "👥 " + names.length;
+    onlineList.innerHTML = "";
+    if (!names.length){
+      onlineList.innerHTML = '<div class="online-empty">Niemand sonst online.</div>';
+      return;
+    }
+    names.forEach(function(name){
+      var row = document.createElement("div");
+      row.className = "online-item";
+      row.innerHTML = '<span class="dot"></span><span>' + escapeAttr(name) + '</span>';
+      onlineList.appendChild(row);
+    });
+  }
+  setInterval(renderOnlineList, 15000);
+
+  function subscribeRolls(){
+    if (rollsUnsub) rollsUnsub();
+    rollsUnsub = db.collection("rolls").orderBy("createdAt", "desc").limit(20).onSnapshot(function(snap){
+      rollHistoryList = [];
+      snap.forEach(function(docSnap){
+        var d = docSnap.data();
+        rollHistoryList.push({
+          sides: d.sides,
+          roll: d.roll,
+          success: (d.success === undefined) ? null : d.success,
+          characterName: d.characterName,
+          nickname: d.nickname,
+          rollLabel: d.rollLabel
+        });
+      });
+      renderRollHistory();
+    }, function(){ /* ignore transient errors */ });
+  }
+
+  function startPresenceHeartbeat(){
+    sendHeartbeat();
+    clearInterval(presenceInterval);
+    presenceInterval = setInterval(sendHeartbeat, PRESENCE_INTERVAL_MS);
+    subscribePresence();
+    subscribeRolls();
+  }
+
+  function stopPresenceHeartbeat(){
+    clearInterval(presenceInterval);
+    presenceInterval = null;
+    if (presenceUnsub){ presenceUnsub(); presenceUnsub = null; }
+    if (rollsUnsub){ rollsUnsub(); rollsUnsub = null; }
+    if (currentUser){
+      db.collection("presence").doc(currentUser.uid).delete().catch(function(){});
+    }
+  }
+
+  window.addEventListener("beforeunload", function(){
+    if (currentUser) db.collection("presence").doc(currentUser.uid).delete().catch(function(){});
   });
 
 })();
