@@ -31,8 +31,8 @@
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #16131d;
-      --bg2: #1c1826;
+      --bg: #2E2740;
+      --bg2: #3A3150;
       --paper: #f4f1f9;
       --paper-edge: #d8d3e4;
       --text: #211D28;
@@ -40,8 +40,8 @@
     }
   }
   :root[data-theme="dark"] {
-    --bg: #16131d;
-    --bg2: #1c1826;
+    --bg: #2E2740;
+    --bg2: #3A3150;
     --paper: #f4f1f9;
     --paper-edge: #d8d3e4;
     --text: #211D28;
@@ -388,6 +388,48 @@
     padding: 10px;
     font-weight: 700;
     font-size: 13.5px;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .note-box.budget-complete { background: #E6F5E9; border-color: #B9DDC1; color: #256B3A; }
+
+  .tooltip-anchor { position: relative; overflow: visible !important; }
+  .attr-tooltip {
+    position: absolute;
+    bottom: calc(100% + 9px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: #A3312F;
+    color: #fff;
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.3;
+    padding: 7px 11px;
+    border-radius: 7px;
+    white-space: normal;
+    width: max-content;
+    max-width: 190px;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 6;
+    box-shadow: 0 6px 16px -4px rgba(163,49,47,0.5);
+  }
+  .attr-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #A3312F;
+  }
+  .attr-tooltip.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .attr-row input.field-error,
+  .attr-sum input.field-error {
+    border-color: #A3312F !important;
+    box-shadow: 0 0 0 2px rgba(163,49,47,0.18);
+    color: #A3312F;
   }
 
   h3.sub-h { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; font-weight: 600; margin: 30px 0 10px; }
@@ -428,6 +470,59 @@
   }
   textarea.long-field:focus { outline: none; box-shadow: inset 0 0 0 2px rgba(122,90,166,0.25); }
 
+  .text-block {
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .text-block-head {
+    display: flex;
+    align-items: center;
+    background: var(--row-light);
+    border-bottom: 1px solid var(--border);
+  }
+  .text-block-head input.text-block-label {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-weight: 700;
+    font-size: 14.5px;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    padding: 10px 12px;
+    color: var(--text);
+    min-width: 0;
+  }
+  .text-block-head input.text-block-label:focus { outline: none; background: #F1EAFB; }
+  .text-block-head .custom-remove-btn {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 15px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+  .text-block-head .custom-remove-btn:hover { color: #B23A3A; background: rgba(178,58,58,0.08); }
+  textarea.text-block-value {
+    width: 100%;
+    min-height: 140px;
+    border: none;
+    padding: 14px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+    resize: vertical;
+    background: transparent;
+    display: block;
+  }
+  textarea.text-block-value:focus { outline: none; box-shadow: inset 0 0 0 2px rgba(122,90,166,0.2); }
+
   .foot-note {
     text-align: center;
     font-size: 11.5px;
@@ -463,6 +558,13 @@
   }
   .dl-btn:hover { background: var(--accent-strong); }
   .dl-btn:active { transform: scale(0.98); }
+  .dl-btn:disabled, .dl-btn.disabled-state {
+    opacity: 0.45;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+  .dl-btn:disabled:hover, .dl-btn.disabled-state:hover { background: var(--accent); }
   .dl-btn svg { width: 18px; height: 18px; }
   .dl-status {
     position: fixed;
@@ -556,12 +658,15 @@
         <div id="attrRows"></div>
         <div class="attr-sum">
           <div class="attr-name">Summe</div>
-          <div class="attr-cell"><input id="summe_basis" readonly tabindex="-1"></div>
+          <div class="attr-cell tooltip-anchor">
+            <input id="summe_basis" readonly tabindex="-1">
+            <div class="attr-tooltip" id="budgetTooltip"></div>
+          </div>
           <div class="attr-cell"><input id="summe_bonus" readonly tabindex="-1"></div>
           <div class="attr-cell"><input id="summe_gesamt" readonly tabindex="-1"></div>
         </div>
       </div>
-      <div class="note-box">90 Punkte zu verteilen (Werte je Attribut: 1 – 19)</div>
+      <div class="note-box" id="budgetNote">90 Punkte zu verteilen (Basiswert je Attribut: 1 – 19)</div>
 
       <h3 class="sub-h">Schwierigkeitsgrade</h3>
       <div class="diff-table">
@@ -581,14 +686,22 @@
 
     <!-- SEITE 5: NOTIZEN -->
     <section class="paper" id="page-notizen">
-      <div class="section-caption">Notizen</div>
-      <textarea class="long-field" id="notizen" placeholder="Freie Notizen zu deinem Charakter …"></textarea>
+      <div class="page-title"><h2>Notizen</h2></div>
+      <div id="notesFieldsWrap"></div>
+      <button class="add-field-btn" id="addNotesFieldBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Weiteres Feld hinzufügen
+      </button>
     </section>
 
     <!-- SEITE 6: HINTERGRUND -->
     <section class="paper" id="page-hintergrund">
-      <div class="section-caption">Hintergrund</div>
-      <textarea class="long-field" id="hintergrund" placeholder="Die Hintergrundgeschichte deines Charakters …"></textarea>
+      <div class="page-title"><h2>Hintergrund</h2></div>
+      <div id="backgroundFieldsWrap"></div>
+      <button class="add-field-btn" id="addBackgroundFieldBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Weiteres Feld hinzufügen
+      </button>
     </section>
 
     <p class="foot-note">Alle Angaben werden nur lokal in deinem Browser gespeichert und ausschließlich für die PDF-Erzeugung verwendet.</p>
@@ -700,6 +813,65 @@
     if (inputs.length) inputs[inputs.length - 1].focus();
   });
 
+  /* ===================== Notizen & Hintergrund (benannte Textblöcke) ===================== */
+  function createTextBlockSection(opts){
+    var items = [{ id: opts.prefix + "_0", label: opts.defaultLabel, value: "" }];
+    var counter = 0;
+    var wrap = document.getElementById(opts.wrapId);
+
+    function render(){
+      wrap.innerHTML = "";
+      items.forEach(function(f){
+        var block = document.createElement("div");
+        block.className = "text-block";
+        block.innerHTML =
+          '<div class="text-block-head">' +
+            '<input type="text" class="text-block-label" placeholder="Bezeichnung" value="'+escapeAttr(f.label)+'">' +
+            '<button type="button" class="custom-remove-btn" title="Feld entfernen" aria-label="Feld entfernen">\u2715</button>' +
+          '</div>' +
+          '<textarea class="text-block-value" placeholder="'+escapeAttr(opts.placeholder)+'">'+escapeAttr(f.value)+'</textarea>';
+        var labelInput = block.querySelector(".text-block-label");
+        var valueArea = block.querySelector(".text-block-value");
+        labelInput.addEventListener("input", function(){ f.label = labelInput.value; });
+        valueArea.addEventListener("input", function(){ f.value = valueArea.value; });
+        block.querySelector(".custom-remove-btn").addEventListener("click", function(){
+          items = items.filter(function(x){ return x.id !== f.id; });
+          render();
+        });
+        wrap.appendChild(block);
+      });
+    }
+    render();
+
+    document.getElementById(opts.addBtnId).addEventListener("click", function(){
+      counter += 1;
+      items.push({ id: opts.prefix + "_extra_" + counter, label: "", value: "" });
+      render();
+      var labels = wrap.querySelectorAll(".text-block-label");
+      if (labels.length) labels[labels.length - 1].focus();
+    });
+
+    return {
+      getItems: function(){ return items; }
+    };
+  }
+
+  var notesSection = createTextBlockSection({
+    prefix: "note",
+    wrapId: "notesFieldsWrap",
+    addBtnId: "addNotesFieldBtn",
+    defaultLabel: "Notizen",
+    placeholder: "Freie Notizen zu deinem Charakter \u2026"
+  });
+
+  var backgroundSection = createTextBlockSection({
+    prefix: "bg",
+    wrapId: "backgroundFieldsWrap",
+    addBtnId: "addBackgroundFieldBtn",
+    defaultLabel: "Hintergrund",
+    placeholder: "Die Hintergrundgeschichte deines Charakters \u2026"
+  });
+
   /* ===================== Attributwerte rendern ===================== */
   var attrWrap = document.getElementById("attrRows");
   ATTR_TABLE.forEach(function(a){
@@ -708,8 +880,8 @@
     row.style.background = a.color;
     row.innerHTML =
       '<div class="attr-name"><span class="code">'+a.code+'</span><span class="name">'+a.name+'</span></div>' +
-      '<div class="attr-cell"><input type="number" id="'+a.code+'_basis" inputmode="numeric"></div>' +
-      '<div class="attr-cell"><input type="number" id="'+a.code+'_bonus" inputmode="numeric"></div>' +
+      '<div class="attr-cell tooltip-anchor"><input type="number" id="'+a.code+'_basis" inputmode="numeric" min="1" max="19" step="1"><div class="attr-tooltip" id="'+a.code+'_basis_tt"></div></div>' +
+      '<div class="attr-cell tooltip-anchor"><input type="number" id="'+a.code+'_bonus" inputmode="numeric" min="-19" max="19" step="1"><div class="attr-tooltip" id="'+a.code+'_bonus_tt"></div></div>' +
       '<div class="attr-cell"><input type="text" id="'+a.code+'_gesamt" readonly tabindex="-1"></div>';
     attrWrap.appendChild(row);
   });
@@ -735,7 +907,10 @@
     legendWrap.appendChild(row);
   });
 
-  /* ===================== Live-Berechnung ===================== */
+  /* ===================== Live-Berechnung & Validierung ===================== */
+  var BASIS_MIN = 1, BASIS_MAX = 19, BONUS_MIN = -19, BONUS_MAX = 19, BASIS_BUDGET = 90;
+  var attrHasErrors = false;
+
   function sumField(vals){
     var sum = 0, filled = false;
     vals.forEach(function(v){
@@ -744,31 +919,107 @@
     return filled ? String(sum) : "";
   }
 
+  /* Gibt eine Fehlermeldung zurück, oder null wenn der Wert gültig ist (leer = gültig) */
+  function validateAttrValue(raw, min, max){
+    if (raw === "") return null;
+    if (!/^-?\d+$/.test(raw)) return "Nur ganze Zahlen erlaubt";
+    var n = parseInt(raw, 10);
+    if (n < min || n > max) return "Nur Werte von " + min + " bis " + max + " erlaubt";
+    return null;
+  }
+
+  function setFieldError(inputEl, tooltipEl, message){
+    if (message){
+      inputEl.classList.add("field-error");
+      tooltipEl.textContent = message;
+      tooltipEl.classList.add("show");
+    } else {
+      inputEl.classList.remove("field-error");
+      tooltipEl.classList.remove("show");
+    }
+  }
+
+  function updateBudgetNote(remaining){
+    var note = document.getElementById("budgetNote");
+    var summeBasisInput = document.getElementById("summe_basis");
+    var tooltip = document.getElementById("budgetTooltip");
+
+    note.classList.remove("budget-complete");
+    summeBasisInput.classList.remove("field-error");
+    tooltip.classList.remove("show");
+
+    if (remaining > 0) {
+      note.textContent = remaining + " von " + BASIS_BUDGET + " Basispunkten noch zu verteilen (je Attribut: 1 \u2013 19)";
+    } else if (remaining === 0) {
+      note.textContent = "Alle " + BASIS_BUDGET + " Basispunkte verteilt \u2713 (je Attribut: 1 \u2013 19)";
+      note.classList.add("budget-complete");
+    } else {
+      note.textContent = BASIS_BUDGET + " Basispunkte insgesamt erlaubt (je Attribut: 1 \u2013 19)";
+      summeBasisInput.classList.add("field-error");
+      tooltip.textContent = (-remaining) + " Punkt" + (-remaining === 1 ? "" : "e") + " zu viel verteilt \u2013 max. " + BASIS_BUDGET + " Basispunkte insgesamt";
+      tooltip.classList.add("show");
+    }
+  }
+
+  function updateDownloadButtonState(){
+    var dlBtn = document.getElementById("dlBtn");
+    dlBtn.disabled = attrHasErrors;
+    dlBtn.classList.toggle("disabled-state", attrHasErrors);
+    dlBtn.title = attrHasErrors ? "Bitte behebe zuerst die markierten Fehler bei den Attributwerten." : "";
+  }
+
   function recalc(){
     var basisVals = [], bonusVals = [], gesamtVals = [];
+    var anyFieldError = false;
+
     ATTR_TABLE.forEach(function(a){
       var bEl = document.getElementById(a.code + "_basis");
       var boEl = document.getElementById(a.code + "_bonus");
       var gEl = document.getElementById(a.code + "_gesamt");
-      var bVal = bEl.value.trim(), boVal = boEl.value.trim();
-      var bNum = parseFloat(bVal), boNum = parseFloat(boVal);
-      var bOk = bVal !== "" && !isNaN(bNum);
-      var boOk = boVal !== "" && !isNaN(boNum);
+      var bTt = document.getElementById(a.code + "_basis_tt");
+      var boTt = document.getElementById(a.code + "_bonus_tt");
+
+      var bRaw = bEl.value.trim(), boRaw = boEl.value.trim();
+      var bErr = validateAttrValue(bRaw, BASIS_MIN, BASIS_MAX);
+      var boErr = validateAttrValue(boRaw, BONUS_MIN, BONUS_MAX);
+      setFieldError(bEl, bTt, bErr);
+      setFieldError(boEl, boTt, boErr);
+      if (bErr) anyFieldError = true;
+      if (boErr) anyFieldError = true;
+
+      var bOk = bRaw !== "" && !bErr;
+      var boOk = boRaw !== "" && !boErr;
+      var bNum = bOk ? parseInt(bRaw, 10) : NaN;
+      var boNum = boOk ? parseInt(boRaw, 10) : NaN;
+
       if (!bOk && !boOk) {
         gEl.value = "";
       } else {
         gEl.value = String((bOk ? bNum : 0) + (boOk ? boNum : 0));
       }
-      basisVals.push(bVal); bonusVals.push(boVal); gesamtVals.push(gEl.value);
+      basisVals.push(bOk ? String(bNum) : "");
+      bonusVals.push(boOk ? String(boNum) : "");
+      gesamtVals.push(gEl.value);
     });
+
     document.getElementById("summe_basis").value = sumField(basisVals);
     document.getElementById("summe_bonus").value = sumField(bonusVals);
     document.getElementById("summe_gesamt").value = sumField(gesamtVals);
+
+    var basisSum = 0;
+    basisVals.forEach(function(v){ if (v !== "") basisSum += parseFloat(v); });
+    var remaining = BASIS_BUDGET - basisSum;
+    updateBudgetNote(remaining);
+
+    attrHasErrors = anyFieldError || remaining < 0;
+    updateDownloadButtonState();
   }
 
   ATTR_TABLE.forEach(function(a){
-    document.getElementById(a.code + "_basis").addEventListener("input", recalc);
-    document.getElementById(a.code + "_bonus").addEventListener("input", recalc);
+    var basisEl = document.getElementById(a.code + "_basis");
+    var bonusEl = document.getElementById(a.code + "_bonus");
+    basisEl.addEventListener("input", recalc);
+    bonusEl.addEventListener("input", recalc);
   });
   recalc();
 
@@ -947,21 +1198,60 @@
     return yTop - rowH;
   }
 
-  function wrapAndDraw(doc, text, x, yTop, width, lineHeight, fontSize, fontStyle){
-    doc.setFont("helvetica", fontStyle || "normal");
-    doc.setFontSize(fontSize || 12);
-    doc.setTextColor.apply(doc, COL_TEXT);
-    if (!text) return;
-    var paragraphs = text.split("\n");
-    var y = yTop;
-    paragraphs.forEach(function(p){
-      var lines = doc.splitTextToSize(p, width);
-      if (p === "") { y -= lineHeight; return; }
-      lines.forEach(function(line){
-        textBL(doc, x, y, line);
-        y -= lineHeight;
-      });
+  function drawTextBlocksPage(doc, sectionTitle, items){
+    var content = items.filter(function(f){
+      return (f.label || "").trim() !== "" || (f.value || "").trim() !== "";
     });
+    if (content.length === 0) return;
+
+    doc.addPage();
+    var y = PAGE_H - MARGIN;
+    y = sectionHeader(doc, y, sectionTitle);
+    y -= 16;
+
+    var lineHeight = 15;
+    var textWidth = PAGE_W - 2*MARGIN - 24;
+    var xText = MARGIN + 12;
+
+    function ensureSpace(needed){
+      if (y - needed < MARGIN + 24){
+        footer(doc, "Seite " + doc.internal.getNumberOfPages() + " \u2013 " + sectionTitle);
+        doc.addPage();
+        y = PAGE_H - MARGIN - 10;
+      }
+    }
+
+    content.forEach(function(f, idx){
+      var label = (f.label || "").trim();
+      var value = (f.value || "").trim();
+      var showHeading = label && (content.length > 1 || label.toLowerCase() !== sectionTitle.toLowerCase());
+
+      if (showHeading){
+        ensureSpace(lineHeight + 6);
+        doc.setFont("helvetica", "bold"); doc.setFontSize(12.5);
+        doc.setTextColor.apply(doc, COL_TEXT);
+        textBL(doc, xText, y, label);
+        y -= lineHeight + 3;
+      }
+
+      if (value){
+        doc.setFont("helvetica", "normal"); doc.setFontSize(11);
+        doc.setTextColor.apply(doc, COL_TEXT);
+        var paragraphs = value.split("\n");
+        paragraphs.forEach(function(p){
+          if (p === "") { ensureSpace(lineHeight); y -= lineHeight; return; }
+          var lines = doc.splitTextToSize(p, textWidth);
+          lines.forEach(function(line){
+            ensureSpace(lineHeight);
+            textBL(doc, xText, y, line);
+            y -= lineHeight;
+          });
+        });
+      }
+      if (idx < content.length - 1) y -= 12;
+    });
+
+    footer(doc, "Seite " + doc.internal.getNumberOfPages() + " \u2013 " + sectionTitle);
   }
 
   function addD20(doc, x, yTop, size){
@@ -1011,7 +1301,7 @@
         textBL(doc, PAGE_W/2, MARGIN + 20 + frameH/2, "Kein Charakterbild hochgeladen", {align:"center"});
       }
     }
-    footer(doc, "Seite 1 \u2013 Deckblatt");
+    footer(doc, "Seite " + doc.internal.getNumberOfPages() + " \u2013 Deckblatt");
 
     /* ---------- SEITE 2: PERSÖNLICHE INFOS ---------- */
     doc.addPage();
@@ -1097,12 +1387,29 @@
     yRow -= rowH;
 
     yRow -= 16;
-    doc.setFillColor(234,243,252);
+    var basisSumForNote = 0;
+    ATTR_TABLE.forEach(function(a){
+      var v = val(a.code + "_basis");
+      if (v !== "" && !isNaN(parseFloat(v))) basisSumForNote += parseFloat(v);
+    });
+    var remainingForNote = 90 - basisSumForNote;
+    var noteText, noteFill;
+    if (remainingForNote > 0){
+      noteText = remainingForNote + " von 90 Basispunkten noch zu verteilen (je Attribut: 1 \u2013 19)";
+      noteFill = [234,243,252];
+    } else if (remainingForNote === 0){
+      noteText = "Alle 90 Basispunkte verteilt (je Attribut: 1 \u2013 19)";
+      noteFill = [230,245,233];
+    } else {
+      noteText = (-remainingForNote) + " Punkte zu viel verteilt \u2013 nur 90 Basispunkte insgesamt erlaubt";
+      noteFill = [251,234,234];
+    }
+    doc.setFillColor.apply(doc, noteFill);
     doc.setDrawColor.apply(doc, COL_BORDER);
     roundedRectBL(doc, MARGIN, yRow - 22, tableW, 22, 4, "FD");
     doc.setTextColor.apply(doc, COL_TEXT);
     doc.setFont("helvetica", "bold"); doc.setFontSize(10);
-    textBL(doc, PAGE_W/2, yRow - 22/2 - 3, "90 Punkte zu verteilen (Werte je Attribut: 1 \u2013 19)", {align:"center"});
+    textBL(doc, PAGE_W/2, yRow - 22/2 - 3, noteText, {align:"center"});
     yRow -= 22;
 
     yRow -= 26;
@@ -1130,7 +1437,7 @@
       textBL(doc, MARGIN + c1W + 10, yRow - rowH2 + 8, d.val);
       yRow -= rowH2;
     });
-    footer(doc, "Seite 3 \u2013 Attributwerte");
+    footer(doc, "Seite " + doc.internal.getNumberOfPages() + " \u2013 Attributwerte");
 
     /* ---------- SEITE 4: ATTRIBUTE ERKLÄRT ---------- */
     doc.addPage();
@@ -1179,21 +1486,13 @@
 
       yL -= rH;
     });
-    footer(doc, "Seite 4 \u2013 Attribut-\u00DCbersicht");
+    footer(doc, "Seite " + doc.internal.getNumberOfPages() + " \u2013 Attribut-\u00DCbersicht");
 
-    /* ---------- SEITE 5: NOTIZEN ---------- */
-    doc.addPage();
-    y = PAGE_H - MARGIN;
-    y = sectionHeader(doc, y, "Notizen");
-    wrapAndDraw(doc, val("notizen"), MARGIN + 12, y - 20, PAGE_W - 2*MARGIN - 24, 16, 12, "normal");
-    footer(doc, "Seite 5 \u2013 Notizen");
+    /* ---------- SEITE 5: NOTIZEN (nur wenn ausgefüllt) ---------- */
+    drawTextBlocksPage(doc, "Notizen", notesSection.getItems());
 
-    /* ---------- SEITE 6: HINTERGRUND ---------- */
-    doc.addPage();
-    y = PAGE_H - MARGIN;
-    y = sectionHeader(doc, y, "Hintergrund");
-    wrapAndDraw(doc, val("hintergrund"), MARGIN + 12, y - 20, PAGE_W - 2*MARGIN - 24, 16, 12, "normal");
-    footer(doc, "Seite 6 \u2013 Hintergrund");
+    /* ---------- SEITE 6: HINTERGRUND (nur wenn ausgefüllt) ---------- */
+    drawTextBlocksPage(doc, "Hintergrund", backgroundSection.getItems());
 
     return doc;
   }
@@ -1209,6 +1508,11 @@
 
   var dlBtn = document.getElementById("dlBtn");
   dlBtn.addEventListener("click", async function(){
+    if (attrHasErrors) {
+      showStatus("Bitte behebe zuerst die markierten Fehler bei den Attributwerten.");
+      recalc();
+      return;
+    }
     dlBtn.disabled = true;
     showStatus("PDF wird erstellt \u2026", true);
     function findPersonalValue(labelMatch){
@@ -1256,7 +1560,7 @@
         showStatus("Download in dieser Ansicht nicht verf\u00FCgbar.");
       }
     }
-    dlBtn.disabled = false;
+    dlBtn.disabled = attrHasErrors;
   });
 
 })();
