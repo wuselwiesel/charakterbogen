@@ -829,6 +829,7 @@
   .auth-submit:disabled { opacity: 0.6; cursor: default; }
   .auth-forgot { display: block; margin: 14px auto 0; border: none; background: none; color: var(--accent); font-size: 12.5px; cursor: pointer; text-decoration: underline; }
   .auth-error { margin-top: 12px; color: #B23A3A; font-size: 12.5px; text-align: center; min-height: 1em; }
+  .auth-error.success { color: #1E7A3D; }
 
   /* ===== User-Bar ===== */
   .user-bar {
@@ -872,8 +873,9 @@
     border-bottom-color: transparent;
   }
   .rte-editor[contenteditable="false"] { cursor: default; }
-  .dropzone.view-locked { cursor: default; pointer-events: none; opacity: 0.8; }
+  .dropzone.view-locked { cursor: default; pointer-events: none; }
   .dropzone.view-locked:not(.has-image) { opacity: 0.55; }
+  .dropzone.view-locked.has-image { border-color: transparent; background: transparent; }
 
   /* ===== Charakter-Bibliothek ===== */
   .lib-overlay {
@@ -3074,6 +3076,7 @@
     authTabLogin.classList.toggle("active", mode === "login");
     authTabRegister.classList.toggle("active", mode === "register");
     authSubmitBtn.textContent = mode === "login" ? "Anmelden" : "Konto erstellen";
+    authError.classList.remove("success");
     authError.textContent = "";
   }
   authTabLogin.addEventListener("click", function(){ setAuthMode("login"); });
@@ -3097,6 +3100,7 @@
     e.preventDefault();
     var email = authEmailInput.value.trim();
     var password = authPasswordInput.value;
+    authError.classList.remove("success");
     authError.textContent = "";
     authSubmitBtn.disabled = true;
     var action = authMode === "login"
@@ -3111,15 +3115,19 @@
 
   authForgotBtn.addEventListener("click", function(){
     var email = authEmailInput.value.trim();
+    authError.classList.remove("success");
     if (!email){
       authError.textContent = "Bitte zuerst deine E-Mail-Adresse eingeben.";
       return;
     }
+    authForgotBtn.disabled = true;
     fbAuth.sendPasswordResetEmail(email).then(function(){
-      authError.textContent = "";
-      showStatus("E-Mail zum Zurücksetzen des Passworts wurde verschickt.", true);
+      authError.classList.add("success");
+      authError.textContent = "E-Mail zum Zurücksetzen des Passworts wurde verschickt.";
     }).catch(function(err){
       authError.textContent = authErrorMessage(err);
+    }).then(function(){
+      authForgotBtn.disabled = false;
     });
   });
 
