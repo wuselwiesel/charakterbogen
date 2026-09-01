@@ -64,21 +64,23 @@
 
   /* --- Sidebar navigation --- */
   .sidebar-toggle {
-    display: none;
+    display: flex;
     position: fixed;
     top: 14px; left: 14px;
     z-index: 101;
-    width: 42px; height: 42px;
+    width: 40px; height: 40px;
     align-items: center;
     justify-content: center;
     border-radius: 10px;
     border: 1px solid var(--border-strong);
     background: var(--paper);
     color: var(--text);
-    font-size: 18px;
+    font-size: 17px;
     cursor: pointer;
     box-shadow: var(--shadow);
+    transition: background 0.15s ease;
   }
+  .sidebar-toggle:hover { background: var(--row-light); }
   .app-shell {
     display: flex;
     align-items: flex-start;
@@ -90,21 +92,29 @@
     top: 0;
     align-self: flex-start;
     height: 100vh;
-    width: 220px;
+    width: 226px;
     flex-shrink: 0;
-    overflow-y: auto;
+    overflow: hidden;
     padding: 30px 16px;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    background: rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.4);
     border-right: 1px solid var(--paper-edge);
+    transition: width 0.22s ease, padding 0.22s ease;
+  }
+  .app-shell.sidebar-closed .sidebar {
+    width: 0;
+    padding-left: 0;
+    padding-right: 0;
+    border-right-color: transparent;
   }
   .sidebar-brand {
     display: flex;
     align-items: center;
     gap: 9px;
     padding: 0 8px;
+    flex-shrink: 0;
   }
   .sidebar-brand-icon { font-size: 26px; }
   .sidebar-brand-text {
@@ -112,11 +122,13 @@
     font-weight: 600;
     font-size: 21px;
     color: var(--accent-strong);
+    white-space: nowrap;
   }
   .sidebar .tabs {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    flex-shrink: 0;
   }
   .tab-btn {
     width: 100%;
@@ -142,22 +154,60 @@
     outline: 2px solid var(--accent-strong);
     outline-offset: 2px;
   }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--paper-edge);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+  .sidebar-user {
+    display: flex; align-items: center; gap: 7px;
+    padding: 2px 10px 8px;
+    font-size: 12.5px; font-weight: 700; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .sidebar-footer-btn {
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 9px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .sidebar-footer-btn:hover { background: rgba(255,255,255,0.7); color: var(--text); }
+  .sidebar-footer-btn.sidebar-logout { color: #B23A3A; }
+  .sidebar-footer-btn.sidebar-logout:hover { background: #FBEAEC; color: #B23A3A; }
+
   .sidebar-backdrop { display: none; }
   .main-content { flex: 1; min-width: 0; padding-top: 24px; }
 
   @media (max-width: 860px) {
-    .sidebar-toggle { display: flex; }
     .app-shell { display: block; }
     .sidebar {
       position: fixed;
       top: 0; left: 0; bottom: 0;
       height: 100vh;
-      width: 240px;
+      width: 250px;
       background: var(--paper);
       transform: translateX(-100%);
       transition: transform 0.25s ease;
       z-index: 100;
       box-shadow: 0 0 30px rgba(0,0,0,0.3);
+      overflow-y: auto;
     }
     .sidebar.open { transform: translateX(0); }
     .sidebar-backdrop {
@@ -668,30 +718,22 @@
   .rte-editor table { border-collapse: collapse; width: 100%; margin: 10px 0; }
   .rte-editor table td, .rte-editor table th { border: 1px solid var(--border); padding: 6px 8px; min-width: 40px; }
 
-  .dl-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
+  .sidebar-footer-btn.dl-btn {
     background: var(--accent);
-    color: #fff !important;
-    border: none;
-    font-family: inherit;
+    color: #fff;
+    margin-top: 4px;
     font-weight: 700;
-    font-size: 12px;
-    padding: 6px 12px;
-    border-radius: 999px;
-    cursor: pointer;
     transition: background 0.15s ease, transform 0.1s ease;
   }
-  .dl-btn:hover { background: var(--accent-strong); }
-  .dl-btn:active { transform: scale(0.97); }
-  .dl-btn:disabled, .dl-btn.disabled-state {
+  .sidebar-footer-btn.dl-btn:hover { background: var(--accent-strong); color: #fff; }
+  .sidebar-footer-btn.dl-btn:active { transform: scale(0.98); }
+  .sidebar-footer-btn.dl-btn:disabled, .sidebar-footer-btn.dl-btn.disabled-state {
     opacity: 0.45;
     cursor: not-allowed;
     transform: none;
   }
-  .dl-btn:disabled:hover, .dl-btn.disabled-state:hover { background: var(--accent); }
-  .dl-btn svg { width: 14px; height: 14px; }
+  .sidebar-footer-btn.dl-btn:disabled:hover, .sidebar-footer-btn.dl-btn.disabled-state:hover { background: var(--accent); }
+  .dl-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
   .dl-status {
     position: fixed;
     left: 50%;
@@ -762,18 +804,17 @@
 
   /* ===== User-Bar ===== */
   .user-bar {
-    max-width: 760px; margin: 0 auto; padding: 10px 20px 0;
-    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    max-width: 940px; margin: 0 auto; padding: 14px 20px 0 66px;
+    display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap;
     font-size: 12.5px; color: var(--muted);
   }
-  .user-bar .user-email { font-weight: 600; color: var(--text); margin-right: auto; }
   .user-bar button {
     border: 1px solid var(--border-strong); background: rgba(255,255,255,0.6);
     color: var(--text); font-family: inherit; font-size: 12px; font-weight: 600;
     padding: 6px 11px; border-radius: 999px; cursor: pointer;
   }
   .user-bar button:hover { background: rgba(255,255,255,0.95); }
-  .user-bar .save-indicator { font-style: italic; }
+  .user-bar .save-indicator { font-style: italic; margin-right: auto; }
 
   /* ===== Charakter-Bibliothek ===== */
   .lib-overlay {
@@ -906,15 +947,10 @@
   }
   .roll-btn:hover { background: var(--accent-strong); }
 
-  .roll-history { margin-top: 16px; display: flex; flex-direction: column; gap: 6px; max-height: 160px; overflow-y: auto; }
-  .roll-history-entry {
-    display: flex; justify-content: space-between; align-items: center; gap: 8px;
-    font-size: 11.5px; color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 5px;
-  }
-  .roll-history-entry .rh-tag { font-weight: 700; padding: 2px 7px; border-radius: 999px; font-size: 10.5px; flex-shrink: 0; }
-  .roll-history-entry .rh-tag.success { background: #E4F3E8; color: #2E7D46; }
-  .roll-history-entry .rh-tag.fail { background: #FBEBEC; color: #B23A3A; }
-  .roll-history-entry .rh-tag.plain { background: var(--row-light); color: var(--muted); }
+  .rh-tag { font-weight: 700; padding: 3px 9px; border-radius: 999px; font-size: 11px; flex-shrink: 0; }
+  .rh-tag.success { background: #E4F3E8; color: #1E7A3D; }
+  .rh-tag.fail { background: #FBEAEC; color: #C4302B; }
+  .rh-tag.plain { background: var(--row-light); color: var(--muted); }
 
   /* ===== Profil ===== */
   .profile-overlay {
@@ -1019,7 +1055,6 @@
   <div id="appRoot" class="app-root">
 
   <div class="user-bar" id="userBar">
-    <span class="user-email" id="userEmailLabel"></span>
     <span class="save-indicator" id="saveIndicator"></span>
     <div class="online-wrap">
       <button type="button" id="onlineBtn">👥 0</button>
@@ -1028,14 +1063,8 @@
         <div class="online-list" id="onlineList"></div>
       </div>
     </div>
-    <button type="button" id="profileEditBtn">Profil</button>
     <button type="button" id="myCharsBtn">Meine Charaktere</button>
     <button type="button" id="newCharBtn">+ Neuer Charakter</button>
-    <button class="dl-btn" id="dlBtn" type="button" title="Als PDF herunterladen">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-      PDF
-    </button>
-    <button type="button" id="logoutBtn">Abmelden</button>
   </div>
 
   <div class="profile-overlay" id="profileOverlay">
@@ -1071,6 +1100,16 @@
         <button class="tab-btn" data-page="talente">Talente</button>
         <button class="tab-btn" data-page="notizen">Notizen</button>
         <button class="tab-btn" data-page="wuerfelverlauf">Würfelverlauf</button>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">👤 <span id="sidebarUsername">–</span></div>
+        <button type="button" class="sidebar-footer-btn" id="profileEditBtn">⚙ Profil</button>
+        <button type="button" class="sidebar-footer-btn dl-btn" id="dlBtn" title="Als PDF herunterladen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Als PDF herunterladen
+        </button>
+        <button type="button" class="sidebar-footer-btn sidebar-logout" id="logoutBtn">Abmelden</button>
       </div>
     </nav>
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
@@ -1333,6 +1372,25 @@
       .replace(/^_+|_+$/g, "");
   }
 
+  /* ===================== Sidebar (auf-/zuklappbar) ===================== */
+  var appShellEl = document.querySelector(".app-shell");
+  var sidebarEl = document.getElementById("sidebar");
+  var sidebarToggleBtn = document.getElementById("sidebarToggleBtn");
+  var sidebarBackdrop = document.getElementById("sidebarBackdrop");
+  var mobileMedia = window.matchMedia("(max-width: 860px)");
+  var sidebarVisible = !mobileMedia.matches;
+
+  function applySidebarState(){
+    appShellEl.classList.toggle("sidebar-closed", !sidebarVisible);
+    sidebarEl.classList.toggle("open", sidebarVisible);
+    sidebarBackdrop.classList.toggle("show", sidebarVisible && mobileMedia.matches);
+  }
+  function setSidebarVisible(visible){ sidebarVisible = visible; applySidebarState(); }
+  applySidebarState();
+
+  sidebarToggleBtn.addEventListener("click", function(){ setSidebarVisible(!sidebarVisible); });
+  sidebarBackdrop.addEventListener("click", function(){ setSidebarVisible(false); });
+
   /* ===================== Tabs ===================== */
   var tabButtons = document.querySelectorAll(".tab-btn");
   var pages = document.querySelectorAll(".paper");
@@ -1343,20 +1401,9 @@
       btn.classList.add("active");
       document.getElementById("page-" + btn.dataset.page).classList.add("active");
       window.scrollTo({top:0, behavior:"smooth"});
-      closeSidebar();
+      if (mobileMedia.matches) setSidebarVisible(false);
     });
   });
-
-  /* ===================== Sidebar (mobil) ===================== */
-  var sidebarEl = document.getElementById("sidebar");
-  var sidebarToggleBtn = document.getElementById("sidebarToggleBtn");
-  var sidebarBackdrop = document.getElementById("sidebarBackdrop");
-  function openSidebar(){ sidebarEl.classList.add("open"); sidebarBackdrop.classList.add("show"); }
-  function closeSidebar(){ sidebarEl.classList.remove("open"); sidebarBackdrop.classList.remove("show"); }
-  sidebarToggleBtn.addEventListener("click", function(){
-    sidebarEl.classList.contains("open") ? closeSidebar() : openSidebar();
-  });
-  sidebarBackdrop.addEventListener("click", closeSidebar);
 
   document.getElementById("rpg_universum").addEventListener("input", function(){ scheduleAutosave(); });
 
@@ -2947,7 +2994,7 @@
   });
 
   var userBar = document.getElementById("userBar");
-  var userEmailLabel = document.getElementById("userEmailLabel");
+  var sidebarUsernameLabel = document.getElementById("sidebarUsername");
   var saveIndicator = document.getElementById("saveIndicator");
   var logoutBtn = document.getElementById("logoutBtn");
   var myCharsBtn = document.getElementById("myCharsBtn");
@@ -3184,7 +3231,6 @@
     if (user){
       authGate.style.display = "none";
       appRoot.style.display = "block";
-      userEmailLabel.textContent = user.email || "";
       authForm.reset();
       loadInitialCharacter();
       checkProfile();
@@ -3194,6 +3240,7 @@
       activeCharacterId = null;
       activeCharacterName = null;
       myProfile = null;
+      sidebarUsernameLabel.textContent = "–";
       closeLibrary();
       closeProfileModal();
       stopPresenceHeartbeat();
@@ -3470,6 +3517,7 @@
     profileSaveBtn.disabled = true;
     userDocRef().set({ profile: { username: username, nickname: nickname || null } }, { merge: true }).then(function(){
       myProfile = { username: username, nickname: nickname || null };
+      sidebarUsernameLabel.textContent = myProfile.username;
       profileSaveBtn.disabled = false;
       closeProfileModal();
       startPresenceHeartbeat();
@@ -3486,6 +3534,7 @@
       if (!myProfile){
         openProfileModal(true);
       } else {
+        sidebarUsernameLabel.textContent = myProfile.username;
         startPresenceHeartbeat();
       }
     }).catch(function(){});
