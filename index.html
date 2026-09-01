@@ -780,12 +780,28 @@
   }
   .dl-status.show { opacity: 1; }
 
+  @media (max-width: 600px) {
+    .sheet { padding: 0 10px; }
+    .paper { padding: 24px 14px 30px; }
+    .lib-card { flex-wrap: wrap; }
+    .lib-card-actions { width: 100%; justify-content: flex-start; margin-top: 2px; }
+  }
+
   @media (max-width: 480px) {
-    .field-row { grid-template-columns: 118px 1fr; }
-    .attr-head, .attr-row, .attr-sum { grid-template-columns: 1.3fr 1fr 1fr 1fr; }
-    .attr-head.talent-head, .attr-row.talent-row, .attr-sum.talent-sum { grid-template-columns: 1.6fr 1fr 1fr 1fr; }
-    .attr-row .attr-name .name, .attr-head { font-size: 10px; }
-    .legend-head, .legend-row { grid-template-columns: 92px 1fr; }
+    .field-row { grid-template-columns: 100px 1fr; }
+    .attr-head, .attr-row, .attr-sum { grid-template-columns: 1.15fr 0.85fr 0.85fr 1fr; }
+    .attr-head.talent-head, .attr-row.talent-row, .attr-sum.talent-sum { grid-template-columns: 2fr 0.8fr 0.8fr 0.9fr; }
+    .attr-row .attr-name .name, .attr-head { font-size: 9.5px; }
+    .attr-row .attr-name { padding: 6px 3px; }
+    .attr-row.talent-row .attr-name { padding: 8px 6px; }
+    .attr-row.talent-row .attr-name .code { font-size: 12px; line-height: 1.2; }
+    .attr-row .attr-cell { padding: 5px 3px; }
+    .attr-row input { max-width: 100%; padding: 6px 2px; font-size: 13px; }
+    .attr-row .attr-cell:last-child input, .attr-sum .attr-cell:last-child input { font-size: 14px; }
+    .legend-head, .legend-row { grid-template-columns: 78px 1fr; }
+    .legend-row .desc-cell { padding: 10px 8px; }
+    .rollpage-entry { flex-wrap: wrap; }
+    .rollpage-meta { flex-direction: row; align-items: center; width: 100%; justify-content: space-between; margin-top: 4px; }
   }
 
   /* ===== App-Root / Auth-Gate ===== */
