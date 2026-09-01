@@ -815,6 +815,36 @@
   }
   .user-bar button:hover { background: rgba(255,255,255,0.95); }
   .user-bar .save-indicator { font-style: italic; margin-right: auto; }
+  .edit-toggle-btn {
+    border: 1px solid var(--border-strong) !important;
+    background: rgba(255,255,255,0.5) !important;
+    color: var(--muted) !important;
+    font-size: 11.5px !important;
+    padding: 5px 10px !important;
+  }
+  .edit-toggle-btn:hover { background: rgba(255,255,255,0.9) !important; color: var(--text) !important; }
+  .edit-toggle-btn.editing {
+    background: var(--accent) !important;
+    color: #fff !important;
+    border-color: var(--accent-strong) !important;
+  }
+  .edit-toggle-btn.editing:hover { background: var(--accent-strong) !important; }
+
+  /* ===== Ansichtsmodus (nicht editierbar) ===== */
+  .sheet input:disabled, .sheet textarea:disabled, .sheet select:disabled {
+    opacity: 1;
+    cursor: default;
+    color: var(--text);
+    -webkit-text-fill-color: var(--text);
+  }
+  .sheet .paper:not(#page-wuerfelverlauf) button:disabled { display: none; }
+  .sheet .rte-toolbar:has(button:disabled) { display: none; }
+  .field-row input:disabled, .custom-field-row input:disabled, .custom-field-row input.custom-label-input:disabled,
+  .attr-cell input:disabled, .text-block-label:disabled {
+    border-bottom-color: transparent;
+  }
+  .rte-editor[contenteditable="false"] { cursor: default; }
+  .dropzone.view-locked { cursor: default; pointer-events: none; }
 
   /* ===== Charakter-Bibliothek ===== */
   .lib-overlay {
@@ -985,9 +1015,9 @@
   .online-empty { font-size: 12px; color: var(--muted); }
   .rh-player { color: var(--muted); font-weight: 400; font-size: 11px; }
 
-  /* ===== Bibliothek: Sortierung ===== */
+  /* ===== Bibliothek: Sortierung & Gruppierung ===== */
   .lib-sort {
-    display: flex; align-items: center; gap: 8px;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
     margin-bottom: 14px; font-size: 12.5px; color: var(--muted);
   }
   .lib-sort label { font-weight: 600; }
@@ -996,6 +1026,11 @@
     padding: 6px 9px; font-family: inherit; font-size: 12.5px;
     background: #fff; color: var(--text); cursor: pointer;
   }
+  .lib-group-header {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--muted); margin: 14px 0 2px; padding: 0 2px;
+  }
+  .lib-group-header:first-child { margin-top: 0; }
 
   /* ===== Würfelverlauf-Seite ===== */
   .rollpage-head {
@@ -1055,6 +1090,7 @@
   <div id="appRoot" class="app-root">
 
   <div class="user-bar" id="userBar">
+    <button type="button" id="editToggleBtn" class="edit-toggle-btn">✎ Bearbeiten</button>
     <span class="save-indicator" id="saveIndicator"></span>
     <div class="online-wrap">
       <button type="button" id="onlineBtn">👥 0</button>
@@ -1306,6 +1342,12 @@
         <select id="libSortSelect">
           <option value="updated">Zuletzt bearbeitet</option>
           <option value="name">Alphabetisch (Name)</option>
+          <option value="universe">RPG-Universum</option>
+        </select>
+        <label for="libGroupSelect">Gruppieren nach</label>
+        <select id="libGroupSelect">
+          <option value="none">Keine</option>
+          <option value="date">Datum</option>
           <option value="universe">RPG-Universum</option>
         </select>
       </div>
@@ -1963,6 +2005,7 @@
   var uploadedImage = { dataUrl: null, width: 0, height: 0 };
 
   dropzone.addEventListener("click", function(e){
+    if (!isEditMode) return;
     if (e.target === dzRemove) return;
     fileInput.click();
   });
@@ -1980,6 +2023,7 @@
   });
   dropzone.addEventListener("drop", function(e){
     e.preventDefault();
+    if (!isEditMode) return;
     var f = e.dataTransfer.files && e.dataTransfer.files[0];
     if (f) handleFile(f);
   });
@@ -3023,7 +3067,7 @@
   function setSaveIndicator(text){ saveIndicator.textContent = text; }
 
   function scheduleAutosave(){
-    if (!currentUser || !activeCharacterId || isApplyingCharacter) return;
+    if (!currentUser || !activeCharacterId || isApplyingCharacter || !isEditMode) return;
     setSaveIndicator("Speichert …");
     clearTimeout(autosaveTimer);
     autosaveTimer = setTimeout(doAutosave, 800);
@@ -3054,6 +3098,7 @@
     isApplyingCharacter = true;
     applyCharacterData(data);
     isApplyingCharacter = false;
+    setEditMode(false);
     userDocRef().set({ activeCharacterId: id }, { merge: true }).catch(function(){});
     setSaveIndicator("");
   }
@@ -3072,9 +3117,15 @@
   var libNewBtn = document.getElementById("libNewBtn");
   var libSortSelect = document.getElementById("libSortSelect");
   var libSortMode = "updated";
+  var libGroupSelect = document.getElementById("libGroupSelect");
+  var libGroupMode = "none";
 
   libSortSelect.addEventListener("change", function(){
     libSortMode = libSortSelect.value;
+    renderLibrary();
+  });
+  libGroupSelect.addEventListener("change", function(){
+    libGroupMode = libGroupSelect.value;
     renderLibrary();
   });
 
@@ -3101,6 +3152,7 @@
     var data = defaultCharacterData();
     createCharacter(name, data).then(function(ref){
       setActiveCharacter(ref.id, name, data);
+      setEditMode(true);
       closeLibrary();
       showStatus("Neuer Charakter „" + name + "“ erstellt.");
     }).catch(function(err){
@@ -3114,6 +3166,81 @@
     if (!ts || !ts.toDate) return "";
     var d = ts.toDate();
     return d.toLocaleDateString("de-DE") + " " + d.toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"});
+  }
+
+  var DATE_GROUP_ORDER = ["Heute", "Gestern", "Letzte 7 Tage", "Letzte 30 Tage", "Älter", "Unbekanntes Datum"];
+
+  function dateGroupLabel(ts){
+    if (!ts || !ts.toDate) return "Unbekanntes Datum";
+    var d = ts.toDate();
+    var now = new Date();
+    if (d.toDateString() === now.toDateString()) return "Heute";
+    var yesterday = new Date(now); yesterday.setDate(yesterday.getDate() - 1);
+    if (d.toDateString() === yesterday.toDateString()) return "Gestern";
+    var diffDays = (now - d) / 86400000;
+    if (diffDays < 7) return "Letzte 7 Tage";
+    if (diffDays < 30) return "Letzte 30 Tage";
+    return "Älter";
+  }
+
+  function groupKeyFor(docSnap){
+    var d = docSnap.data();
+    if (libGroupMode === "date") return dateGroupLabel(d.updatedAt);
+    if (libGroupMode === "universe"){
+      var universe = d.data && d.data.universe && d.data.universe.trim();
+      return universe || "Ohne Universum";
+    }
+    return null;
+  }
+
+  function buildLibCard(docSnap){
+    var d = docSnap.data();
+    var charData = d.data || defaultCharacterData();
+    var card = document.createElement("div");
+    card.className = "lib-card" + (docSnap.id === activeCharacterId ? " active" : "");
+    var portrait = charData.portrait;
+    var thumbHtml = portrait && portrait.dataUrl
+      ? '<img class="lib-thumb" src="'+portrait.dataUrl+'">'
+      : '<div class="lib-thumb placeholder">🎲</div>';
+    card.innerHTML =
+      thumbHtml +
+      '<div class="lib-info">' +
+        '<div class="lib-name">'+escapeAttr(d.name || "Unbenannter Charakter")+'</div>' +
+        '<div class="lib-meta">'+escapeAttr(charData.universe || "")+(d.updatedAt ? " · " + formatUpdatedAt(d.updatedAt) : "")+'</div>' +
+      '</div>' +
+      '<div class="lib-card-actions">' +
+        '<button type="button" data-action="open">Öffnen</button>' +
+        '<button type="button" data-action="rename">Umbenennen</button>' +
+        '<button type="button" data-action="duplicate">Duplizieren</button>' +
+        '<button type="button" data-action="delete" class="danger">Löschen</button>' +
+      '</div>';
+
+    card.querySelector('[data-action="open"]').addEventListener("click", function(){
+      setActiveCharacter(docSnap.id, d.name, charData);
+      closeLibrary();
+    });
+    card.querySelector('[data-action="rename"]').addEventListener("click", function(){
+      var newName = window.prompt("Neuer Name:", d.name || "");
+      if (newName === null || !newName.trim()) return;
+      charsColRef().doc(docSnap.id).update({ name: newName.trim() }).then(function(){
+        if (docSnap.id === activeCharacterId) activeCharacterName = newName.trim();
+        renderLibrary();
+      });
+    });
+    card.querySelector('[data-action="duplicate"]').addEventListener("click", function(){
+      createCharacter((d.name || "Charakter") + " (Kopie)", charData).then(renderLibrary);
+    });
+    card.querySelector('[data-action="delete"]').addEventListener("click", function(){
+      if (!window.confirm('"'+(d.name || "Charakter")+'" wirklich unwiderruflich löschen?')) return;
+      charsColRef().doc(docSnap.id).delete().then(function(){
+        if (docSnap.id === activeCharacterId){
+          activeCharacterId = null;
+          loadInitialCharacter();
+        }
+        renderLibrary();
+      });
+    });
+    return card;
   }
 
   function renderLibrary(){
@@ -3139,55 +3266,30 @@
         return tb - ta;
       });
       libList.innerHTML = "";
+
+      if (libGroupMode === "none"){
+        entries.forEach(function(docSnap){ libList.appendChild(buildLibCard(docSnap)); });
+        return;
+      }
+
+      var groups = {};
+      var order = [];
       entries.forEach(function(docSnap){
-        var d = docSnap.data();
-        var charData = d.data || defaultCharacterData();
-        var card = document.createElement("div");
-        card.className = "lib-card" + (docSnap.id === activeCharacterId ? " active" : "");
-        var portrait = charData.portrait;
-        var thumbHtml = portrait && portrait.dataUrl
-          ? '<img class="lib-thumb" src="'+portrait.dataUrl+'">'
-          : '<div class="lib-thumb placeholder">🎲</div>';
-        card.innerHTML =
-          thumbHtml +
-          '<div class="lib-info">' +
-            '<div class="lib-name">'+escapeAttr(d.name || "Unbenannter Charakter")+'</div>' +
-            '<div class="lib-meta">'+escapeAttr(charData.universe || "")+(d.updatedAt ? " · " + formatUpdatedAt(d.updatedAt) : "")+'</div>' +
-          '</div>' +
-          '<div class="lib-card-actions">' +
-            '<button type="button" data-action="open">Öffnen</button>' +
-            '<button type="button" data-action="rename">Umbenennen</button>' +
-            '<button type="button" data-action="duplicate">Duplizieren</button>' +
-            '<button type="button" data-action="delete" class="danger">Löschen</button>' +
-          '</div>';
-
-        card.querySelector('[data-action="open"]').addEventListener("click", function(){
-          setActiveCharacter(docSnap.id, d.name, charData);
-          closeLibrary();
-        });
-        card.querySelector('[data-action="rename"]').addEventListener("click", function(){
-          var newName = window.prompt("Neuer Name:", d.name || "");
-          if (newName === null || !newName.trim()) return;
-          charsColRef().doc(docSnap.id).update({ name: newName.trim() }).then(function(){
-            if (docSnap.id === activeCharacterId) activeCharacterName = newName.trim();
-            renderLibrary();
-          });
-        });
-        card.querySelector('[data-action="duplicate"]').addEventListener("click", function(){
-          createCharacter((d.name || "Charakter") + " (Kopie)", charData).then(renderLibrary);
-        });
-        card.querySelector('[data-action="delete"]').addEventListener("click", function(){
-          if (!window.confirm('"'+(d.name || "Charakter")+'" wirklich unwiderruflich löschen?')) return;
-          charsColRef().doc(docSnap.id).delete().then(function(){
-            if (docSnap.id === activeCharacterId){
-              activeCharacterId = null;
-              loadInitialCharacter();
-            }
-            renderLibrary();
-          });
-        });
-
-        libList.appendChild(card);
+        var key = groupKeyFor(docSnap);
+        if (!groups[key]){ groups[key] = []; order.push(key); }
+        groups[key].push(docSnap);
+      });
+      if (libGroupMode === "date"){
+        order.sort(function(a, b){ return DATE_GROUP_ORDER.indexOf(a) - DATE_GROUP_ORDER.indexOf(b); });
+      } else {
+        order.sort(function(a, b){ return a.localeCompare(b, "de", { sensitivity: "base" }); });
+      }
+      order.forEach(function(key){
+        var header = document.createElement("div");
+        header.className = "lib-group-header";
+        header.textContent = key;
+        libList.appendChild(header);
+        groups[key].forEach(function(docSnap){ libList.appendChild(buildLibCard(docSnap)); });
       });
     }).catch(function(err){
       libList.innerHTML = '<div class="lib-empty">Fehler beim Laden: '+escapeAttr(err && err.message ? err.message : String(err))+'</div>';
@@ -3204,6 +3306,7 @@
       var data = defaultCharacterData();
       return createCharacter("Charakter 1", data).then(function(ref){
         setActiveCharacter(ref.id, "Charakter 1", data);
+        setEditMode(true);
       });
     });
   }
@@ -3648,6 +3751,40 @@
 
   window.addEventListener("beforeunload", function(){
     if (currentUser) db.collection("presence").doc(currentUser.uid).delete().catch(function(){});
+  });
+
+  /* ===================== Ansehen / Bearbeiten ===================== */
+  var isEditMode = false;
+  var editToggleBtn = document.getElementById("editToggleBtn");
+
+  function applyEditModeToDom(){
+    var editable = isEditMode;
+    var scope = document.querySelectorAll(".sheet .paper:not(#page-wuerfelverlauf)");
+    scope.forEach(function(paper){
+      paper.querySelectorAll("input, textarea, select, button").forEach(function(el){
+        el.disabled = !editable;
+      });
+      paper.querySelectorAll(".rte-editor").forEach(function(el){
+        el.contentEditable = editable ? "true" : "false";
+      });
+    });
+    dropzone.classList.toggle("view-locked", !editable);
+  }
+
+  function setEditMode(editing){
+    isEditMode = editing;
+    editToggleBtn.textContent = editing ? "✓ Fertig" : "✎ Bearbeiten";
+    editToggleBtn.classList.toggle("editing", editing);
+    applyEditModeToDom();
+  }
+
+  editToggleBtn.addEventListener("click", function(){
+    if (isEditMode){
+      if (autosaveTimer){ clearTimeout(autosaveTimer); doAutosave(); }
+      setEditMode(false);
+    } else {
+      setEditMode(true);
+    }
   });
 
 })();
