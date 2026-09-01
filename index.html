@@ -792,6 +792,103 @@
   }
   .lib-card-actions button:hover { background: #fff; color: var(--text); }
   .lib-card-actions button.danger:hover { color: #B23A3A; }
+
+  /* ===== Würfel ===== */
+  .dice-fab {
+    position: fixed;
+    right: 16px;
+    bottom: calc(88px + env(safe-area-inset-bottom));
+    z-index: 32;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent-strong);
+    color: #fff;
+    font-size: 24px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 10px 22px -6px rgba(94, 62, 140, 0.55);
+    transition: transform 0.12s ease, background 0.15s ease;
+  }
+  .dice-fab:hover { background: var(--accent); transform: scale(1.05); }
+  .dice-fab:active { transform: scale(0.95); }
+
+  .roll-overlay {
+    position: fixed; inset: 0; z-index: 160; display: none;
+    align-items: flex-start; justify-content: center;
+    background: rgba(20,15,30,0.55); padding: 6vh 20px;
+    overflow-y: auto;
+  }
+  .roll-overlay.show { display: flex; }
+  .roll-panel {
+    width: 100%; max-width: 380px; background: var(--paper);
+    border-radius: 14px; box-shadow: var(--shadow); padding: 22px 22px 26px;
+  }
+  .roll-panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .roll-panel-head h2 { margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; color: var(--accent-strong); }
+  .roll-close { border: none; background: transparent; font-size: 18px; cursor: pointer; color: var(--muted); }
+
+  .roll-field { margin-bottom: 12px; }
+  .roll-field label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+  .roll-field select, .roll-field input {
+    width: 100%; border: 1px solid var(--field-border); border-radius: 8px;
+    padding: 9px 10px; font-family: inherit; font-size: 13.5px; background: #fff; color: var(--text);
+  }
+  .roll-value-row {
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--row-light); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 12px; margin-bottom: 12px; font-size: 13px; color: var(--muted);
+  }
+  .roll-value-row strong { color: var(--text); font-size: 16px; }
+
+  .roll-tabs { display: flex; gap: 6px; margin: 12px 0; background: var(--row-light); border-radius: 10px; padding: 4px; }
+  .roll-tab {
+    flex: 1; border: none; background: transparent; padding: 8px 0; border-radius: 8px;
+    font-family: inherit; font-weight: 600; font-size: 12.5px; color: var(--muted); cursor: pointer;
+  }
+  .roll-tab.active { background: #fff; color: var(--accent-strong); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+  .roll-mode-fields { display: none; }
+  .roll-mode-fields.active { display: block; }
+  .roll-diff-presets { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  .roll-diff-presets button {
+    border: 1px solid var(--border-strong); background: #fff; color: var(--text);
+    font-family: inherit; font-size: 11.5px; font-weight: 600; padding: 5px 9px; border-radius: 999px; cursor: pointer;
+  }
+  .roll-diff-presets button:hover { background: var(--row-light); }
+  .roll-hint { font-size: 11.5px; color: var(--muted); margin: 4px 0 0; }
+
+  .roll-stage { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 18px 0 14px; }
+  .roll-die {
+    width: 76px; height: 76px;
+    background: linear-gradient(155deg, var(--accent), var(--accent-strong));
+    border-radius: 16px; transform: rotate(45deg);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 10px 20px -6px rgba(94,62,140,0.5);
+    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
+  }
+  .roll-die.rolling { transform: rotate(45deg) scale(0.88); }
+  .roll-die span { transform: rotate(-45deg); font-family: 'Cormorant Garamond', Georgia, serif; font-size: 26px; font-weight: 700; color: #fff; }
+  .roll-die-caption { font-size: 12px; color: var(--muted); }
+  .roll-result { font-size: 13.5px; font-weight: 700; min-height: 1.2em; text-align: center; }
+  .roll-result.success { color: #2E7D46; }
+  .roll-result.fail { color: #B23A3A; }
+
+  .roll-btn {
+    width: 100%; border: none; border-radius: 999px; padding: 12px 0;
+    background: var(--accent); color: #fff; font-family: inherit; font-weight: 700; font-size: 14.5px; cursor: pointer;
+  }
+  .roll-btn:hover { background: var(--accent-strong); }
+
+  .roll-history { margin-top: 16px; display: flex; flex-direction: column; gap: 6px; max-height: 160px; overflow-y: auto; }
+  .roll-history-entry {
+    display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    font-size: 11.5px; color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 5px;
+  }
+  .roll-history-entry .rh-tag { font-weight: 700; padding: 2px 7px; border-radius: 999px; font-size: 10.5px; flex-shrink: 0; }
+  .roll-history-entry .rh-tag.success { background: #E4F3E8; color: #2E7D46; }
+  .roll-history-entry .rh-tag.fail { background: #FBEBEC; color: #B23A3A; }
+  .roll-history-entry .rh-tag.plain { background: var(--row-light); color: var(--muted); }
 </style>
 </head>
 <body>
@@ -949,6 +1046,67 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
       Als PDF herunterladen
     </button>
+  </div>
+
+  <button type="button" class="dice-fab" id="diceFabBtn" title="Würfeln" aria-label="Würfeln">🎲</button>
+
+  <div class="roll-overlay" id="rollOverlay">
+    <div class="roll-panel">
+      <div class="roll-panel-head">
+        <h2>Würfeln</h2>
+        <button type="button" class="roll-close" id="rollCloseBtn" aria-label="Schließen">✕</button>
+      </div>
+
+      <div class="roll-field">
+        <label for="rollTarget">Attribut / Talent</label>
+        <select id="rollTarget">
+          <option value="">— freier Wurf (kein Attribut) —</option>
+          <optgroup label="Attribute" id="rollTargetAttrGroup"></optgroup>
+          <optgroup label="Talente" id="rollTargetTalentGroup"></optgroup>
+        </select>
+      </div>
+
+      <div class="roll-value-row" id="rollValueRow" hidden>
+        <span>Gesamtwert</span> <strong id="rollValueDisplay">–</strong>
+      </div>
+
+      <div class="roll-field">
+        <label for="rollDiceType">Würfel</label>
+        <select id="rollDiceType">
+          <option value="2">d2 (Ja / Nein)</option>
+          <option value="6">d6</option>
+          <option value="10" selected>d10</option>
+          <option value="20">d20</option>
+        </select>
+      </div>
+
+      <div class="roll-tabs" role="tablist">
+        <button type="button" class="roll-tab active" id="rollTabWith" role="tab">Mit SG</button>
+        <button type="button" class="roll-tab" id="rollTabWithout" role="tab">Ohne SG</button>
+      </div>
+
+      <div class="roll-mode-fields active" id="rollFieldsWith">
+        <div class="roll-field">
+          <label for="rollDifficulty">Schwierigkeitsgrad</label>
+          <input type="number" id="rollDifficulty" value="20">
+        </div>
+        <div class="roll-diff-presets" id="rollDiffPresets"></div>
+        <p class="roll-hint">Geschafft, wenn (Wert + Würfel) &gt; Schwierigkeitsgrad ist.</p>
+      </div>
+      <div class="roll-mode-fields" id="rollFieldsWithout">
+        <p class="roll-hint">Geschafft, wenn der Wurf ≤ Wert ist.</p>
+      </div>
+
+      <div class="roll-stage">
+        <div class="roll-die" id="rollDie"><span id="rollDieValue">–</span></div>
+        <div class="roll-die-caption" id="rollDieCaption">Bereit zum Würfeln</div>
+        <div class="roll-result" id="rollResult"></div>
+      </div>
+
+      <button type="button" class="roll-btn" id="rollBtn">🎲 Würfeln</button>
+
+      <div class="roll-history" id="rollHistory"></div>
+    </div>
   </div>
 
   <div class="lib-overlay" id="libOverlay">
@@ -2877,6 +3035,179 @@
       activeCharacterId = null;
       closeLibrary();
     }
+  });
+
+  /* ===================== Würfeln ===================== */
+  var diceFabBtn = document.getElementById("diceFabBtn");
+  var rollOverlay = document.getElementById("rollOverlay");
+  var rollCloseBtn = document.getElementById("rollCloseBtn");
+  var rollTargetSel = document.getElementById("rollTarget");
+  var rollTargetAttrGroup = document.getElementById("rollTargetAttrGroup");
+  var rollTargetTalentGroup = document.getElementById("rollTargetTalentGroup");
+  var rollValueRow = document.getElementById("rollValueRow");
+  var rollValueDisplay = document.getElementById("rollValueDisplay");
+  var rollDiceTypeSel = document.getElementById("rollDiceType");
+  var rollTabWith = document.getElementById("rollTabWith");
+  var rollTabWithout = document.getElementById("rollTabWithout");
+  var rollFieldsWith = document.getElementById("rollFieldsWith");
+  var rollFieldsWithout = document.getElementById("rollFieldsWithout");
+  var rollDifficultyInput = document.getElementById("rollDifficulty");
+  var rollDiffPresets = document.getElementById("rollDiffPresets");
+  var rollDie = document.getElementById("rollDie");
+  var rollDieValue = document.getElementById("rollDieValue");
+  var rollDieCaption = document.getElementById("rollDieCaption");
+  var rollResultEl = document.getElementById("rollResult");
+  var rollBtn = document.getElementById("rollBtn");
+  var rollHistoryEl = document.getElementById("rollHistory");
+
+  var rollMode = "with";
+  var rollHistoryList = [];
+
+  ATTR_TABLE.forEach(function(a){
+    var opt = document.createElement("option");
+    opt.value = "attr:" + a.code;
+    opt.textContent = a.name;
+    rollTargetAttrGroup.appendChild(opt);
+  });
+  TALENT_LIST.forEach(function(name){
+    var opt = document.createElement("option");
+    opt.value = "talent:" + talentSlug(name);
+    opt.textContent = name;
+    rollTargetTalentGroup.appendChild(opt);
+  });
+
+  DIFFICULTY.forEach(function(d){
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = d.label + " (" + d.val + ")";
+    btn.addEventListener("click", function(){ rollDifficultyInput.value = d.val; });
+    rollDiffPresets.appendChild(btn);
+  });
+
+  function getTargetGesamtwert(targetKey){
+    if (!targetKey) return null;
+    var parts = targetKey.split(":");
+    var code = parts[1];
+    var basis = parseFloat(val(code + "_basis"));
+    var bonus = parseFloat(val(code + "_bonus"));
+    if (isNaN(basis) && isNaN(bonus)) return 0;
+    return (isNaN(basis) ? 0 : basis) + (isNaN(bonus) ? 0 : bonus);
+  }
+
+  function updateRollValueDisplay(){
+    var targetKey = rollTargetSel.value;
+    if (!targetKey){
+      rollValueRow.hidden = true;
+      return;
+    }
+    rollValueRow.hidden = false;
+    rollValueDisplay.textContent = getTargetGesamtwert(targetKey);
+  }
+
+  function setRollMode(mode){
+    rollMode = mode;
+    var isWith = mode === "with";
+    rollTabWith.classList.toggle("active", isWith);
+    rollTabWithout.classList.toggle("active", !isWith);
+    rollFieldsWith.classList.toggle("active", isWith);
+    rollFieldsWithout.classList.toggle("active", !isWith);
+    rollResultEl.textContent = "";
+    rollResultEl.className = "roll-result";
+  }
+  rollTabWith.addEventListener("click", function(){ setRollMode("with"); });
+  rollTabWithout.addEventListener("click", function(){ setRollMode("without"); });
+
+  rollTargetSel.addEventListener("change", function(){
+    updateRollValueDisplay();
+    var targetKey = rollTargetSel.value;
+    if (targetKey.indexOf("attr:") === 0){
+      rollDiceTypeSel.value = "10";
+      setRollMode("with");
+    } else if (targetKey.indexOf("talent:") === 0){
+      rollDiceTypeSel.value = "20";
+      setRollMode("without");
+    }
+  });
+
+  function openRollPanel(){
+    updateRollValueDisplay();
+    rollOverlay.classList.add("show");
+  }
+  function closeRollPanel(){ rollOverlay.classList.remove("show"); }
+
+  diceFabBtn.addEventListener("click", openRollPanel);
+  rollCloseBtn.addEventListener("click", closeRollPanel);
+  rollOverlay.addEventListener("click", function(e){ if (e.target === rollOverlay) closeRollPanel(); });
+
+  function diceLabel(sides){ return sides === "2" ? "d2 (Ja / Nein)" : "d" + sides; }
+  function rollDieValueFor(sides){ return Math.floor(Math.random() * Number(sides)) + 1; }
+  function formatD2(v){ return v === 1 ? "Ja" : "Nein"; }
+
+  function evaluateRoll(roll){
+    var targetKey = rollTargetSel.value;
+    var gesamt = getTargetGesamtwert(targetKey) || 0;
+    if (rollMode === "with"){
+      var diff = Number(rollDifficultyInput.value) || 0;
+      var total = gesamt + roll;
+      return { success: total > diff, detail: "Wert " + gesamt + " + Wurf " + roll + " = " + total + " > SG " + diff };
+    }
+    return { success: roll <= gesamt, detail: "Wurf " + roll + " ≤ Wert " + gesamt };
+  }
+
+  function addRollHistory(entry){
+    rollHistoryList.unshift(entry);
+    if (rollHistoryList.length > 8) rollHistoryList.pop();
+    renderRollHistory();
+  }
+
+  function renderRollHistory(){
+    rollHistoryEl.innerHTML = "";
+    rollHistoryList.forEach(function(entry){
+      var row = document.createElement("div");
+      row.className = "roll-history-entry";
+      var label = entry.targetLabel || "Freier Wurf";
+      var rollDisplay = entry.sides === "2" ? formatD2(entry.roll) + " (" + entry.roll + ")" : entry.roll;
+      row.innerHTML =
+        '<span>' + escapeAttr(label) + ' · ' + diceLabel(entry.sides) + ': ' + rollDisplay + '</span>' +
+        '<span class="rh-tag ' + (entry.result ? (entry.result.success ? "success" : "fail") : "plain") + '">' +
+          (entry.result ? (entry.result.success ? "Geschafft" : "Nicht geschafft") : "Wurf") +
+        '</span>';
+      rollHistoryEl.appendChild(row);
+    });
+  }
+
+  function finishDiceRoll(sides){
+    var roll = rollDieValueFor(sides);
+    rollDie.classList.remove("rolling");
+    rollDieValue.textContent = sides === "2" ? formatD2(roll) : roll;
+    rollDieCaption.textContent = diceLabel(sides) + " gewürfelt";
+
+    var targetKey = rollTargetSel.value;
+    var result = targetKey ? evaluateRoll(roll) : null;
+    if (result){
+      rollResultEl.textContent = (result.success ? "Geschafft! (" : "Nicht geschafft. (") + result.detail + ")";
+      rollResultEl.className = "roll-result " + (result.success ? "success" : "fail");
+    } else {
+      rollResultEl.textContent = "Wurf: " + (sides === "2" ? formatD2(roll) : roll);
+      rollResultEl.className = "roll-result";
+    }
+
+    var opt = rollTargetSel.options[rollTargetSel.selectedIndex];
+    addRollHistory({ sides: sides, roll: roll, result: result, targetLabel: targetKey ? opt.textContent : null });
+  }
+
+  rollBtn.addEventListener("click", function(){
+    var sides = rollDiceTypeSel.value;
+    rollDie.classList.add("rolling");
+    var ticks = 0, maxTicks = 8;
+    var interval = setInterval(function(){
+      rollDieValue.textContent = Math.floor(Math.random() * Number(sides)) + 1;
+      ticks++;
+      if (ticks >= maxTicks){
+        clearInterval(interval);
+        finishDiceRoll(sides);
+      }
+    }, 45);
   });
 
 })();
