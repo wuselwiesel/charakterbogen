@@ -279,9 +279,8 @@
     display: grid;
     grid-template-columns: 150px 1fr;
     border: 1px solid var(--border);
-    border-bottom: none;
   }
-  .field-row:last-of-type { border-bottom: 1px solid var(--border); }
+  .field-row + .field-row { border-top: none; }
   .field-row:nth-of-type(odd) { background: var(--row-light); }
   .field-row label {
     display: flex;
@@ -469,12 +468,12 @@
   .attr-row input:focus { outline: none; border-color: var(--field-focus); box-shadow: 0 0 0 2px rgba(122,90,166,0.18); }
   .attr-row input::-webkit-outer-spin-button, .attr-row input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   .attr-row input[type="number"] { -moz-appearance: textfield; }
-  .attr-row input:disabled:not([readonly]) {
+  .attr-row input[readonly] { background: #F4F1FA; cursor: default; }
+  .attr-row input:disabled,
+  .attr-sum input:disabled {
     background: transparent;
     border-color: transparent;
     box-shadow: none;
-  }
-  .attr-row input:disabled {
     opacity: 1;
     color: var(--text);
     -webkit-text-fill-color: var(--text);
@@ -484,7 +483,6 @@
     font-weight: 800;
     font-size: 17px;
   }
-  .attr-row input[readonly] { background: #F4F1FA; cursor: default; }
 
   /* Talente table (variant of attr-table) */
   .attr-head.talent-head, .attr-row.talent-row, .attr-sum.talent-sum { grid-template-columns: 2fr 1fr 1fr 1fr; }
@@ -1193,8 +1191,6 @@
         <label for="rpg_universum">RPG-Universum</label>
         <input type="text" id="rpg_universum" placeholder="z. B. Der Herr der Ringe">
       </div>
-
-      <p class="hint">Charakterbild hochladen (wird auf Seite 1 des PDFs eingefügt)</p>
 
       <div class="dropzone" id="dropzone">
         <button class="dz-remove" id="dzRemove" title="Bild entfernen" type="button">✕</button>
@@ -3858,6 +3854,11 @@
         el.contentEditable = editable ? "true" : "false";
       });
     });
+    if (!editable){
+      document.querySelectorAll('.attr-row input[id$="_bonus"]').forEach(function(el){
+        if (el.value.trim() === "") el.value = "0";
+      });
+    }
     dropzone.classList.toggle("view-locked", !editable);
   }
 
