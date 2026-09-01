@@ -922,6 +922,42 @@
   .online-item .dot { width: 7px; height: 7px; border-radius: 50%; background: #3FAE63; flex-shrink: 0; }
   .online-empty { font-size: 12px; color: var(--muted); }
   .rh-player { color: var(--muted); font-weight: 400; font-size: 11px; }
+
+  /* ===== Bibliothek: Sortierung ===== */
+  .lib-sort {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 14px; font-size: 12.5px; color: var(--muted);
+  }
+  .lib-sort label { font-weight: 600; }
+  .lib-sort select {
+    border: 1px solid var(--field-border); border-radius: 8px;
+    padding: 6px 9px; font-family: inherit; font-size: 12.5px;
+    background: #fff; color: var(--text); cursor: pointer;
+  }
+
+  /* ===== Würfelverlauf-Seite ===== */
+  .rollpage-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
+  }
+  .rollpage-head .hint { margin: 0; }
+  .rollpage-clear-btn {
+    border: 1px solid var(--border-strong); background: #fff; color: #B23A3A;
+    font-family: inherit; font-weight: 600; font-size: 12.5px;
+    padding: 8px 14px; border-radius: 8px; cursor: pointer; flex-shrink: 0;
+  }
+  .rollpage-clear-btn:hover { background: #FBEBEC; }
+  .rollpage-list { display: flex; flex-direction: column; gap: 8px; }
+  .rollpage-entry {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    border: 1px solid var(--border); border-radius: 9px;
+    padding: 10px 14px; background: var(--row-light); flex-wrap: wrap;
+  }
+  .rollpage-main { min-width: 0; flex: 1; }
+  .rollpage-title { font-size: 13.5px; margin-bottom: 2px; }
+  .rollpage-detail { font-size: 12px; color: var(--muted); }
+  .rollpage-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+  .rollpage-time { font-size: 11px; color: var(--muted); white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -992,6 +1028,7 @@
       <button class="tab-btn" data-page="legende">Attribute erklärt</button>
       <button class="tab-btn" data-page="talente">Talente</button>
       <button class="tab-btn" data-page="notizen">Notizen</button>
+      <button class="tab-btn" data-page="wuerfelverlauf">Würfelverlauf</button>
     </div>
   </div>
 
@@ -1096,6 +1133,16 @@
       </button>
     </section>
 
+    <!-- SEITE 7: WÜRFELVERLAUF -->
+    <section class="paper" id="page-wuerfelverlauf">
+      <div class="page-title"><h2>Würfelverlauf</h2></div>
+      <div class="rollpage-head">
+        <p class="hint">Live-Verlauf aller Würfe aller angemeldeten Spieler.</p>
+        <button type="button" class="rollpage-clear-btn" id="clearRollHistoryBtn">Verlauf löschen</button>
+      </div>
+      <div class="rollpage-list" id="rollHistoryPage"></div>
+    </section>
+
     <p class="foot-note">Alle Angaben werden nur lokal in deinem Browser gespeichert und ausschließlich für die PDF-Erzeugung verwendet.</p>
   </div>
 
@@ -1163,8 +1210,7 @@
       </div>
 
       <button type="button" class="roll-btn" id="rollBtn">🎲 Würfeln</button>
-
-      <div class="roll-history" id="rollHistory"></div>
+      <p class="roll-hint" style="text-align:center; margin-top:10px;">Der vollständige Verlauf steht im Reiter „Würfelverlauf".</p>
     </div>
   </div>
 
@@ -1178,6 +1224,14 @@
         <button type="button" id="libNewBtn">+ Neuer Charakter</button>
         <button type="button" id="libImportBtn">Importieren (.json)</button>
         <input type="file" id="libImportInput" accept="application/json" style="display:none;">
+      </div>
+      <div class="lib-sort">
+        <label for="libSortSelect">Sortieren nach</label>
+        <select id="libSortSelect">
+          <option value="updated">Zuletzt bearbeitet</option>
+          <option value="name">Alphabetisch (Name)</option>
+          <option value="universe">RPG-Universum</option>
+        </select>
       </div>
       <div class="lib-list" id="libList"></div>
     </div>
@@ -2922,6 +2976,13 @@
   var libNewBtn = document.getElementById("libNewBtn");
   var libImportBtn = document.getElementById("libImportBtn");
   var libImportInput = document.getElementById("libImportInput");
+  var libSortSelect = document.getElementById("libSortSelect");
+  var libSortMode = "updated";
+
+  libSortSelect.addEventListener("change", function(){
+    libSortMode = libSortSelect.value;
+    renderLibrary();
+  });
 
   function openLibrary(){
     renderLibrary();
@@ -2963,13 +3024,28 @@
 
   function renderLibrary(){
     libList.innerHTML = '<div class="lib-empty">Lädt …</div>';
-    charsColRef().orderBy("updatedAt", "desc").get().then(function(snap){
+    charsColRef().get().then(function(snap){
       if (snap.empty){
         libList.innerHTML = '<div class="lib-empty">Noch keine Charaktere – leg oben einen neuen an.</div>';
         return;
       }
+      var entries = [];
+      snap.forEach(function(docSnap){ entries.push(docSnap); });
+      entries.sort(function(a, b){
+        var da = a.data(), dbb = b.data();
+        if (libSortMode === "name"){
+          return (da.name || "").localeCompare(dbb.name || "", "de", { sensitivity: "base" });
+        } else if (libSortMode === "universe"){
+          var ua = (da.data && da.data.universe) || "";
+          var ub = (dbb.data && dbb.data.universe) || "";
+          return ua.localeCompare(ub, "de", { sensitivity: "base" });
+        }
+        var ta = (da.updatedAt && da.updatedAt.toMillis) ? da.updatedAt.toMillis() : 0;
+        var tb = (dbb.updatedAt && dbb.updatedAt.toMillis) ? dbb.updatedAt.toMillis() : 0;
+        return tb - ta;
+      });
       libList.innerHTML = "";
-      snap.forEach(function(docSnap){
+      entries.forEach(function(docSnap){
         var d = docSnap.data();
         var charData = d.data || defaultCharacterData();
         var card = document.createElement("div");
@@ -3133,7 +3209,8 @@
   var rollDieCaption = document.getElementById("rollDieCaption");
   var rollResultEl = document.getElementById("rollResult");
   var rollBtn = document.getElementById("rollBtn");
-  var rollHistoryEl = document.getElementById("rollHistory");
+  var rollHistoryPageEl = document.getElementById("rollHistoryPage");
+  var clearRollHistoryBtn = document.getElementById("clearRollHistoryBtn");
 
   var rollMode = "with";
   var rollHistoryList = [];
@@ -3230,27 +3307,49 @@
   }
 
   function renderRollHistory(){
-    rollHistoryEl.innerHTML = "";
+    rollHistoryPageEl.innerHTML = "";
     if (!rollHistoryList.length){
-      rollHistoryEl.innerHTML = '<div class="online-empty">Noch keine Würfe.</div>';
+      rollHistoryPageEl.innerHTML = '<div class="lib-empty">Noch keine Würfe.</div>';
       return;
     }
     rollHistoryList.forEach(function(entry){
       var row = document.createElement("div");
-      row.className = "roll-history-entry";
+      row.className = "rollpage-entry";
       var rollDisplay = entry.sides === "2" ? formatD2(entry.roll) + " (" + entry.roll + ")" : entry.roll;
-      var whatLabel = entry.rollLabel ? (escapeAttr(entry.rollLabel) + " · ") : "";
+      var whenStr = entry.createdAt ? formatUpdatedAt(entry.createdAt) : "";
+      var successState = (entry.success === null || entry.success === undefined) ? "plain" : (entry.success ? "success" : "fail");
+      var successLabel = (entry.success === null || entry.success === undefined) ? "Wurf" : (entry.success ? "Geschafft" : "Nicht geschafft");
       row.innerHTML =
-        '<span><strong>' + escapeAttr(entry.characterName || "Unbenannt") + '</strong>' +
-          (entry.nickname ? ' <span class="rh-player">(' + escapeAttr(entry.nickname) + ')</span>' : '') +
-          ' — ' + whatLabel + diceLabel(entry.sides) + ': ' + rollDisplay +
-        '</span>' +
-        '<span class="rh-tag ' + (entry.success === null || entry.success === undefined ? "plain" : (entry.success ? "success" : "fail")) + '">' +
-          (entry.success === null || entry.success === undefined ? "Wurf" : (entry.success ? "Geschafft" : "Nicht geschafft")) +
-        '</span>';
-      rollHistoryEl.appendChild(row);
+        '<div class="rollpage-main">' +
+          '<div class="rollpage-title"><strong>' + escapeAttr(entry.characterName || "Unbenannt") + '</strong>' +
+            (entry.nickname ? ' <span class="rh-player">(' + escapeAttr(entry.nickname) + ')</span>' : '') +
+          '</div>' +
+          '<div class="rollpage-detail">' +
+            escapeAttr(entry.rollLabel ? entry.rollLabel : "Freier Wurf") + ' · ' + diceLabel(entry.sides) + ': ' + rollDisplay +
+            (entry.detail ? ' — ' + escapeAttr(entry.detail) : '') +
+          '</div>' +
+        '</div>' +
+        '<div class="rollpage-meta">' +
+          '<span class="rh-tag ' + successState + '">' + successLabel + '</span>' +
+          '<span class="rollpage-time">' + escapeAttr(whenStr) + '</span>' +
+        '</div>';
+      rollHistoryPageEl.appendChild(row);
     });
   }
+
+  function clearRollHistory(){
+    if (!window.confirm("Kompletten Würfelverlauf für alle Spieler unwiderruflich löschen?")) return;
+    db.collection("rolls").get().then(function(snap){
+      var batch = db.batch();
+      snap.forEach(function(docSnap){ batch.delete(docSnap.ref); });
+      return batch.commit();
+    }).then(function(){
+      showStatus("Würfelverlauf gelöscht.");
+    }).catch(function(err){
+      showStatus("Löschen fehlgeschlagen: " + (err && err.message ? err.message : err));
+    });
+  }
+  clearRollHistoryBtn.addEventListener("click", clearRollHistory);
 
   function finishDiceRoll(sides){
     var roll = rollDieValueFor(sides);
@@ -3420,7 +3519,7 @@
 
   function subscribeRolls(){
     if (rollsUnsub) rollsUnsub();
-    rollsUnsub = db.collection("rolls").orderBy("createdAt", "desc").limit(20).onSnapshot(function(snap){
+    rollsUnsub = db.collection("rolls").orderBy("createdAt", "desc").limit(150).onSnapshot(function(snap){
       rollHistoryList = [];
       snap.forEach(function(docSnap){
         var d = docSnap.data();
@@ -3428,9 +3527,11 @@
           sides: d.sides,
           roll: d.roll,
           success: (d.success === undefined) ? null : d.success,
+          detail: d.detail,
           characterName: d.characterName,
           nickname: d.nickname,
-          rollLabel: d.rollLabel
+          rollLabel: d.rollLabel,
+          createdAt: d.createdAt
         });
       });
       renderRollHistory();
