@@ -587,6 +587,36 @@
   .rte-editor ul, .rte-editor ol { margin: 0 0 8px; padding-left: 22px; }
   .rte-editor hr { border: none; border-top: 1.5px solid var(--border); margin: 12px 0; }
   .rte-editor img { max-width: 100%; height: auto; border-radius: 6px; margin: 6px 0; }
+  .rte-editor img.rte-img-selected { outline: 2px solid var(--accent); outline-offset: 2px; cursor: ns-resize; }
+  .rte-img-resize-pop {
+    position: absolute;
+    z-index: 50;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: #2A2430;
+    color: #fff;
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: 'Inter', system-ui, sans-serif;
+    box-shadow: var(--shadow);
+  }
+  .rte-img-resize-pop.show { display: flex; }
+  .rte-img-resize-pop input[type="range"] { width: 120px; }
+  .rte-img-resize-pop .rte-img-resize-value { min-width: 34px; text-align: right; }
+  .rte-toolbar select.rte-font-family, .rte-toolbar select.rte-font-size {
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 5px 6px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .rte-toolbar select.rte-font-family { max-width: 132px; }
   .rte-editor table { border-collapse: collapse; width: 100%; margin: 10px 0; }
   .rte-editor table td, .rte-editor table th { border: 1px solid var(--border); padding: 6px 8px; min-width: 40px; }
 
@@ -672,8 +702,8 @@
       <button class="tab-btn active" data-page="deckblatt">Deckblatt</button>
       <button class="tab-btn" data-page="personal">Persönliche Infos</button>
       <button class="tab-btn" data-page="werte">Attributwerte</button>
-      <button class="tab-btn" data-page="talente">Talente</button>
       <button class="tab-btn" data-page="legende">Attribute erklärt</button>
+      <button class="tab-btn" data-page="talente">Talente</button>
       <button class="tab-btn" data-page="notizen">Notizen</button>
     </div>
   </div>
@@ -743,7 +773,16 @@
       </div>
     </section>
 
-    <!-- SEITE 4: TALENTE -->
+    <!-- SEITE 4: ATTRIBUTE ERKLÄRT -->
+    <section class="paper" id="page-legende">
+      <div class="page-title"><h2>Attribute erklärt</h2></div>
+      <div class="legend-table">
+        <div class="legend-head"><div>Attribut</div><div>Beschreibung</div></div>
+        <div id="legendRows"></div>
+      </div>
+    </section>
+
+    <!-- SEITE 5: TALENTE -->
     <section class="paper" id="page-talente">
       <div class="page-title"><h2>Talente</h2></div>
       <div class="attr-table">
@@ -757,15 +796,6 @@
           <div class="attr-cell"><input id="talent_summe_bonus" readonly tabindex="-1"></div>
           <div class="attr-cell"><input id="talent_summe_gesamt" readonly tabindex="-1"></div>
         </div>
-      </div>
-    </section>
-
-    <!-- SEITE 5: ATTRIBUTE ERKLÄRT -->
-    <section class="paper" id="page-legende">
-      <div class="page-title"><h2>Attribute erklärt</h2></div>
-      <div class="legend-table">
-        <div class="legend-head"><div>Attribut</div><div>Beschreibung</div></div>
-        <div id="legendRows"></div>
       </div>
     </section>
 
@@ -957,13 +987,98 @@
       var reader = new FileReader();
       reader.onload = function(e){
         editor.focus();
-        document.execCommand("insertHTML", false, '<img src="'+e.target.result+'" style="max-width:100%;height:auto;">');
+        document.execCommand("insertHTML", false, '<img src="'+e.target.result+'" draggable="false" style="max-width:100%;height:auto;">');
         updateEditorEmptyState(editor);
       };
       reader.readAsDataURL(file);
       imgInput.value = "";
     });
+
+    var fontFamilySel = toolbarEl.querySelector(".rte-font-family");
+    fontFamilySel.addEventListener("mousedown", function(e){ e.stopPropagation(); });
+    fontFamilySel.addEventListener("change", function(){
+      editor.focus();
+      document.execCommand("fontName", false, fontFamilySel.value);
+    });
+
+    var fontSizeSel = toolbarEl.querySelector(".rte-font-size");
+    fontSizeSel.addEventListener("mousedown", function(e){ e.stopPropagation(); });
+    fontSizeSel.addEventListener("change", function(){
+      editor.focus();
+      document.execCommand("fontSize", false, "7");
+      var marked = editor.querySelectorAll('font[size="7"]');
+      marked.forEach(function(f){
+        f.removeAttribute("size");
+        f.style.fontSize = fontSizeSel.value + "px";
+      });
+      updateEditorEmptyState(editor);
+    });
   }
+
+  /* ===================== Bilder im Editor skalieren ===================== */
+  var imgResizePopover = null;
+  function ensureImgResizePopover(){
+    if (imgResizePopover) return imgResizePopover;
+    var pop = document.createElement("div");
+    pop.className = "rte-img-resize-pop";
+    pop.innerHTML =
+      '<span>Bildgr\u00F6\u00DFe</span>' +
+      '<input type="range" min="10" max="100" step="5" class="rte-img-resize-slider">' +
+      '<span class="rte-img-resize-value">100%</span>';
+    document.body.appendChild(pop);
+    imgResizePopover = pop;
+    return pop;
+  }
+  function hideImgResizePopover(){
+    if (imgResizePopover) imgResizePopover.classList.remove("show");
+    document.querySelectorAll(".rte-editor img.rte-img-selected").forEach(function(img){
+      img.classList.remove("rte-img-selected");
+    });
+  }
+  function positionImgResizePopover(pop, img){
+    var rect = img.getBoundingClientRect();
+    pop.style.top = (window.scrollY + rect.bottom + 6) + "px";
+    pop.style.left = (window.scrollX + rect.left) + "px";
+  }
+  function selectImageForResize(img){
+    document.querySelectorAll(".rte-editor img.rte-img-selected").forEach(function(other){
+      if (other !== img) other.classList.remove("rte-img-selected");
+    });
+    img.classList.add("rte-img-selected");
+    var pop = ensureImgResizePopover();
+    var currentPct = parseInt(img.style.width, 10);
+    if (!currentPct || isNaN(currentPct)){
+      var parentWidth = img.parentElement ? img.parentElement.clientWidth : 0;
+      var renderedWidth = img.getBoundingClientRect().width;
+      currentPct = (parentWidth && renderedWidth) ? Math.round((renderedWidth / parentWidth) * 100) : 100;
+      currentPct = Math.min(100, Math.max(10, currentPct));
+    }
+    var slider = pop.querySelector(".rte-img-resize-slider");
+    var label = pop.querySelector(".rte-img-resize-value");
+    slider.value = currentPct;
+    label.textContent = currentPct + "%";
+    positionImgResizePopover(pop, img);
+    pop.classList.add("show");
+    slider.oninput = function(){
+      var pct = parseInt(slider.value, 10);
+      label.textContent = pct + "%";
+      img.style.width = pct + "%";
+      img.style.height = "auto";
+      positionImgResizePopover(pop, img);
+    };
+  }
+  document.addEventListener("click", function(e){
+    var img = e.target.closest && e.target.closest(".rte-editor img");
+    if (img){ selectImageForResize(img); return; }
+    if (imgResizePopover && imgResizePopover.contains(e.target)) return;
+    hideImgResizePopover();
+  });
+  window.addEventListener("scroll", function(){
+    var selected = document.querySelector(".rte-editor img.rte-img-selected");
+    if (selected && imgResizePopover && imgResizePopover.classList.contains("show")){
+      positionImgResizePopover(imgResizePopover, selected);
+    }
+  }, true);
 
   function createNotesSection(wrapId, addBtnId, defaultLabel, placeholder){
     var blockIds = ["blk0"];
@@ -985,6 +1100,25 @@
             '<button type="button" data-cmd="bold" title="Fett"><b>B</b></button>' +
             '<button type="button" data-cmd="italic" title="Kursiv"><i>I</i></button>' +
             '<button type="button" data-cmd="underline" title="Unterstrichen"><u>U</u></button>' +
+            '<span class="rte-sep"></span>' +
+            '<select class="rte-font-family" title="Schriftart">' +
+              '<option value="Inter, system-ui, sans-serif">Inter</option>' +
+              '<option value="&quot;Cormorant Garamond&quot;, Georgia, serif">Cormorant Garamond</option>' +
+              '<option value="Georgia, serif">Georgia</option>' +
+              '<option value="Arial, sans-serif">Arial</option>' +
+              '<option value="&quot;Courier New&quot;, monospace">Courier New</option>' +
+            '</select>' +
+            '<select class="rte-font-size" title="Schriftgr\u00F6\u00DFe">' +
+              '<option value="11">11</option>' +
+              '<option value="12">12</option>' +
+              '<option value="14" selected>14</option>' +
+              '<option value="16">16</option>' +
+              '<option value="18">18</option>' +
+              '<option value="20">20</option>' +
+              '<option value="24">24</option>' +
+              '<option value="28">28</option>' +
+              '<option value="32">32</option>' +
+            '</select>' +
             '<span class="rte-sep"></span>' +
             '<button type="button" data-cmd="heading" data-value="&lt;h2&gt;" title="\u00DCberschrift gro\u00DF">H2</button>' +
             '<button type="button" data-cmd="heading" data-value="&lt;h3&gt;" title="\u00DCberschrift klein">H3</button>' +
@@ -1448,19 +1582,22 @@
     function walk(n, style){
       if (n.nodeType === 3){
         if (n.textContent !== "") {
-          runs.push({text:n.textContent, bold:!!style.bold, italic:!!style.italic, underline:!!style.underline, color: style.color || null});
+          runs.push({text:n.textContent, bold:!!style.bold, italic:!!style.italic, underline:!!style.underline, color: style.color || null, fontSize: style.fontSize || null, fontFamily: style.fontFamily || null});
         }
         return;
       }
       if (n.nodeType !== 1) return;
       var tag = n.tagName;
       if (tag === "BR"){ runs.push({brk:true}); return; }
-      var s = {bold:style.bold, italic:style.italic, underline:style.underline, color:style.color};
+      var s = {bold:style.bold, italic:style.italic, underline:style.underline, color:style.color, fontSize:style.fontSize, fontFamily:style.fontFamily};
       if (tag === "B" || tag === "STRONG") s.bold = true;
       if (tag === "I" || tag === "EM") s.italic = true;
       if (tag === "U") s.underline = true;
       if (n.style && n.style.color) s.color = n.style.color;
+      if (n.style && n.style.fontSize) s.fontSize = parseFloat(n.style.fontSize) || style.fontSize;
+      if (n.style && n.style.fontFamily) s.fontFamily = n.style.fontFamily;
       if (tag === "FONT" && n.getAttribute("color")) s.color = n.getAttribute("color");
+      if (tag === "FONT" && n.getAttribute("face")) s.fontFamily = n.getAttribute("face");
       Array.prototype.forEach.call(n.childNodes, function(c){ walk(c, s); });
     }
     walk(node, inheritedStyle || {});
@@ -1495,7 +1632,8 @@
         });
         if (rows.length) blocks.push({type:"table", rows: rows});
       } else if (tag === "IMG"){
-        blocks.push({type:"image", src: node.getAttribute("src"), naturalWidth: node.naturalWidth || 300, naturalHeight: node.naturalHeight || 200});
+        var wMatch = node.style && /^(\d+(\.\d+)?)%$/.exec(node.style.width || "");
+        blocks.push({type:"image", src: node.getAttribute("src"), naturalWidth: node.naturalWidth || 300, naturalHeight: node.naturalHeight || 200, widthPct: wMatch ? parseFloat(wMatch[1]) : null});
       } else if (tag === "P" || tag === "DIV"){
         var hasBlockChild = Array.prototype.some.call(node.children, function(ch){ return blockTags.indexOf(ch.tagName) !== -1; });
         if (hasBlockChild){
@@ -1536,6 +1674,12 @@
       if (tok.italic) return "italic";
       return "normal";
     }
+    function fontFamilyFor(tok){
+      var f = (tok.fontFamily || "").toLowerCase();
+      if (f.indexOf("courier") !== -1 || f.indexOf("mono") !== -1) return "courier";
+      if (f.indexOf("georgia") !== -1 || f.indexOf("garamond") !== -1 || f.indexOf("times") !== -1 || f.indexOf("serif") !== -1) return "times";
+      return "helvetica";
+    }
     function colorFor(tok){
       var rgb = tok.color ? cssColorToRgb(tok.color) : null;
       return rgb || COL_TEXT;
@@ -1549,7 +1693,7 @@
           if (/^\s+$/.test(w)){
             if (tokens.length) tokens[tokens.length-1].spaceAfter = true;
           } else {
-            tokens.push({text:w, bold:run.bold, italic:run.italic, underline:run.underline, color:run.color, spaceAfter:false});
+            tokens.push({text:w, bold:run.bold, italic:run.italic, underline:run.underline, color:run.color, fontSize:run.fontSize, fontFamily:run.fontFamily, spaceAfter:false});
           }
         });
       });
@@ -1560,8 +1704,8 @@
       var curWidth = 0;
       tokens.forEach(function(tok){
         if (tok.newline){ lines.push([]); curWidth = 0; return; }
-        doc.setFont("helvetica", fontStyleFor(tok));
-        doc.setFontSize(fontSize);
+        doc.setFont(fontFamilyFor(tok), fontStyleFor(tok));
+        doc.setFontSize(tok.fontSize || fontSize);
         var w = doc.getTextWidth(tok.text) + (tok.spaceAfter ? doc.getTextWidth(" ") : 0);
         if (curWidth + w > maxWidth && lines[lines.length-1].length > 0){
           lines.push([]);
@@ -1575,11 +1719,14 @@
     function drawLines(lines, xStart, fontSize, forceBold){
       lines.forEach(function(line){
         if (line.length === 0){ ensureSpaceRef(lineHeight); y -= lineHeight; return; }
-        ensureSpaceRef(lineHeight);
+        var lh = lineHeight;
+        line.forEach(function(tok){ if (tok.fontSize && tok.fontSize * 1.35 > lh) lh = tok.fontSize * 1.35; });
+        ensureSpaceRef(lh);
         var x = xStart;
         line.forEach(function(tok){
-          doc.setFont("helvetica", forceBold ? "bold" : fontStyleFor(tok));
-          doc.setFontSize(fontSize);
+          var fs = tok.fontSize || fontSize;
+          doc.setFont(fontFamilyFor(tok), forceBold ? "bold" : fontStyleFor(tok));
+          doc.setFontSize(fs);
           doc.setTextColor.apply(doc, colorFor(tok));
           textBL(doc, x, y, tok.text);
           var w = doc.getTextWidth(tok.text);
@@ -1590,7 +1737,7 @@
           }
           x += w + (tok.spaceAfter ? doc.getTextWidth(" ") : 0);
         });
-        y -= lineHeight;
+        y -= lh;
       });
     }
     function ensureSpaceRef(needed){
@@ -1626,8 +1773,14 @@
         y -= 14;
       } else if (block.type === "image" && block.src){
         var natW = block.naturalWidth || 300, natH = block.naturalHeight || 200;
-        var scale = Math.min(contentWidth/natW, 220/natH, 1);
-        var iw = natW*scale, ih = natH*scale;
+        var iw, ih;
+        if (block.widthPct){
+          iw = contentWidth * (block.widthPct / 100);
+          ih = iw * (natH / natW);
+        } else {
+          var scale = Math.min(contentWidth/natW, 220/natH, 1);
+          iw = natW*scale; ih = natH*scale;
+        }
         ensureSpaceRef(ih + 10);
         try {
           var fmt = block.src.indexOf("image/png") !== -1 ? "PNG" : "JPEG";
@@ -1667,7 +1820,7 @@
             lines.forEach(function(line){
               var lx = cellX;
               line.forEach(function(tok){
-                doc.setFont("helvetica", ri === 0 ? "bold" : fontStyleFor(tok));
+                doc.setFont(ri === 0 ? "helvetica" : fontFamilyFor(tok), ri === 0 ? "bold" : fontStyleFor(tok));
                 doc.setFontSize(9.5);
                 doc.setTextColor.apply(doc, colorFor(tok));
                 textBL(doc, lx, cellY, tok.text);
@@ -1921,7 +2074,56 @@
     });
     footer(doc, "Seite " + doc.internal.getNumberOfPages() + " \u2013 Attributwerte");
 
-    /* ---------- SEITE 4: TALENTE ---------- */
+    /* ---------- SEITE 4: ATTRIBUTE ERKLÄRT ---------- */
+    doc.addPage();
+    doc.setFont("helvetica", "bold"); doc.setFontSize(18);
+    doc.setTextColor.apply(doc, COL_TEXT);
+    textBL(doc, MARGIN, PAGE_H - MARGIN, "Attribute \u2013 \u00DCbersicht");
+
+    var col1W = 130;
+    var tW = PAGE_W - 2*MARGIN;
+    var rH = 56;
+    var topL = PAGE_H - MARGIN - 30;
+
+    doc.setFillColor(239,239,239);
+    doc.setDrawColor.apply(doc, COL_BORDER);
+    rectBL(doc, MARGIN, topL - 22, tW, 22, "FD");
+    doc.setFont("helvetica", "bold"); doc.setFontSize(11);
+    doc.setTextColor.apply(doc, COL_TEXT);
+    textBL(doc, MARGIN + col1W/2, topL - 15, "Attribut", {align:"center"});
+    textBL(doc, MARGIN + col1W + (tW-col1W)/2, topL - 15, "Beschreibung", {align:"center"});
+    var yL = topL - 22;
+
+    LEGEND.forEach(function(l){
+      doc.setFillColor.apply(doc, hex2rgb(l.color));
+      doc.setDrawColor.apply(doc, COL_BORDER);
+      doc.setLineWidth(0.6);
+      rectBL(doc, MARGIN, yL - rH, tW, rH, "FD");
+      lineBL(doc, MARGIN + col1W, yL - rH, MARGIN + col1W, yL);
+
+      doc.setTextColor.apply(doc, COL_TEXT);
+      doc.setFont("helvetica", "bold"); doc.setFontSize(15);
+      textBL(doc, MARGIN + col1W/2, yL - 24, l.code, {align:"center"});
+      doc.setFont("helvetica", "normal"); doc.setFontSize(9);
+      textBL(doc, MARGIN + col1W/2, yL - 38, l.name, {align:"center"});
+
+      var textW = tW - col1W - 20;
+      doc.setFont("helvetica", "bold"); doc.setFontSize(10);
+      textBL(doc, MARGIN + col1W + (tW-col1W)/2, yL - 18, l.desc, {align:"center"});
+
+      doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
+      var lines = doc.splitTextToSize(l.detail, textW);
+      var ly = yL - 34;
+      lines.slice(0,2).forEach(function(line){
+        textBL(doc, MARGIN + col1W + (tW-col1W)/2, ly, line, {align:"center"});
+        ly -= 11;
+      });
+
+      yL -= rH;
+    });
+    footer(doc, "Seite " + doc.internal.getNumberOfPages() + " \u2013 Attribut-\u00DCbersicht");
+
+    /* ---------- SEITE 5: TALENTE ---------- */
     doc.addPage();
     doc.setFont("helvetica", "bold"); doc.setFontSize(18);
     doc.setTextColor.apply(doc, COL_TEXT);
@@ -1990,55 +2192,6 @@
     tY -= tRowH;
 
     footer(doc, "Seite " + doc.internal.getNumberOfPages() + " \u2013 Talente");
-
-    /* ---------- SEITE 5: ATTRIBUTE ERKLÄRT ---------- */
-    doc.addPage();
-    doc.setFont("helvetica", "bold"); doc.setFontSize(18);
-    doc.setTextColor.apply(doc, COL_TEXT);
-    textBL(doc, MARGIN, PAGE_H - MARGIN, "Attribute \u2013 \u00DCbersicht");
-
-    var col1W = 130;
-    var tW = PAGE_W - 2*MARGIN;
-    var rH = 56;
-    var topL = PAGE_H - MARGIN - 30;
-
-    doc.setFillColor(239,239,239);
-    doc.setDrawColor.apply(doc, COL_BORDER);
-    rectBL(doc, MARGIN, topL - 22, tW, 22, "FD");
-    doc.setFont("helvetica", "bold"); doc.setFontSize(11);
-    doc.setTextColor.apply(doc, COL_TEXT);
-    textBL(doc, MARGIN + col1W/2, topL - 15, "Attribut", {align:"center"});
-    textBL(doc, MARGIN + col1W + (tW-col1W)/2, topL - 15, "Beschreibung", {align:"center"});
-    var yL = topL - 22;
-
-    LEGEND.forEach(function(l){
-      doc.setFillColor.apply(doc, hex2rgb(l.color));
-      doc.setDrawColor.apply(doc, COL_BORDER);
-      doc.setLineWidth(0.6);
-      rectBL(doc, MARGIN, yL - rH, tW, rH, "FD");
-      lineBL(doc, MARGIN + col1W, yL - rH, MARGIN + col1W, yL);
-
-      doc.setTextColor.apply(doc, COL_TEXT);
-      doc.setFont("helvetica", "bold"); doc.setFontSize(15);
-      textBL(doc, MARGIN + col1W/2, yL - 24, l.code, {align:"center"});
-      doc.setFont("helvetica", "normal"); doc.setFontSize(9);
-      textBL(doc, MARGIN + col1W/2, yL - 38, l.name, {align:"center"});
-
-      var textW = tW - col1W - 20;
-      doc.setFont("helvetica", "bold"); doc.setFontSize(10);
-      textBL(doc, MARGIN + col1W + (tW-col1W)/2, yL - 18, l.desc, {align:"center"});
-
-      doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
-      var lines = doc.splitTextToSize(l.detail, textW);
-      var ly = yL - 34;
-      lines.slice(0,2).forEach(function(line){
-        textBL(doc, MARGIN + col1W + (tW-col1W)/2, ly, line, {align:"center"});
-        ly -= 11;
-      });
-
-      yL -= rH;
-    });
-    footer(doc, "Seite " + doc.internal.getNumberOfPages() + " \u2013 Attribut-\u00DCbersicht");
 
     /* ---------- SEITE 6: NOTIZEN (nur wenn ausgefüllt) ---------- */
     drawNotesPage(doc, "Notizen", notesSection.getBlockIds());
