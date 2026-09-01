@@ -59,7 +59,7 @@
     background: radial-gradient(ellipse at top, var(--bg2), var(--bg));
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     color: var(--text);
-    padding-bottom: 110px;
+    padding-bottom: 90px;
   }
 
   .headline {
@@ -92,16 +92,14 @@
     margin-top: 6px;
   }
   .tabs {
-    max-width: 760px;
+    max-width: 620px;
     margin: 0 auto;
     display: flex;
-    gap: 6px;
-    overflow-x: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 7px;
     padding: 4px 20px;
-    scrollbar-width: thin;
   }
-  .tabs::-webkit-scrollbar { height: 5px; }
-  .tabs::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
 
   .tab-btn {
     flex: 0 0 auto;
@@ -623,53 +621,34 @@
   .rte-editor table { border-collapse: collapse; width: 100%; margin: 10px 0; }
   .rte-editor table td, .rte-editor table th { border: 1px solid var(--border); padding: 6px 8px; min-width: 40px; }
 
-  .foot-note {
-    text-align: center;
-    font-size: 11.5px;
-    color: var(--muted);
-    margin-top: 26px;
-  }
-
-  /* Floating download bar */
-  .dl-bar {
-    position: fixed;
-    left: 0; right: 0; bottom: 0;
-    display: flex;
-    justify-content: center;
-    padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
-    background: linear-gradient(transparent, var(--bg) 30%);
-    z-index: 30;
-  }
   .dl-btn {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 9px;
+    gap: 5px;
     background: var(--accent);
-    color: #fff;
+    color: #fff !important;
     border: none;
     font-family: inherit;
     font-weight: 700;
-    font-size: 15px;
-    padding: 13px 26px;
+    font-size: 12px;
+    padding: 6px 12px;
     border-radius: 999px;
     cursor: pointer;
-    box-shadow: 0 10px 26px -8px rgba(94, 62, 140, 0.6);
     transition: background 0.15s ease, transform 0.1s ease;
   }
   .dl-btn:hover { background: var(--accent-strong); }
-  .dl-btn:active { transform: scale(0.98); }
+  .dl-btn:active { transform: scale(0.97); }
   .dl-btn:disabled, .dl-btn.disabled-state {
     opacity: 0.45;
     cursor: not-allowed;
-    box-shadow: none;
     transform: none;
   }
   .dl-btn:disabled:hover, .dl-btn.disabled-state:hover { background: var(--accent); }
-  .dl-btn svg { width: 18px; height: 18px; }
+  .dl-btn svg { width: 14px; height: 14px; }
   .dl-status {
     position: fixed;
     left: 50%;
-    bottom: 76px;
+    bottom: 20px;
     transform: translateX(-50%);
     background: var(--text);
     color: #fff;
@@ -797,7 +776,7 @@
   .dice-fab {
     position: fixed;
     right: 16px;
-    bottom: calc(88px + env(safe-area-inset-bottom));
+    bottom: calc(16px + env(safe-area-inset-bottom));
     z-index: 32;
     width: 52px; height: 52px;
     border-radius: 50%;
@@ -949,9 +928,19 @@
   .rollpage-clear-btn:hover { background: #FBEBEC; }
   .rollpage-list { display: flex; flex-direction: column; gap: 8px; }
   .rollpage-entry {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    display: flex; align-items: center; gap: 12px;
     border: 1px solid var(--border); border-radius: 9px;
-    padding: 10px 14px; background: var(--row-light); flex-wrap: wrap;
+    padding: 9px 14px; background: var(--row-light);
+  }
+  .rollpage-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    object-fit: cover; flex-shrink: 0;
+    border: 1px solid var(--border);
+    background: #fff;
+  }
+  .rollpage-avatar-placeholder {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; background: var(--title-bg);
   }
   .rollpage-main { min-width: 0; flex: 1; }
   .rollpage-title { font-size: 13.5px; margin-bottom: 2px; }
@@ -995,6 +984,10 @@
     <button type="button" id="profileEditBtn">Profil</button>
     <button type="button" id="myCharsBtn">Meine Charaktere</button>
     <button type="button" id="newCharBtn">+ Neuer Charakter</button>
+    <button class="dl-btn" id="dlBtn" type="button" title="Als PDF herunterladen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      PDF
+    </button>
     <button type="button" id="logoutBtn">Abmelden</button>
   </div>
 
@@ -1007,8 +1000,8 @@
         <input type="text" id="profileUsername" maxlength="24" placeholder="z. B. wuselwiesel">
       </div>
       <div class="roll-field">
-        <label for="profileNickname">Spitzname (Anzeigename)</label>
-        <input type="text" id="profileNickname" maxlength="24" placeholder="z. B. Sophie">
+        <label for="profileNickname">Spitzname (Anzeigename, optional)</label>
+        <input type="text" id="profileNickname" maxlength="24" placeholder="z. B. Sophie (optional)">
       </div>
       <div class="profile-error" id="profileError"></div>
       <button type="button" class="roll-btn" id="profileSaveBtn">Speichern</button>
@@ -1017,7 +1010,6 @@
   </div>
   <div class="headline">
     <h1>Charakterbogen</h1>
-    <p>Fülle deinen Charakter aus und lade ihn dir als PDF herunter.</p>
   </div>
 
   <div class="tabs-wrap">
@@ -1143,16 +1135,9 @@
       <div class="rollpage-list" id="rollHistoryPage"></div>
     </section>
 
-    <p class="foot-note">Alle Angaben werden nur lokal in deinem Browser gespeichert und ausschließlich für die PDF-Erzeugung verwendet.</p>
   </div>
 
   <div class="dl-status" id="dlStatus"></div>
-  <div class="dl-bar">
-    <button class="dl-btn" id="dlBtn" type="button">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-      Als PDF herunterladen
-    </button>
-  </div>
 
   <button type="button" class="dice-fab" id="diceFabBtn" title="Würfeln" aria-label="Würfeln">🎲</button>
 
@@ -1222,8 +1207,6 @@
       </div>
       <div class="lib-actions">
         <button type="button" id="libNewBtn">+ Neuer Charakter</button>
-        <button type="button" id="libImportBtn">Importieren (.json)</button>
-        <input type="file" id="libImportInput" accept="application/json" style="display:none;">
       </div>
       <div class="lib-sort">
         <label for="libSortSelect">Sortieren nach</label>
@@ -2974,8 +2957,6 @@
   var libCloseBtn = document.getElementById("libCloseBtn");
   var libList = document.getElementById("libList");
   var libNewBtn = document.getElementById("libNewBtn");
-  var libImportBtn = document.getElementById("libImportBtn");
-  var libImportInput = document.getElementById("libImportInput");
   var libSortSelect = document.getElementById("libSortSelect");
   var libSortMode = "updated";
 
@@ -3064,7 +3045,6 @@
             '<button type="button" data-action="open">Öffnen</button>' +
             '<button type="button" data-action="rename">Umbenennen</button>' +
             '<button type="button" data-action="duplicate">Duplizieren</button>' +
-            '<button type="button" data-action="export">Export</button>' +
             '<button type="button" data-action="delete" class="danger">Löschen</button>' +
           '</div>';
 
@@ -3083,17 +3063,6 @@
         card.querySelector('[data-action="duplicate"]').addEventListener("click", function(){
           createCharacter((d.name || "Charakter") + " (Kopie)", charData).then(renderLibrary);
         });
-        card.querySelector('[data-action="export"]').addEventListener("click", function(){
-          var blob = new Blob([JSON.stringify({ name: d.name, data: charData }, null, 2)], { type: "application/json" });
-          var url = URL.createObjectURL(blob);
-          var a = document.createElement("a");
-          a.href = url;
-          a.download = (d.name || "Charakter").replace(/[^a-zA-Z0-9À-ÿ_\- ]/g, "").trim().replace(/\s+/g, "_") + ".json";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
-        });
         card.querySelector('[data-action="delete"]').addEventListener("click", function(){
           if (!window.confirm('"'+(d.name || "Charakter")+'" wirklich unwiderruflich löschen?')) return;
           charsColRef().doc(docSnap.id).delete().then(function(){
@@ -3111,25 +3080,6 @@
       libList.innerHTML = '<div class="lib-empty">Fehler beim Laden: '+escapeAttr(err && err.message ? err.message : String(err))+'</div>';
     });
   }
-
-  libImportBtn.addEventListener("click", function(){ libImportInput.click(); });
-  libImportInput.addEventListener("change", function(){
-    var file = libImportInput.files && libImportInput.files[0];
-    if (!file) return;
-    var reader = new FileReader();
-    reader.onload = function(e){
-      try {
-        var parsed = JSON.parse(e.target.result);
-        var name = (parsed && parsed.name) || "Importierter Charakter";
-        var data = (parsed && parsed.data) || defaultCharacterData();
-        createCharacter(name, data).then(renderLibrary);
-      } catch(err){
-        showStatus("Import fehlgeschlagen: ungültige Datei.");
-      }
-    };
-    reader.readAsText(file);
-    libImportInput.value = "";
-  });
 
   function findOrCreateFallbackCharacter(){
     return charsColRef().orderBy("updatedAt", "desc").limit(1).get().then(function(snap){
@@ -3263,6 +3213,7 @@
     rollTabWithout.classList.toggle("active", !isWith);
     rollFieldsWith.classList.toggle("active", isWith);
     rollFieldsWithout.classList.toggle("active", !isWith);
+    rollDiceTypeSel.value = isWith ? "10" : "20";
     rollResultEl.textContent = "";
     rollResultEl.className = "roll-result";
   }
@@ -3273,10 +3224,8 @@
     updateRollValueDisplay();
     var targetKey = rollTargetSel.value;
     if (targetKey.indexOf("attr:") === 0){
-      rollDiceTypeSel.value = "10";
       setRollMode("with");
     } else if (targetKey.indexOf("talent:") === 0){
-      rollDiceTypeSel.value = "20";
       setRollMode("without");
     }
   });
@@ -3319,7 +3268,11 @@
       var whenStr = entry.createdAt ? formatUpdatedAt(entry.createdAt) : "";
       var successState = (entry.success === null || entry.success === undefined) ? "plain" : (entry.success ? "success" : "fail");
       var successLabel = (entry.success === null || entry.success === undefined) ? "Wurf" : (entry.success ? "Geschafft" : "Nicht geschafft");
+      var avatarHtml = entry.characterAvatar
+        ? '<img class="rollpage-avatar" src="' + entry.characterAvatar + '" alt="">'
+        : '<div class="rollpage-avatar rollpage-avatar-placeholder">🎲</div>';
       row.innerHTML =
+        avatarHtml +
         '<div class="rollpage-main">' +
           '<div class="rollpage-title"><strong>' + escapeAttr(entry.characterName || "Unbenannt") + '</strong>' +
             (entry.nickname ? ' <span class="rh-player">(' + escapeAttr(entry.nickname) + ')</span>' : '') +
@@ -3369,20 +3322,41 @@
 
     if (currentUser && myProfile){
       var opt = rollTargetSel.options[rollTargetSel.selectedIndex];
-      db.collection("rolls").add({
-        uid: currentUser.uid,
-        nickname: myProfile.nickname,
-        characterName: activeCharacterName || "Unbenannt",
-        rollLabel: targetKey ? opt.textContent : null,
-        sides: sides,
-        roll: roll,
-        success: result ? result.success : null,
-        detail: result ? result.detail : null,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).catch(function(err){
-        showStatus("Wurf konnte nicht geteilt werden: " + (err && err.message ? err.message : err));
+      buildAvatarThumb(function(avatarDataUrl){
+        db.collection("rolls").add({
+          uid: currentUser.uid,
+          nickname: myProfile.nickname || null,
+          characterName: activeCharacterName || "Unbenannt",
+          characterAvatar: avatarDataUrl,
+          rollLabel: targetKey ? opt.textContent : null,
+          sides: sides,
+          roll: roll,
+          success: result ? result.success : null,
+          detail: result ? result.detail : null,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(function(err){
+          showStatus("Wurf konnte nicht geteilt werden: " + (err && err.message ? err.message : err));
+        });
       });
     }
+  }
+
+  function buildAvatarThumb(callback){
+    if (!uploadedImage.dataUrl){ callback(null); return; }
+    var img = new Image();
+    img.onload = function(){
+      var size = 96;
+      var srcSize = Math.min(img.naturalWidth, img.naturalHeight);
+      var sx = (img.naturalWidth - srcSize) / 2;
+      var sy = (img.naturalHeight - srcSize) / 2;
+      var canvas = document.createElement("canvas");
+      canvas.width = size; canvas.height = size;
+      var ctx = canvas.getContext("2d");
+      ctx.drawImage(img, sx, sy, srcSize, srcSize, 0, 0, size, size);
+      callback(canvas.toDataURL("image/jpeg", 0.75));
+    };
+    img.onerror = function(){ callback(null); };
+    img.src = uploadedImage.dataUrl;
   }
 
   rollBtn.addEventListener("click", function(){
@@ -3423,13 +3397,13 @@
   profileSaveBtn.addEventListener("click", function(){
     var username = profileUsernameInput.value.trim();
     var nickname = profileNicknameInput.value.trim();
-    if (!username || !nickname){
-      profileError.textContent = "Bitte beides ausfüllen.";
+    if (!username){
+      profileError.textContent = "Bitte einen Benutzernamen angeben.";
       return;
     }
     profileSaveBtn.disabled = true;
-    userDocRef().set({ profile: { username: username, nickname: nickname } }, { merge: true }).then(function(){
-      myProfile = { username: username, nickname: nickname };
+    userDocRef().set({ profile: { username: username, nickname: nickname || null } }, { merge: true }).then(function(){
+      myProfile = { username: username, nickname: nickname || null };
       profileSaveBtn.disabled = false;
       closeProfileModal();
       startPresenceHeartbeat();
@@ -3487,7 +3461,7 @@
       snap.forEach(function(docSnap){
         var d = docSnap.data();
         onlineMap[docSnap.id] = {
-          nickname: d.nickname || "?",
+          nickname: d.nickname || d.username || "?",
           lastSeen: (d.lastSeen && d.lastSeen.toMillis) ? d.lastSeen.toMillis() : Date.now()
         };
       });
@@ -3529,6 +3503,7 @@
           success: (d.success === undefined) ? null : d.success,
           detail: d.detail,
           characterName: d.characterName,
+          characterAvatar: d.characterAvatar || null,
           nickname: d.nickname,
           rollLabel: d.rollLabel,
           createdAt: d.createdAt
