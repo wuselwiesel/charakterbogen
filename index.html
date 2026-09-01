@@ -99,7 +99,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    background: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.94);
     border-right: 1px solid var(--paper-edge);
     transition: width 0.22s ease, padding 0.22s ease;
   }
@@ -844,7 +844,8 @@
     border-bottom-color: transparent;
   }
   .rte-editor[contenteditable="false"] { cursor: default; }
-  .dropzone.view-locked { cursor: default; pointer-events: none; }
+  .dropzone.view-locked { cursor: default; pointer-events: none; opacity: 0.8; }
+  .dropzone.view-locked:not(.has-image) { opacity: 0.55; }
 
   /* ===== Charakter-Bibliothek ===== */
   .lib-overlay {
