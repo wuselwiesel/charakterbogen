@@ -370,6 +370,17 @@
   }
   .attr-row input:focus { outline: none; border-color: var(--field-focus); box-shadow: 0 0 0 2px rgba(122,90,166,0.18); }
   .attr-row input[readonly] { background: #F4F1FA; cursor: default; }
+
+  /* Talente table (variant of attr-table) */
+  .attr-head.talent-head, .attr-row.talent-row, .attr-sum.talent-sum { grid-template-columns: 2fr 1fr 1fr 1fr; }
+  .attr-row.talent-row .attr-name {
+    flex-direction: row;
+    justify-content: flex-start;
+    text-align: left;
+    padding: 9px 12px;
+  }
+  .attr-row.talent-row .attr-name .code { font-size: 13.5px; font-weight: 600; }
+  .attr-row.talent-row.row-alt { background: var(--row-light); }
   .attr-sum { border-top: 1px solid var(--border); background: #EFEFEF; font-weight: 700; }
   .attr-sum .attr-name { display:flex; align-items:center; justify-content:center; padding: 10px; border-right: 1px solid var(--border); font-size:14px; }
   .attr-sum .attr-cell { display:flex; align-items:center; justify-content:center; padding:8px; border-right:1px solid var(--border); }
@@ -508,20 +519,76 @@
     transition: color 0.15s ease, background 0.15s ease;
   }
   .text-block-head .custom-remove-btn:hover { color: #B23A3A; background: rgba(178,58,58,0.08); }
-  textarea.text-block-value {
+
+  .rte-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 3px;
+    padding: 7px 8px;
+    background: #FBFAFD;
+    border-bottom: 1px solid var(--border);
+  }
+  .rte-toolbar button {
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 5px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    line-height: 1;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .rte-toolbar button:hover { background: #EDE3F7; border-color: var(--border); }
+  .rte-sep {
+    width: 1px;
+    align-self: stretch;
+    background: var(--border);
+    margin: 2px 3px;
+  }
+  .rte-colors { display: flex; align-items: center; gap: 4px; }
+  .rte-colors button {
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1.5px solid rgba(0,0,0,0.15);
+  }
+  .rte-colors button:hover { transform: scale(1.15); border-color: rgba(0,0,0,0.3); }
+
+  .rte-editor {
     width: 100%;
-    min-height: 140px;
+    min-height: 160px;
+    min-width: 160px;
+    max-width: 100%;
+    resize: both;
+    overflow: auto;
     border: none;
     padding: 14px;
     font-family: inherit;
     font-size: 14px;
     line-height: 1.6;
     color: var(--text);
-    resize: vertical;
     background: transparent;
     display: block;
   }
-  textarea.text-block-value:focus { outline: none; box-shadow: inset 0 0 0 2px rgba(122,90,166,0.2); }
+  .rte-editor:focus { outline: none; box-shadow: inset 0 0 0 2px rgba(122,90,166,0.2); }
+  .rte-editor.is-empty:before {
+    content: attr(data-placeholder);
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .rte-editor h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 21px; font-weight: 600; margin: 10px 0 6px; }
+  .rte-editor h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 17.5px; font-weight: 600; margin: 8px 0 5px; }
+  .rte-editor p { margin: 0 0 8px; }
+  .rte-editor ul, .rte-editor ol { margin: 0 0 8px; padding-left: 22px; }
+  .rte-editor hr { border: none; border-top: 1.5px solid var(--border); margin: 12px 0; }
+  .rte-editor img { max-width: 100%; height: auto; border-radius: 6px; margin: 6px 0; }
+  .rte-editor table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+  .rte-editor table td, .rte-editor table th { border: 1px solid var(--border); padding: 6px 8px; min-width: 40px; }
 
   .foot-note {
     text-align: center;
@@ -587,6 +654,7 @@
   @media (max-width: 480px) {
     .field-row { grid-template-columns: 118px 1fr; }
     .attr-head, .attr-row, .attr-sum { grid-template-columns: 1.3fr 1fr 1fr 1fr; }
+    .attr-head.talent-head, .attr-row.talent-row, .attr-sum.talent-sum { grid-template-columns: 1.6fr 1fr 1fr 1fr; }
     .attr-row .attr-name .name, .attr-head { font-size: 10px; }
     .legend-head, .legend-row { grid-template-columns: 92px 1fr; }
   }
@@ -604,9 +672,9 @@
       <button class="tab-btn active" data-page="deckblatt">Deckblatt</button>
       <button class="tab-btn" data-page="personal">Persönliche Infos</button>
       <button class="tab-btn" data-page="werte">Attributwerte</button>
+      <button class="tab-btn" data-page="talente">Talente</button>
       <button class="tab-btn" data-page="legende">Attribute erklärt</button>
       <button class="tab-btn" data-page="notizen">Notizen</button>
-      <button class="tab-btn" data-page="hintergrund">Hintergrund</button>
     </div>
   </div>
 
@@ -675,7 +743,24 @@
       </div>
     </section>
 
-    <!-- SEITE 4: ATTRIBUTE ERKLÄRT -->
+    <!-- SEITE 4: TALENTE -->
+    <section class="paper" id="page-talente">
+      <div class="page-title"><h2>Talente</h2></div>
+      <div class="attr-table">
+        <div class="attr-head talent-head">
+          <div>Talent</div><div>Basiswert</div><div>Bonus</div><div>Gesamtwert</div>
+        </div>
+        <div id="talentRows"></div>
+        <div class="attr-sum talent-sum">
+          <div class="attr-name">Summe</div>
+          <div class="attr-cell"><input id="talent_summe_basis" readonly tabindex="-1"></div>
+          <div class="attr-cell"><input id="talent_summe_bonus" readonly tabindex="-1"></div>
+          <div class="attr-cell"><input id="talent_summe_gesamt" readonly tabindex="-1"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEITE 5: ATTRIBUTE ERKLÄRT -->
     <section class="paper" id="page-legende">
       <div class="page-title"><h2>Attribute erklärt</h2></div>
       <div class="legend-table">
@@ -684,21 +769,11 @@
       </div>
     </section>
 
-    <!-- SEITE 5: NOTIZEN -->
+    <!-- SEITE 6: NOTIZEN -->
     <section class="paper" id="page-notizen">
       <div class="page-title"><h2>Notizen</h2></div>
       <div id="notesFieldsWrap"></div>
       <button class="add-field-btn" id="addNotesFieldBtn" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        Weiteres Feld hinzufügen
-      </button>
-    </section>
-
-    <!-- SEITE 6: HINTERGRUND -->
-    <section class="paper" id="page-hintergrund">
-      <div class="page-title"><h2>Hintergrund</h2></div>
-      <div id="backgroundFieldsWrap"></div>
-      <button class="add-field-btn" id="addBackgroundFieldBtn" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         Weiteres Feld hinzufügen
       </button>
@@ -758,6 +833,21 @@
     {label:"Sehr schwierig", val:"30", color:"#FBEAEA"}
   ];
 
+  var TALENT_LIST = [
+    "K\u00F6rperbeherrschung", "Manipulation/\u00DCberzeugen", "Bet\u00F6ren", "Beruhigen",
+    "Menschenkenntnis", "Willensst\u00E4rke", "L\u00FCgen", "Verbergen/Verheimlichen",
+    "Singen", "Tanzen", "Reflexe", "Schwimmen", "Klettern", "Werfen", "Medizin",
+    "Tierkunde", "Pflanzenkunde", "Mythologie", "Reparieren", "Empathie",
+    "Sinnessch\u00E4rfe", "\u00DCberleben"
+  ];
+
+  function talentSlug(name){
+    return "talent_" + name.toLowerCase()
+      .replace(/\u00E4/g, "ae").replace(/\u00F6/g, "oe").replace(/\u00FC/g, "ue").replace(/\u00DF/g, "ss")
+      .replace(/[^a-z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "");
+  }
+
   /* ===================== Tabs ===================== */
   var tabButtons = document.querySelectorAll(".tab-btn");
   var pages = document.querySelectorAll(".paper");
@@ -813,29 +903,119 @@
     if (inputs.length) inputs[inputs.length - 1].focus();
   });
 
-  /* ===================== Notizen & Hintergrund (benannte Textblöcke) ===================== */
-  function createTextBlockSection(opts){
-    var items = [{ id: opts.prefix + "_0", label: opts.defaultLabel, value: "" }];
+  /* ===================== Notizen (Rich-Text-Blöcke) ===================== */
+  function buildTableHtml(){
+    var html = "<table><tbody>";
+    for (var r = 0; r < 3; r++){
+      html += "<tr>";
+      for (var c = 0; c < 3; c++){ html += "<td>&nbsp;</td>"; }
+      html += "</tr>";
+    }
+    html += "</tbody></table><p><br></p>";
+    return html;
+  }
+
+  function updateEditorEmptyState(editor){
+    var html = editor.innerHTML.trim();
+    var isEmpty = html === "" || html === "<br>" || html === "<p><br></p>";
+    editor.classList.toggle("is-empty", isEmpty);
+  }
+
+  function wireRichToolbar(toolbarEl, editor){
+    var buttons = toolbarEl.querySelectorAll("button[data-cmd]");
+    buttons.forEach(function(btn){
+      btn.addEventListener("mousedown", function(e){ e.preventDefault(); });
+      btn.addEventListener("click", function(){
+        editor.focus();
+        var cmd = btn.dataset.cmd;
+        var value = btn.dataset.value;
+        if (cmd === "bold" || cmd === "italic" || cmd === "underline"){
+          document.execCommand(cmd);
+        } else if (cmd === "heading"){
+          document.execCommand("formatBlock", false, value);
+        } else if (cmd === "ul"){
+          document.execCommand("insertUnorderedList");
+        } else if (cmd === "ol"){
+          document.execCommand("insertOrderedList");
+        } else if (cmd === "hr"){
+          document.execCommand("insertHorizontalRule");
+        } else if (cmd === "table"){
+          document.execCommand("insertHTML", false, buildTableHtml());
+        } else if (cmd === "color"){
+          document.execCommand("foreColor", false, value);
+        } else if (cmd === "image"){
+          toolbarEl.querySelector(".rte-image-input").click();
+        }
+        updateEditorEmptyState(editor);
+      });
+    });
+    var imgInput = toolbarEl.querySelector(".rte-image-input");
+    imgInput.addEventListener("mousedown", function(e){ e.stopPropagation(); });
+    imgInput.addEventListener("change", function(){
+      var file = imgInput.files && imgInput.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(e){
+        editor.focus();
+        document.execCommand("insertHTML", false, '<img src="'+e.target.result+'" style="max-width:100%;height:auto;">');
+        updateEditorEmptyState(editor);
+      };
+      reader.readAsDataURL(file);
+      imgInput.value = "";
+    });
+  }
+
+  function createNotesSection(wrapId, addBtnId, defaultLabel, placeholder){
+    var blockIds = ["blk0"];
     var counter = 0;
-    var wrap = document.getElementById(opts.wrapId);
+    var wrap = document.getElementById(wrapId);
 
     function render(){
       wrap.innerHTML = "";
-      items.forEach(function(f){
+      blockIds.forEach(function(bid, idx){
+        var labelVal = idx === 0 ? defaultLabel : "";
         var block = document.createElement("div");
         block.className = "text-block";
         block.innerHTML =
           '<div class="text-block-head">' +
-            '<input type="text" class="text-block-label" placeholder="Bezeichnung" value="'+escapeAttr(f.label)+'">' +
+            '<input type="text" class="text-block-label" id="'+bid+'_label" placeholder="Bezeichnung" value="'+escapeAttr(labelVal)+'">' +
             '<button type="button" class="custom-remove-btn" title="Feld entfernen" aria-label="Feld entfernen">\u2715</button>' +
           '</div>' +
-          '<textarea class="text-block-value" placeholder="'+escapeAttr(opts.placeholder)+'">'+escapeAttr(f.value)+'</textarea>';
-        var labelInput = block.querySelector(".text-block-label");
-        var valueArea = block.querySelector(".text-block-value");
-        labelInput.addEventListener("input", function(){ f.label = labelInput.value; });
-        valueArea.addEventListener("input", function(){ f.value = valueArea.value; });
+          '<div class="rte-toolbar">' +
+            '<button type="button" data-cmd="bold" title="Fett"><b>B</b></button>' +
+            '<button type="button" data-cmd="italic" title="Kursiv"><i>I</i></button>' +
+            '<button type="button" data-cmd="underline" title="Unterstrichen"><u>U</u></button>' +
+            '<span class="rte-sep"></span>' +
+            '<button type="button" data-cmd="heading" data-value="&lt;h2&gt;" title="\u00DCberschrift gro\u00DF">H2</button>' +
+            '<button type="button" data-cmd="heading" data-value="&lt;h3&gt;" title="\u00DCberschrift klein">H3</button>' +
+            '<button type="button" data-cmd="heading" data-value="&lt;p&gt;" title="Normaler Text">\u00B6</button>' +
+            '<span class="rte-sep"></span>' +
+            '<button type="button" data-cmd="ul" title="Aufz\u00E4hlung">\u2022 Liste</button>' +
+            '<button type="button" data-cmd="ol" title="Nummerierte Liste">1. Liste</button>' +
+            '<span class="rte-sep"></span>' +
+            '<button type="button" data-cmd="hr" title="Trennlinie">\u2014</button>' +
+            '<button type="button" data-cmd="table" title="Tabelle einf\u00FCgen">\u229E Tabelle</button>' +
+            '<button type="button" data-cmd="image" title="Bild einf\u00FCgen">\uD83D\uDDBC Bild</button>' +
+            '<span class="rte-sep"></span>' +
+            '<span class="rte-colors">' +
+              '<button type="button" data-cmd="color" data-value="#211D28" style="background:#211D28" title="Schwarz"></button>' +
+              '<button type="button" data-cmd="color" data-value="#A3312F" style="background:#A3312F" title="Rot"></button>' +
+              '<button type="button" data-cmd="color" data-value="#B5651D" style="background:#B5651D" title="Orange"></button>' +
+              '<button type="button" data-cmd="color" data-value="#256B3A" style="background:#256B3A" title="Gr\u00FCn"></button>' +
+              '<button type="button" data-cmd="color" data-value="#2A5DB0" style="background:#2A5DB0" title="Blau"></button>' +
+              '<button type="button" data-cmd="color" data-value="#7A5AA6" style="background:#7A5AA6" title="Lila"></button>' +
+            '</span>' +
+            '<input type="file" class="rte-image-input" accept="image/png,image/jpeg,image/webp" style="display:none;">' +
+          '</div>' +
+          '<div class="rte-editor is-empty" id="'+bid+'_editor" contenteditable="true" data-placeholder="'+escapeAttr(placeholder)+'"></div>';
+
+        var editor = block.querySelector(".rte-editor");
+        var toolbar = block.querySelector(".rte-toolbar");
+        wireRichToolbar(toolbar, editor);
+        editor.addEventListener("input", function(){ updateEditorEmptyState(editor); });
+
         block.querySelector(".custom-remove-btn").addEventListener("click", function(){
-          items = items.filter(function(x){ return x.id !== f.id; });
+          blockIds = blockIds.filter(function(x){ return x !== bid; });
           render();
         });
         wrap.appendChild(block);
@@ -843,34 +1023,22 @@
     }
     render();
 
-    document.getElementById(opts.addBtnId).addEventListener("click", function(){
+    document.getElementById(addBtnId).addEventListener("click", function(){
       counter += 1;
-      items.push({ id: opts.prefix + "_extra_" + counter, label: "", value: "" });
+      blockIds.push("blk_extra_" + counter);
       render();
       var labels = wrap.querySelectorAll(".text-block-label");
       if (labels.length) labels[labels.length - 1].focus();
     });
 
     return {
-      getItems: function(){ return items; }
+      getBlockIds: function(){ return blockIds; }
     };
   }
 
-  var notesSection = createTextBlockSection({
-    prefix: "note",
-    wrapId: "notesFieldsWrap",
-    addBtnId: "addNotesFieldBtn",
-    defaultLabel: "Notizen",
-    placeholder: "Freie Notizen zu deinem Charakter \u2026"
-  });
-
-  var backgroundSection = createTextBlockSection({
-    prefix: "bg",
-    wrapId: "backgroundFieldsWrap",
-    addBtnId: "addBackgroundFieldBtn",
-    defaultLabel: "Hintergrund",
-    placeholder: "Die Hintergrundgeschichte deines Charakters \u2026"
-  });
+  var notesSection = createNotesSection(
+    "notesFieldsWrap", "addNotesFieldBtn", "Notizen", "Freier Text \u2026"
+  );
 
   /* ===================== Attributwerte rendern ===================== */
   var attrWrap = document.getElementById("attrRows");
@@ -893,6 +1061,20 @@
     row.style.background = d.color;
     row.innerHTML = "<div>"+d.label+"</div><div>"+d.val+"</div>";
     diffWrap.appendChild(row);
+  });
+
+  /* ===================== Talente rendern ===================== */
+  var talentWrap = document.getElementById("talentRows");
+  TALENT_LIST.forEach(function(name, idx){
+    var tid = talentSlug(name);
+    var row = document.createElement("div");
+    row.className = "attr-row talent-row" + (idx % 2 === 1 ? " row-alt" : "");
+    row.innerHTML =
+      '<div class="attr-name"><span class="code">'+name+'</span></div>' +
+      '<div class="attr-cell tooltip-anchor"><input type="number" id="'+tid+'_basis" inputmode="numeric" min="1" max="19" step="1"><div class="attr-tooltip" id="'+tid+'_basis_tt"></div></div>' +
+      '<div class="attr-cell tooltip-anchor"><input type="number" id="'+tid+'_bonus" inputmode="numeric" step="1"><div class="attr-tooltip" id="'+tid+'_bonus_tt"></div></div>' +
+      '<div class="attr-cell"><input type="text" id="'+tid+'_gesamt" readonly tabindex="-1"></div>';
+    talentWrap.appendChild(row);
   });
 
   /* ===================== Legende rendern ===================== */
@@ -963,9 +1145,10 @@
 
   function updateDownloadButtonState(){
     var dlBtn = document.getElementById("dlBtn");
-    dlBtn.disabled = attrHasErrors;
-    dlBtn.classList.toggle("disabled-state", attrHasErrors);
-    dlBtn.title = attrHasErrors ? "Bitte behebe zuerst die markierten Fehler bei den Attributwerten." : "";
+    var hasErrors = attrHasErrors || talentHasErrors;
+    dlBtn.disabled = hasErrors;
+    dlBtn.classList.toggle("disabled-state", hasErrors);
+    dlBtn.title = hasErrors ? "Bitte behebe zuerst die markierten Fehler bei den Attribut- oder Talentwerten." : "";
   }
 
   function recalc(){
@@ -1022,6 +1205,67 @@
     bonusEl.addEventListener("input", recalc);
   });
   recalc();
+
+  /* ===================== Talente: Live-Berechnung & Validierung ===================== */
+  var talentHasErrors = false;
+  var TALENT_BASIS_MIN = 1, TALENT_BASIS_MAX = 19;
+
+  /* Talent-Bonus hat keine feste Ober-/Untergrenze, nur ganzzahlige Werte */
+  function validateTalentBonus(raw){
+    if (raw === "") return null;
+    if (!/^-?\d+$/.test(raw)) return "Nur ganze Zahlen erlaubt";
+    return null;
+  }
+
+  function recalcTalents(){
+    var anyFieldError = false;
+    var basisVals = [], bonusVals = [], gesamtVals = [];
+
+    TALENT_LIST.forEach(function(name){
+      var tid = talentSlug(name);
+      var bEl = document.getElementById(tid + "_basis");
+      var boEl = document.getElementById(tid + "_bonus");
+      var gEl = document.getElementById(tid + "_gesamt");
+      var bTt = document.getElementById(tid + "_basis_tt");
+      var boTt = document.getElementById(tid + "_bonus_tt");
+
+      var bRaw = bEl.value.trim(), boRaw = boEl.value.trim();
+      var bErr = validateAttrValue(bRaw, TALENT_BASIS_MIN, TALENT_BASIS_MAX);
+      var boErr = validateTalentBonus(boRaw);
+      setFieldError(bEl, bTt, bErr);
+      setFieldError(boEl, boTt, boErr);
+      if (bErr) anyFieldError = true;
+      if (boErr) anyFieldError = true;
+
+      var bOk = bRaw !== "" && !bErr;
+      var boOk = boRaw !== "" && !boErr;
+      var bNum = bOk ? parseInt(bRaw, 10) : NaN;
+      var boNum = boOk ? parseInt(boRaw, 10) : NaN;
+
+      if (!bOk && !boOk) {
+        gEl.value = "";
+      } else {
+        gEl.value = String((bOk ? bNum : 0) + (boOk ? boNum : 0));
+      }
+      basisVals.push(bOk ? String(bNum) : "");
+      bonusVals.push(boOk ? String(boNum) : "");
+      gesamtVals.push(gEl.value);
+    });
+
+    document.getElementById("talent_summe_basis").value = sumField(basisVals);
+    document.getElementById("talent_summe_bonus").value = sumField(bonusVals);
+    document.getElementById("talent_summe_gesamt").value = sumField(gesamtVals);
+
+    talentHasErrors = anyFieldError;
+    updateDownloadButtonState();
+  }
+
+  TALENT_LIST.forEach(function(name){
+    var tid = talentSlug(name);
+    document.getElementById(tid + "_basis").addEventListener("input", recalcTalents);
+    document.getElementById(tid + "_bonus").addEventListener("input", recalcTalents);
+  });
+  recalcTalents();
 
   /* ===================== Bild-Upload ===================== */
   var dropzone = document.getElementById("dropzone");
@@ -1198,57 +1442,295 @@
     return yTop - rowH;
   }
 
-  function drawTextBlocksPage(doc, sectionTitle, items){
-    var content = items.filter(function(f){
-      return (f.label || "").trim() !== "" || (f.value || "").trim() !== "";
+  /* ---- Rich-Text: DOM -> Blockstruktur ---- */
+  function collectRuns(node, inheritedStyle){
+    var runs = [];
+    function walk(n, style){
+      if (n.nodeType === 3){
+        if (n.textContent !== "") {
+          runs.push({text:n.textContent, bold:!!style.bold, italic:!!style.italic, underline:!!style.underline, color: style.color || null});
+        }
+        return;
+      }
+      if (n.nodeType !== 1) return;
+      var tag = n.tagName;
+      if (tag === "BR"){ runs.push({brk:true}); return; }
+      var s = {bold:style.bold, italic:style.italic, underline:style.underline, color:style.color};
+      if (tag === "B" || tag === "STRONG") s.bold = true;
+      if (tag === "I" || tag === "EM") s.italic = true;
+      if (tag === "U") s.underline = true;
+      if (n.style && n.style.color) s.color = n.style.color;
+      if (tag === "FONT" && n.getAttribute("color")) s.color = n.getAttribute("color");
+      Array.prototype.forEach.call(n.childNodes, function(c){ walk(c, s); });
+    }
+    walk(node, inheritedStyle || {});
+    return runs;
+  }
+
+  function parseRichBlocks(rootEl){
+    var blocks = [];
+    var blockTags = ["P","DIV","UL","OL","H1","H2","H3","HR","TABLE","IMG"];
+    function handle(node){
+      if (node.nodeType === 3){
+        if (node.textContent.trim() !== "") blocks.push({type:"paragraph", runs: collectRuns(node, {})});
+        return;
+      }
+      if (node.nodeType !== 1) return;
+      var tag = node.tagName;
+      if (tag === "H1" || tag === "H2" || tag === "H3"){
+        blocks.push({type:"heading", level: parseInt(tag.substr(1),10), runs: collectRuns(node, {})});
+      } else if (tag === "UL" || tag === "OL"){
+        Array.prototype.forEach.call(node.children, function(li, idx){
+          if (li.tagName !== "LI") return;
+          blocks.push({type:"listitem", ordered: tag === "OL", index: idx+1, runs: collectRuns(li, {})});
+        });
+      } else if (tag === "HR"){
+        blocks.push({type:"hr"});
+      } else if (tag === "TABLE"){
+        var rows = [];
+        Array.prototype.forEach.call(node.querySelectorAll("tr"), function(tr){
+          var cells = [];
+          Array.prototype.forEach.call(tr.children, function(td){ cells.push(collectRuns(td, {})); });
+          rows.push(cells);
+        });
+        if (rows.length) blocks.push({type:"table", rows: rows});
+      } else if (tag === "IMG"){
+        blocks.push({type:"image", src: node.getAttribute("src"), naturalWidth: node.naturalWidth || 300, naturalHeight: node.naturalHeight || 200});
+      } else if (tag === "P" || tag === "DIV"){
+        var hasBlockChild = Array.prototype.some.call(node.children, function(ch){ return blockTags.indexOf(ch.tagName) !== -1; });
+        if (hasBlockChild){
+          Array.prototype.forEach.call(node.childNodes, handle);
+        } else {
+          var runs = collectRuns(node, {});
+          blocks.push({type:"paragraph", runs: runs});
+        }
+      } else {
+        var r2 = collectRuns(node, {});
+        if (r2.length) blocks.push({type:"paragraph", runs: r2});
+      }
+    }
+    Array.prototype.forEach.call(rootEl.childNodes, handle);
+    return blocks;
+  }
+
+  function cssColorToRgb(str){
+    if (!str) return null;
+    str = str.trim();
+    var m = str.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+    if (m) return [parseInt(m[1],10), parseInt(m[2],10), parseInt(m[3],10)];
+    m = str.match(/^#([0-9a-f]{6})$/i);
+    if (m) return hex2rgb("#" + m[1]);
+    m = str.match(/^#([0-9a-f]{3})$/i);
+    if (m){ var h = m[1]; return hex2rgb("#" + h[0]+h[0]+h[1]+h[1]+h[2]+h[2]); }
+    return null;
+  }
+
+  /* ---- Rich-Text: Blockstruktur -> PDF ---- */
+  function drawRichBlocks(doc, blocks, xText, yStart, contentWidth, ensureSpace){
+    var y = yStart;
+    var lineHeight = 15;
+
+    function fontStyleFor(tok){
+      if (tok.bold && tok.italic) return "bolditalic";
+      if (tok.bold) return "bold";
+      if (tok.italic) return "italic";
+      return "normal";
+    }
+    function colorFor(tok){
+      var rgb = tok.color ? cssColorToRgb(tok.color) : null;
+      return rgb || COL_TEXT;
+    }
+    function tokenize(runs){
+      var tokens = [];
+      runs.forEach(function(run){
+        if (run.brk){ tokens.push({newline:true}); return; }
+        var parts = run.text.split(/(\s+)/).filter(function(w){ return w.length > 0; });
+        parts.forEach(function(w){
+          if (/^\s+$/.test(w)){
+            if (tokens.length) tokens[tokens.length-1].spaceAfter = true;
+          } else {
+            tokens.push({text:w, bold:run.bold, italic:run.italic, underline:run.underline, color:run.color, spaceAfter:false});
+          }
+        });
+      });
+      return tokens;
+    }
+    function wrapTokens(tokens, maxWidth, fontSize){
+      var lines = [[]];
+      var curWidth = 0;
+      tokens.forEach(function(tok){
+        if (tok.newline){ lines.push([]); curWidth = 0; return; }
+        doc.setFont("helvetica", fontStyleFor(tok));
+        doc.setFontSize(fontSize);
+        var w = doc.getTextWidth(tok.text) + (tok.spaceAfter ? doc.getTextWidth(" ") : 0);
+        if (curWidth + w > maxWidth && lines[lines.length-1].length > 0){
+          lines.push([]);
+          curWidth = 0;
+        }
+        lines[lines.length-1].push(tok);
+        curWidth += w;
+      });
+      return lines;
+    }
+    function drawLines(lines, xStart, fontSize, forceBold){
+      lines.forEach(function(line){
+        if (line.length === 0){ ensureSpaceRef(lineHeight); y -= lineHeight; return; }
+        ensureSpaceRef(lineHeight);
+        var x = xStart;
+        line.forEach(function(tok){
+          doc.setFont("helvetica", forceBold ? "bold" : fontStyleFor(tok));
+          doc.setFontSize(fontSize);
+          doc.setTextColor.apply(doc, colorFor(tok));
+          textBL(doc, x, y, tok.text);
+          var w = doc.getTextWidth(tok.text);
+          if (tok.underline){
+            doc.setDrawColor.apply(doc, colorFor(tok));
+            doc.setLineWidth(0.6);
+            lineBL(doc, x, y - 1.5, x + w, y - 1.5);
+          }
+          x += w + (tok.spaceAfter ? doc.getTextWidth(" ") : 0);
+        });
+        y -= lineHeight;
+      });
+    }
+    function ensureSpaceRef(needed){
+      var r = ensureSpace(needed, y);
+      y = r;
+    }
+
+    blocks.forEach(function(block){
+      if (block.type === "paragraph"){
+        var tokens = tokenize(block.runs);
+        if (tokens.length === 0){ ensureSpaceRef(lineHeight); y -= lineHeight; return; }
+        drawLines(wrapTokens(tokens, contentWidth, 11), xText, 11, false);
+        y -= 4;
+      } else if (block.type === "heading"){
+        var hf = block.level === 1 ? 16 : (block.level === 2 ? 14 : 12.5);
+        var htokens = tokenize(block.runs);
+        drawLines(wrapTokens(htokens, contentWidth, hf), xText, hf, true);
+        y -= 6;
+      } else if (block.type === "listitem"){
+        var prefix = block.ordered ? (block.index + ".") : "\u2022";
+        ensureSpaceRef(lineHeight);
+        doc.setFont("helvetica", "normal"); doc.setFontSize(11);
+        doc.setTextColor.apply(doc, COL_TEXT);
+        textBL(doc, xText, y, prefix);
+        var litokens = tokenize(block.runs);
+        var lilines = wrapTokens(litokens, contentWidth - 18, 11);
+        drawLines(lilines, xText + 18, 11, false);
+      } else if (block.type === "hr"){
+        ensureSpaceRef(10);
+        doc.setDrawColor.apply(doc, COL_BORDER);
+        doc.setLineWidth(1);
+        lineBL(doc, xText, y - 4, xText + contentWidth, y - 4);
+        y -= 14;
+      } else if (block.type === "image" && block.src){
+        var natW = block.naturalWidth || 300, natH = block.naturalHeight || 200;
+        var scale = Math.min(contentWidth/natW, 220/natH, 1);
+        var iw = natW*scale, ih = natH*scale;
+        ensureSpaceRef(ih + 10);
+        try {
+          var fmt = block.src.indexOf("image/png") !== -1 ? "PNG" : "JPEG";
+          doc.addImage(block.src, fmt, xText, PAGE_H - y, iw, ih);
+        } catch(e){}
+        y -= (ih + 12);
+      } else if (block.type === "table"){
+        var rows = block.rows;
+        if (!rows.length) return;
+        var nCols = rows[0].length || 1;
+        var cellW = contentWidth / nCols;
+        var cellPad = 5;
+        rows.forEach(function(cells, ri){
+          var cellLines = cells.map(function(runs){
+            return wrapTokens(tokenize(runs), cellW - 2*cellPad, 9.5);
+          });
+          var maxLines = Math.max.apply(null, cellLines.map(function(l){ return l.length || 1; }));
+          var rowH = Math.max(maxLines * 12 + 8, 22);
+          ensureSpaceRef(rowH);
+          var rowTopY = y;
+          if (ri === 0){
+            doc.setFillColor(240,240,245);
+            rectBL(doc, xText, rowTopY - rowH, nCols*cellW, rowH, "F");
+          }
+          doc.setDrawColor.apply(doc, COL_BORDER);
+          doc.setLineWidth(0.5);
+          for (var ci = 0; ci <= nCols; ci++){
+            var cx = xText + ci*cellW;
+            lineBL(doc, cx, rowTopY - rowH, cx, rowTopY);
+          }
+          lineBL(doc, xText, rowTopY - rowH, xText + nCols*cellW, rowTopY - rowH);
+          lineBL(doc, xText, rowTopY, xText + nCols*cellW, rowTopY);
+
+          cellLines.forEach(function(lines, ci){
+            var cellX = xText + ci*cellW + cellPad;
+            var cellY = rowTopY - 12;
+            lines.forEach(function(line){
+              var lx = cellX;
+              line.forEach(function(tok){
+                doc.setFont("helvetica", ri === 0 ? "bold" : fontStyleFor(tok));
+                doc.setFontSize(9.5);
+                doc.setTextColor.apply(doc, colorFor(tok));
+                textBL(doc, lx, cellY, tok.text);
+                lx += doc.getTextWidth(tok.text) + (tok.spaceAfter ? doc.getTextWidth(" ") : 0);
+              });
+              cellY -= 12;
+            });
+          });
+          y -= rowH;
+        });
+        y -= 6;
+      }
     });
-    if (content.length === 0) return;
+
+    return y;
+  }
+
+  function drawNotesPage(doc, sectionTitle, blockIds){
+    var validBlocks = blockIds.filter(function(bid){
+      var labelEl = document.getElementById(bid + "_label");
+      var editorEl = document.getElementById(bid + "_editor");
+      var label = labelEl ? labelEl.value.trim() : "";
+      var hasContent = editorEl && (editorEl.textContent.trim() !== "" || editorEl.querySelector("img, table, hr"));
+      return label !== "" || hasContent;
+    });
+    if (validBlocks.length === 0) return;
 
     doc.addPage();
     var y = PAGE_H - MARGIN;
     y = sectionHeader(doc, y, sectionTitle);
     y -= 16;
 
-    var lineHeight = 15;
     var textWidth = PAGE_W - 2*MARGIN - 24;
     var xText = MARGIN + 12;
+    var pageActive = { title: sectionTitle };
 
-    function ensureSpace(needed){
-      if (y - needed < MARGIN + 24){
-        footer(doc, "Seite " + doc.internal.getNumberOfPages() + " \u2013 " + sectionTitle);
+    function ensureSpace(needed, curY){
+      if (curY - needed < MARGIN + 24){
+        footer(doc, "Seite " + doc.internal.getNumberOfPages() + " \u2013 " + pageActive.title);
         doc.addPage();
-        y = PAGE_H - MARGIN - 10;
+        return PAGE_H - MARGIN - 10;
       }
+      return curY;
     }
 
-    content.forEach(function(f, idx){
-      var label = (f.label || "").trim();
-      var value = (f.value || "").trim();
-      var showHeading = label && (content.length > 1 || label.toLowerCase() !== sectionTitle.toLowerCase());
+    validBlocks.forEach(function(bid, idx){
+      var labelEl = document.getElementById(bid + "_label");
+      var editorEl = document.getElementById(bid + "_editor");
+      var label = labelEl ? labelEl.value.trim() : "";
+      var showHeading = label && (validBlocks.length > 1 || label.toLowerCase() !== sectionTitle.toLowerCase());
 
       if (showHeading){
-        ensureSpace(lineHeight + 6);
+        y = ensureSpace(21, y);
         doc.setFont("helvetica", "bold"); doc.setFontSize(12.5);
         doc.setTextColor.apply(doc, COL_TEXT);
         textBL(doc, xText, y, label);
-        y -= lineHeight + 3;
+        y -= 18;
       }
 
-      if (value){
-        doc.setFont("helvetica", "normal"); doc.setFontSize(11);
-        doc.setTextColor.apply(doc, COL_TEXT);
-        var paragraphs = value.split("\n");
-        paragraphs.forEach(function(p){
-          if (p === "") { ensureSpace(lineHeight); y -= lineHeight; return; }
-          var lines = doc.splitTextToSize(p, textWidth);
-          lines.forEach(function(line){
-            ensureSpace(lineHeight);
-            textBL(doc, xText, y, line);
-            y -= lineHeight;
-          });
-        });
-      }
-      if (idx < content.length - 1) y -= 12;
+      var blocks = editorEl ? parseRichBlocks(editorEl) : [];
+      y = drawRichBlocks(doc, blocks, xText, y, textWidth, ensureSpace);
+
+      if (idx < validBlocks.length - 1) y -= 12;
     });
 
     footer(doc, "Seite " + doc.internal.getNumberOfPages() + " \u2013 " + sectionTitle);
@@ -1439,7 +1921,77 @@
     });
     footer(doc, "Seite " + doc.internal.getNumberOfPages() + " \u2013 Attributwerte");
 
-    /* ---------- SEITE 4: ATTRIBUTE ERKLÄRT ---------- */
+    /* ---------- SEITE 4: TALENTE ---------- */
+    doc.addPage();
+    doc.setFont("helvetica", "bold"); doc.setFontSize(18);
+    doc.setTextColor.apply(doc, COL_TEXT);
+    textBL(doc, MARGIN, PAGE_H - MARGIN, "Talente");
+
+    var tTableW = PAGE_W - 2*MARGIN;
+    var tNameW = 210;
+    var tColW = (tTableW - tNameW) / 3;
+    var tRowH = 27, tHeaderH = 24;
+    var tTop = PAGE_H - MARGIN - 30;
+
+    doc.setFillColor(233,241,251);
+    doc.setDrawColor.apply(doc, COL_BORDER);
+    doc.setLineWidth(0.8);
+    rectBL(doc, MARGIN, tTop - tHeaderH, tTableW, tHeaderH, "FD");
+    doc.setTextColor.apply(doc, COL_TEXT);
+    doc.setFont("helvetica", "bold"); doc.setFontSize(10.5);
+    var txs = [MARGIN, MARGIN+tNameW, MARGIN+tNameW+tColW, MARGIN+tNameW+2*tColW];
+    var tws = [tNameW, tColW, tColW, tColW];
+    var theaders = ["Talent","Basiswert","Bonus","Gesamtwert"];
+    theaders.forEach(function(h, i){
+      textBL(doc, txs[i] + tws[i]/2, tTop - tHeaderH + 8, h, {align:"center"});
+      if (txs[i] !== MARGIN) lineBL(doc, txs[i], tTop - tHeaderH, txs[i], tTop);
+    });
+
+    var tY = tTop - tHeaderH;
+    TALENT_LIST.forEach(function(name, idx){
+      var tid = talentSlug(name);
+      var rowFill = (idx % 2 === 0) ? [255,255,255] : hex2rgb("#F7F7F7");
+      doc.setFillColor.apply(doc, rowFill);
+      doc.setDrawColor.apply(doc, COL_BORDER);
+      doc.setLineWidth(0.5);
+      rectBL(doc, MARGIN, tY - tRowH, tTableW, tRowH, "FD");
+      for (var i=1;i<4;i++) lineBL(doc, txs[i], tY - tRowH, txs[i], tY);
+
+      doc.setTextColor.apply(doc, COL_TEXT);
+      doc.setFont("helvetica", "bold"); doc.setFontSize(10.5);
+      textBL(doc, MARGIN + 10, tY - tRowH/2 - 4, name);
+
+      var basisV = val(tid + "_basis");
+      var bonusV = val(tid + "_bonus");
+      var gesamtV = val(tid + "_gesamt");
+      doc.setFont("helvetica", "bold"); doc.setFontSize(12);
+      [basisV, bonusV, gesamtV].forEach(function(v, ci){
+        textBL(doc, txs[ci+1] + tws[ci+1]/2, tY - tRowH/2 - 4, v || "\u2013", {align:"center"});
+      });
+
+      tY -= tRowH;
+    });
+
+    doc.setFillColor(239,239,239);
+    doc.setDrawColor.apply(doc, COL_BORDER);
+    doc.setLineWidth(0.6);
+    rectBL(doc, MARGIN, tY - tRowH, tTableW, tRowH, "FD");
+    for (var ti=1; ti<4; ti++) lineBL(doc, txs[ti], tY - tRowH, txs[ti], tY);
+    doc.setTextColor.apply(doc, COL_TEXT);
+    doc.setFont("helvetica", "bold"); doc.setFontSize(11);
+    textBL(doc, MARGIN + 10, tY - tRowH/2 - 4, "Summe");
+    var tSumBasis = val("talent_summe_basis");
+    var tSumBonus = val("talent_summe_bonus");
+    var tSumGesamt = val("talent_summe_gesamt");
+    doc.setFontSize(12);
+    [tSumBasis, tSumBonus, tSumGesamt].forEach(function(v, ci){
+      textBL(doc, txs[ci+1] + tws[ci+1]/2, tY - tRowH/2 - 4, v || "\u2013", {align:"center"});
+    });
+    tY -= tRowH;
+
+    footer(doc, "Seite " + doc.internal.getNumberOfPages() + " \u2013 Talente");
+
+    /* ---------- SEITE 5: ATTRIBUTE ERKLÄRT ---------- */
     doc.addPage();
     doc.setFont("helvetica", "bold"); doc.setFontSize(18);
     doc.setTextColor.apply(doc, COL_TEXT);
@@ -1488,11 +2040,8 @@
     });
     footer(doc, "Seite " + doc.internal.getNumberOfPages() + " \u2013 Attribut-\u00DCbersicht");
 
-    /* ---------- SEITE 5: NOTIZEN (nur wenn ausgefüllt) ---------- */
-    drawTextBlocksPage(doc, "Notizen", notesSection.getItems());
-
-    /* ---------- SEITE 6: HINTERGRUND (nur wenn ausgefüllt) ---------- */
-    drawTextBlocksPage(doc, "Hintergrund", backgroundSection.getItems());
+    /* ---------- SEITE 6: NOTIZEN (nur wenn ausgefüllt) ---------- */
+    drawNotesPage(doc, "Notizen", notesSection.getBlockIds());
 
     return doc;
   }
@@ -1508,9 +2057,10 @@
 
   var dlBtn = document.getElementById("dlBtn");
   dlBtn.addEventListener("click", async function(){
-    if (attrHasErrors) {
-      showStatus("Bitte behebe zuerst die markierten Fehler bei den Attributwerten.");
+    if (attrHasErrors || talentHasErrors) {
+      showStatus("Bitte behebe zuerst die markierten Fehler bei den Attribut- oder Talentwerten.");
       recalc();
+      recalcTalents();
       return;
     }
     dlBtn.disabled = true;
@@ -1560,7 +2110,7 @@
         showStatus("Download in dieser Ansicht nicht verf\u00FCgbar.");
       }
     }
-    dlBtn.disabled = attrHasErrors;
+    dlBtn.disabled = attrHasErrors || talentHasErrors;
   });
 
 })();
