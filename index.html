@@ -1018,6 +1018,19 @@
   .roll-result { font-size: 13.5px; font-weight: 700; min-height: 1.2em; text-align: center; }
   .roll-result.success { color: #2E7D46; }
   .roll-result.fail { color: #B23A3A; }
+  .roll-luck-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    background: #FBF6E4; border: 1px solid #E7D9A8; color: #7A5E1E;
+    border-radius: 8px; padding: 7px 11px; margin-bottom: 14px; font-size: 12px;
+  }
+  .roll-luck-row button {
+    border: none; background: transparent; color: #7A5E1E;
+    font-family: inherit; font-weight: 700; font-size: 11px; cursor: pointer;
+    padding: 2px 4px; border-radius: 4px; text-decoration: underline;
+  }
+  .roll-luck-row button:hover { background: rgba(122,94,30,0.12); }
+  .luck-reroll-btn { margin-top: 10px; background: #B5651D; }
+  .luck-reroll-btn:hover { background: #9A5417; }
 
   .roll-btn {
     width: 100%; border: none; border-radius: 999px; padding: 12px 0;
@@ -1062,6 +1075,7 @@
   .online-item .dot { width: 7px; height: 7px; border-radius: 50%; background: #3FAE63; flex-shrink: 0; }
   .online-empty { font-size: 12px; color: var(--muted); }
   .rh-player { color: var(--muted); font-weight: 400; font-size: 11px; }
+  .rh-luck-tag { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; background: #FBF6E4; color: #7A5E1E; font-weight: 700; font-size: 10px; }
 
   /* ===== Bibliothek: Sortierung & Gruppierung ===== */
   .lib-sort {
@@ -1417,6 +1431,11 @@
         <button type="button" class="roll-close" id="rollCloseBtn" aria-label="Schließen">✕</button>
       </div>
 
+      <div class="roll-luck-row" id="rollLuckRow">
+        <span>🍀 <strong id="luckAvailableDisplay">0</strong> von <span id="luckTotalDisplay">0</span> Glückspunkten verfügbar</span>
+        <button type="button" id="resetLuckBtn" title="Verbrauchte Glückspunkte zurücksetzen">↺ Zurücksetzen</button>
+      </div>
+
       <div class="roll-field">
         <label for="rollTarget">Attribut / Talent</label>
         <select id="rollTarget">
@@ -1461,6 +1480,7 @@
         <div class="roll-die" id="rollDie"><span id="rollDieValue">–</span></div>
         <div class="roll-die-caption" id="rollDieCaption">Bereit zum Würfeln</div>
         <div class="roll-result" id="rollResult"></div>
+        <button type="button" class="roll-btn luck-reroll-btn" id="luckRerollBtn" hidden>🍀 Glückspunkt einsetzen &amp; neu würfeln</button>
       </div>
 
       <button type="button" class="roll-btn" id="rollBtn">🎲 Würfeln</button>
@@ -2059,12 +2079,21 @@
   }
 
   var LUCK_DIVISOR = 5;
+  var luckPointsUsed = 0;
+
+  function getLuckPointsTotal(){
+    var glGesamt = parseFloat(val("GL_gesamt"));
+    return isNaN(glGesamt) ? 0 : Math.ceil(glGesamt / LUCK_DIVISOR);
+  }
+  function getLuckPointsAvailable(){
+    return Math.max(0, getLuckPointsTotal() - luckPointsUsed);
+  }
 
   function updateLuckPoints(){
-    var glGesamt = parseFloat(val("GL_gesamt"));
-    var luckPoints = isNaN(glGesamt) ? 0 : Math.ceil(glGesamt / LUCK_DIVISOR);
+    var luckPoints = getLuckPointsTotal();
     var note = document.getElementById("luckNote");
     note.textContent = "🍀 " + luckPoints + " Glückspunkt" + (luckPoints === 1 ? "" : "e") + " (GL ÷ " + LUCK_DIVISOR + ", aufgerundet)";
+    updateLuckDisplay();
   }
 
   function updateBudgetNote(remaining){
@@ -3146,6 +3175,7 @@
       universe: "",
       portrait: null,
       race: "none",
+      luckPointsUsed: 0,
       personalFields: PERSONAL_DEFAULT_LABELS.map(function(l){ return { label: l, value: "" }; }),
       attrBasis: {}, attrBonus: {}, talentBasis: {}, talentBonus: {},
       notesBlocks: [{ label: "Notizen", html: "" }]
@@ -3168,6 +3198,7 @@
       universe: val("rpg_universum"),
       portrait: uploadedImage.dataUrl ? { dataUrl: uploadedImage.dataUrl, width: uploadedImage.width, height: uploadedImage.height } : null,
       race: currentRace,
+      luckPointsUsed: luckPointsUsed,
       personalFields: personalFields.map(function(f){ return { label: f.label || "", value: f.value || "" }; }),
       attrBasis: attrBasis,
       attrBonus: attrBonus,
@@ -3203,6 +3234,9 @@
     currentRace = data.race || "none";
     raceSelect.value = currentRace;
     updateRaceHint();
+
+    luckPointsUsed = data.luckPointsUsed || 0;
+    updateLuckDisplay();
 
     var fields = (data.personalFields && data.personalFields.length) ? data.personalFields : PERSONAL_DEFAULT_LABELS.map(function(l){ return { label: l, value: "" }; });
     personalFields = fields.map(function(f, i){ return { id: "pf_" + i, label: f.label || "", value: f.value || "" }; });
@@ -3684,9 +3718,28 @@
   var rollBtn = document.getElementById("rollBtn");
   var rollHistoryPageEl = document.getElementById("rollHistoryPage");
   var clearRollHistoryBtn = document.getElementById("clearRollHistoryBtn");
+  var luckAvailableDisplay = document.getElementById("luckAvailableDisplay");
+  var luckTotalDisplay = document.getElementById("luckTotalDisplay");
+  var resetLuckBtn = document.getElementById("resetLuckBtn");
+  var luckRerollBtn = document.getElementById("luckRerollBtn");
+  var lastRollSides = null;
 
   var rollMode = "with";
   var rollHistoryList = [];
+
+  function updateLuckDisplay(){
+    if (!luckAvailableDisplay) return;
+    luckTotalDisplay.textContent = getLuckPointsTotal();
+    luckAvailableDisplay.textContent = getLuckPointsAvailable();
+  }
+
+  resetLuckBtn.addEventListener("click", function(){
+    if (getLuckPointsAvailable() >= getLuckPointsTotal()) return;
+    if (!window.confirm("Verbrauchte Glückspunkte wirklich zurücksetzen?")) return;
+    luckPointsUsed = 0;
+    updateLuckDisplay();
+    doAutosave();
+  });
 
   ATTR_TABLE.forEach(function(a){
     var opt = document.createElement("option");
@@ -3755,6 +3808,8 @@
 
   function openRollPanel(){
     updateRollValueDisplay();
+    updateLuckDisplay();
+    luckRerollBtn.hidden = true;
     rollOverlay.classList.add("show");
   }
   function closeRollPanel(){ rollOverlay.classList.remove("show"); }
@@ -3803,6 +3858,7 @@
           '<div class="rollpage-detail">' +
             escapeAttr(entry.rollLabel ? entry.rollLabel : "Freier Wurf") + ' · ' + diceLabel(entry.sides) + ': ' + rollDisplay +
             (entry.detail ? ' — ' + escapeAttr(entry.detail) : '') +
+            (entry.viaLuck ? ' <span class="rh-luck-tag">🍀 Glückspunkt</span>' : '') +
           '</div>' +
         '</div>' +
         '<div class="rollpage-meta">' +
@@ -3827,11 +3883,12 @@
   }
   clearRollHistoryBtn.addEventListener("click", clearRollHistory);
 
-  function finishDiceRoll(sides){
+  function finishDiceRoll(sides, viaLuck){
     var roll = rollDieValueFor(sides);
     rollDie.classList.remove("rolling");
     rollDieValue.textContent = sides === "2" ? formatD2(roll) : roll;
     rollDieCaption.textContent = diceLabel(sides) + " gewürfelt";
+    lastRollSides = sides;
 
     var targetKey = rollTargetSel.value;
     var result = targetKey ? evaluateRoll(roll) : null;
@@ -3842,6 +3899,9 @@
       rollResultEl.textContent = "Wurf: " + (sides === "2" ? formatD2(roll) : roll);
       rollResultEl.className = "roll-result";
     }
+
+    var canLuckReroll = sides === "20" && !!result && result.success === false && getLuckPointsAvailable() > 0;
+    luckRerollBtn.hidden = !canLuckReroll;
 
     if (currentUser && myProfile){
       var opt = rollTargetSel.options[rollTargetSel.selectedIndex];
@@ -3856,6 +3916,7 @@
           roll: roll,
           success: result ? result.success : null,
           detail: result ? result.detail : null,
+          viaLuck: !!viaLuck,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         }).catch(function(err){
           showStatus("Wurf konnte nicht geteilt werden: " + (err && err.message ? err.message : err));
@@ -3882,8 +3943,8 @@
     img.src = uploadedImage.dataUrl;
   }
 
-  rollBtn.addEventListener("click", function(){
-    var sides = rollDiceTypeSel.value;
+  function performRoll(sides, viaLuck){
+    luckRerollBtn.hidden = true;
     rollDie.classList.add("rolling");
     var ticks = 0, maxTicks = 8;
     var interval = setInterval(function(){
@@ -3891,9 +3952,21 @@
       ticks++;
       if (ticks >= maxTicks){
         clearInterval(interval);
-        finishDiceRoll(sides);
+        finishDiceRoll(sides, viaLuck);
       }
     }, 45);
+  }
+
+  rollBtn.addEventListener("click", function(){
+    performRoll(rollDiceTypeSel.value, false);
+  });
+
+  luckRerollBtn.addEventListener("click", function(){
+    if (luckRerollBtn.hidden || getLuckPointsAvailable() <= 0 || !lastRollSides) return;
+    luckPointsUsed += 1;
+    updateLuckDisplay();
+    doAutosave();
+    performRoll(lastRollSides, true);
   });
 
   /* ===================== Profil ===================== */
@@ -4031,6 +4104,7 @@
           characterAvatar: d.characterAvatar || null,
           nickname: d.nickname,
           rollLabel: d.rollLabel,
+          viaLuck: !!d.viaLuck,
           createdAt: d.createdAt
         });
       });
