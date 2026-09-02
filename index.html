@@ -954,10 +954,12 @@
   }
   .edit-toggle-btn.editing:hover { background: var(--accent-strong) !important; }
   .luck-badge-top {
-    background: #FBF6E4; border: 1px solid #E7D9A8; color: #7A5E1E;
-    border-radius: 999px; padding: 6px 11px; font-weight: 700; font-size: 12px;
-    white-space: nowrap;
+    background: #FBF6E4 !important; border: 1px solid #E7D9A8 !important; color: #7A5E1E !important;
+    border-radius: 999px; padding: 6px 11px !important; font-weight: 700; font-size: 12px !important;
+    white-space: nowrap; font-family: inherit; cursor: pointer;
+    transition: background 0.15s ease;
   }
+  .luck-badge-top:hover { background: #F5EBC9 !important; }
 
   /* ===== Ansichtsmodus (nicht editierbar) ===== */
   .sheet input:disabled, .sheet textarea:disabled, .sheet select:disabled {
@@ -1176,6 +1178,8 @@
   .tooltip-anchor:hover .info-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
   /* Ein aktiver Fehler/Warnung (rot/orange) hat Vorrang vor dem Hover-Infotext (z. B. Budget-Hinweis) */
   .tooltip-anchor:hover .attr-tooltip.show ~ .info-tooltip { opacity: 0 !important; }
+  /* Der "noch X Talentpunkte übrig"-Hinweis ist nur im Bearbeitungsmodus relevant. */
+  body:not(.is-editing) .info-tooltip.budget-tt { display: none !important; }
   .talent-row .attr-name.tooltip-anchor { cursor: help; }
   .talent-row .attr-name.tooltip-anchor .code { border-bottom: 1px dotted var(--muted); }
   .talent-row .attr-cell.tooltip-anchor input[readonly] { cursor: help; }
@@ -1391,7 +1395,7 @@
     </div>
     <button type="button" id="editToggleBtn" class="edit-toggle-btn">✎ Bearbeiten</button>
     <span class="save-indicator" id="saveIndicator"></span>
-    <span class="luck-badge-top" id="luckBadgeTop" title="Verfügbare / Gesamt Glückspunkte">🍀 0/0</span>
+    <button type="button" class="luck-badge-top" id="luckBadgeTop" title="Verfügbare / Gesamt Glückspunkte">🍀 0/0</button>
     <button type="button" id="myCharsBtn"><svg class="books-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="4.2" rx="1.4" fill="#F5A83C" stroke="#1a1a1a" stroke-width="1.1"/><line x1="5" y1="5.1" x2="14" y2="5.1" stroke="#1a1a1a" stroke-width="0.9" stroke-linecap="round"/><rect x="2" y="8" width="20" height="4.2" rx="1.4" fill="#E8564C" stroke="#1a1a1a" stroke-width="1.1"/><line x1="5" y1="10.1" x2="14" y2="10.1" stroke="#1a1a1a" stroke-width="0.9" stroke-linecap="round"/><rect x="2" y="13" width="20" height="4.2" rx="1.4" fill="#5B9BD5" stroke="#1a1a1a" stroke-width="1.1"/><line x1="5" y1="15.1" x2="14" y2="15.1" stroke="#1a1a1a" stroke-width="0.9" stroke-linecap="round"/><path d="M17.5 13v5.5l1.5-1 1.5 1V13z" fill="#E8564C" stroke="#1a1a1a" stroke-width="0.8"/></svg> Meine Charaktere</button>
     <button type="button" id="newCharBtn">+ Neuer Charakter</button>
   </div>
@@ -1475,7 +1479,7 @@
         <p>Zusätzlich zum automatischen Basiswert hast du <strong>20 Talentpunkte</strong>, die du frei als „Bonus" auf die Talente verteilen darfst, um deinen Charakter individueller zu machen.</p>
         <ul>
           <li>Jeder Talent-Bonus muss zwischen <strong>-3 und 19</strong> liegen. Ein negativer Bonus (bis -3) senkt den Gesamtwert dieses Talents, gibt dir dafür aber wieder Punkte frei, die du bei anderen Talenten einsetzen kannst.</li>
-          <li>Insgesamt darfst du nie mehr als 20 Talentpunkte verteilt haben. Fährst du mit der Maus über ein Bonus-Feld, zeigt dir ein kleines Popup jederzeit, wie viele Punkte du noch übrig hast – auch beim Bearbeiten, ohne extra zur Summenzeile scrollen zu müssen.</li>
+          <li>Insgesamt darfst du nie mehr als 20 Talentpunkte verteilt haben. Fährst du im <strong>Bearbeitungsmodus</strong> mit der Maus über ein Bonus-Feld, zeigt dir ein kleines Popup, wie viele Punkte du noch übrig hast – ohne extra zur Summenzeile scrollen zu müssen. Im Ansichtsmodus wird dieser Hinweis nicht angezeigt.</li>
           <li>Überschreitest du die 20 Punkte, wird das zuletzt bearbeitete Bonus-Feld orange markiert und zeigt, um wie viel du gerade drüber bist. Solange das der Fall ist, <strong>kann nicht gespeichert werden</strong> – erst wenn wieder höchstens 20 Punkte verteilt sind, geht das Speichern normal weiter.</li>
           <li>Basiswert + Bonus darf zusammen nie über 19 gehen – ist die Summe höher, wird sie einfach bei 19 gedeckelt. Das Bonus-Feld zeigt dafür eine eigene orange Warnung, damit du siehst, dass der Bonus so nicht voll wirkt.</li>
           <li>Gesamtwert des Talents = Basiswert + Bonus (maximal 19). Das ist der Wert, gegen den du beim „Ohne SG"-Würfeln antrittst.</li>
@@ -1491,7 +1495,7 @@
           <strong>Glück-Basiswert 10–14</strong> → 3 Glückspunkte<br>
           <strong>Glück-Basiswert 15–19</strong> → 4 Glückspunkte
         </div>
-        <p>Deine aktuellen Glückspunkte (verfügbar/gesamt) siehst du klein und dauerhaft oben in der Kopfleiste (🍀), egal auf welcher Seite du gerade bist. Verwendet werden sie im Würfel-Fenster:</p>
+        <p>Deine aktuellen Glückspunkte (verfügbar/gesamt) siehst du klein und dauerhaft oben in der Kopfleiste (🍀), egal auf welcher Seite du gerade bist. Klickst du darauf, wird kurz eingeblendet, wie viele Glückspunkte gerade verfügbar sind. Verwendet werden sie im Würfel-Fenster:</p>
         <ul>
           <li>Wenn du bei einer Probe „Ohne SG" (W20, also gegen ein Attribut oder Talent) danebenwürfelst, kannst du einen Glückspunkt einsetzen, um den Würfel <strong>einmal neu zu werfen</strong>.</li>
           <li>Das geht nur bei fehlgeschlagenen W20-Würfen gegen ein Attribut/Talent – nicht bei freien Würfen und nicht bei anderen Würfeln (W2, W6, W10).</li>
@@ -2319,7 +2323,7 @@
     row.innerHTML =
       '<div class="attr-name tooltip-anchor'+tb+'"><span class="code">'+name+'</span><div class="info-tooltip">'+attrNames+'</div></div>' +
       '<div class="attr-cell tooltip-anchor'+tb+'"><input type="text" id="'+tid+'_basis" readonly tabindex="-1"><div class="info-tooltip" id="'+tid+'_basis_info_tt"></div></div>' +
-      '<div class="attr-cell tooltip-anchor'+tb+'"><input type="number" id="'+tid+'_bonus" inputmode="numeric" min="-3" max="19" step="1"><div class="attr-tooltip" id="'+tid+'_bonus_tt"></div><div class="info-tooltip" id="'+tid+'_bonus_budget_tt"></div></div>' +
+      '<div class="attr-cell tooltip-anchor'+tb+'"><input type="number" id="'+tid+'_bonus" inputmode="numeric" min="-3" max="19" step="1"><div class="attr-tooltip" id="'+tid+'_bonus_tt"></div><div class="info-tooltip budget-tt" id="'+tid+'_bonus_budget_tt"></div></div>' +
       '<div class="attr-cell"><input type="text" id="'+tid+'_gesamt" readonly tabindex="-1"></div>';
     talentWrap.appendChild(row);
   });
@@ -4166,6 +4170,11 @@
     luckAvailableDisplay.textContent = getLuckPointsAvailable();
   }
 
+  document.getElementById("luckBadgeTop").addEventListener("click", function(){
+    var n = getLuckPointsAvailable();
+    showStatus(n + " Glückspunkt" + (n === 1 ? "" : "e") + " verfügbar");
+  });
+
   resetLuckBtn.addEventListener("click", function(){
     if (getLuckPointsAvailable() >= getLuckPointsTotal()) return;
     if (!window.confirm("Verbrauchte Glückspunkte wirklich zurücksetzen?")) return;
@@ -4854,6 +4863,7 @@
     isEditMode = editing;
     editToggleBtn.textContent = editing ? "✓ Fertig" : "✎ Bearbeiten";
     editToggleBtn.classList.toggle("editing", editing);
+    document.body.classList.toggle("is-editing", editing);
     applyEditModeToDom();
   }
 
