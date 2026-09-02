@@ -1072,6 +1072,13 @@
   .people-icon { width: 15px; height: 15px; fill: currentColor; vertical-align: -3px; }
   .books-icon { width: 17px; height: 17px; vertical-align: -4px; }
   #myCharsBtn .books-icon { margin-right: 2px; }
+  #worldsBtn {
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    padding: 10px 16px !important;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  #worldsBtn .books-icon { width: 16px; height: 16px; vertical-align: 0; }
   #myCharsBtn, #newCharBtn {
     border: none !important;
     color: var(--accent-ink) !important;
@@ -1123,10 +1130,19 @@
   .custom-field-row input.custom-value-input:disabled {
     background: transparent;
     border-color: transparent;
-    padding-left: 2px;
-    padding-right: 2px;
+    padding: 2px 2px 4px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    -webkit-text-fill-color: var(--text);
   }
-  .race-row select:disabled { background: transparent; border-color: transparent; padding-left: 2px; }
+  .race-row select:disabled {
+    background: transparent; border-color: transparent;
+    padding-left: 2px; font-size: 15px; font-weight: 600;
+  }
+  /* Im Ansichtsmodus traegt das Label die Struktur, der Wert steht als Text darunter. */
+  body:not(.is-editing) .field-row label { font-size: 11.5px; letter-spacing: 0.04em; text-transform: uppercase; }
+  body:not(.is-editing) .field-row { margin-bottom: 18px; }
   .rte-editor[contenteditable="false"] { cursor: default; }
   .dropzone.view-locked { cursor: default; pointer-events: none; }
   .dropzone.view-locked:not(.has-image) { opacity: 0.55; }
@@ -1182,6 +1198,82 @@
   .lib-card-actions button.danger:hover { color: var(--bad-text); }
   .lib-card-actions button[data-action="view"] { background: var(--accent); color: var(--accent-ink); }
   .lib-card-actions button[data-action="view"]:hover { background: var(--accent-strong); color: #fff; }
+
+  /* ===== Welten (RPG-Universen) ===== */
+  .uni-overlay {
+    position: fixed; inset: 0; z-index: 155; display: none;
+    align-items: flex-start; justify-content: center;
+    background: rgba(20,15,30,0.55); padding: 6vh 20px;
+    overflow-y: auto;
+  }
+  .uni-overlay.show { display: flex; }
+  .uni-panel {
+    width: 100%; max-width: 880px; background: var(--paper);
+    border-radius: 20px; box-shadow: var(--shadow-lg); padding: 24px 24px 28px;
+  }
+  .uni-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
+  .uni-head h2 { margin: 0; font-family: 'Poppins', system-ui, sans-serif; font-size: 24px; color: var(--accent-strong); }
+  .uni-sub { color: var(--muted); font-size: 13px; margin: 0 0 18px; }
+  .uni-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(212px, 1fr));
+    gap: 14px;
+  }
+  .uni-card {
+    border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+    background: var(--row-light); box-shadow: var(--shadow-sm);
+    display: flex; flex-direction: column;
+    transition: box-shadow 0.15s ease, transform 0.12s ease, border-color 0.15s ease;
+  }
+  .uni-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--accent); }
+  .uni-open {
+    border: none; background: none; padding: 0; margin: 0; cursor: pointer;
+    font-family: inherit; color: inherit; text-align: left; display: block; width: 100%;
+  }
+  .uni-cover { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: var(--title-bg); }
+  .uni-cover-empty {
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; aspect-ratio: 16 / 9; font-size: 30px;
+    background: linear-gradient(135deg, var(--title-bg), var(--bg2));
+  }
+  .uni-body { padding: 11px 13px 8px; }
+  .uni-name {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-weight: 600; font-size: 15px; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .uni-count { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+  .uni-actions { display: flex; gap: 3px; flex-wrap: wrap; padding: 0 9px 10px; }
+  .uni-actions button {
+    border: none; background: transparent; color: var(--muted); font-family: inherit;
+    font-size: 11.5px; font-weight: 600; padding: 5px 7px; border-radius: 8px; cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .uni-actions button:hover { background: #fff; color: var(--text); }
+  .uni-actions button.danger:hover { color: var(--bad-text); background: var(--bad-bg); }
+  .uni-add {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    min-height: 168px; border: 1.6px dashed var(--border-strong); border-radius: 16px;
+    background: transparent; color: var(--accent); font-family: inherit;
+    font-weight: 700; font-size: 13.5px; cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .uni-add:hover { background: #F1EAFB; border-color: var(--accent); }
+  .uni-add span:first-child { font-size: 24px; line-height: 1; }
+  .uni-empty { color: var(--muted); font-size: 13px; padding: 18px 0; text-align: center; grid-column: 1 / -1; }
+
+  /* Kontextzeile in der Bibliothek, wenn nach einer Welt gefiltert wird */
+  .lib-context { display: none; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 12.5px; }
+  .lib-context.show { display: flex; }
+  .lib-context button {
+    border: 1px solid var(--border-strong); background: #fff; color: var(--text);
+    font-family: inherit; font-weight: 600; font-size: 12px;
+    padding: 6px 11px; border-radius: 999px; cursor: pointer; flex-shrink: 0;
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+  }
+  .lib-context button:hover { background: var(--row-light); box-shadow: var(--shadow-sm); }
+  .lib-context .lib-context-name { color: var(--muted); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lib-context .lib-context-name strong { color: var(--text); }
 
   /* ===== Würfel ===== */
   .dice-fab {
@@ -1346,7 +1438,6 @@
   /* Der "noch X Talentpunkte übrig"-Hinweis ist nur im Bearbeitungsmodus relevant. */
   body:not(.is-editing) .info-tooltip.budget-tt { display: none !important; }
   .talent-row .attr-name.tooltip-anchor { cursor: help; }
-  .talent-row .attr-name.tooltip-anchor .code { border-bottom: 1px dotted var(--muted); }
   .talent-row .attr-cell.tooltip-anchor input[readonly] { cursor: help; }
 
   /* ===== Hilfe-Fenster ===== */
@@ -1594,6 +1685,7 @@
       <button type="button" class="luck-badge-top" id="luckBadgeTop" title="Verfügbare / Gesamt Glückspunkte">🍀 0/0</button>
       <div class="luck-badge-panel" id="luckBadgePanel"></div>
     </div>
+    <button type="button" id="worldsBtn"><svg class="books-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8"/><path d="M12 3a14 14 0 0 0 0 18a14 14 0 0 0 0-18z"/></svg> Welten</button>
     <button type="button" id="myCharsBtn"><svg class="books-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="4.2" rx="1.4" fill="#F5A83C" stroke="#1a1a1a" stroke-width="1.1"/><line x1="5" y1="5.1" x2="14" y2="5.1" stroke="#1a1a1a" stroke-width="0.9" stroke-linecap="round"/><rect x="2" y="8" width="20" height="4.2" rx="1.4" fill="#E8564C" stroke="#1a1a1a" stroke-width="1.1"/><line x1="5" y1="10.1" x2="14" y2="10.1" stroke="#1a1a1a" stroke-width="0.9" stroke-linecap="round"/><rect x="2" y="13" width="20" height="4.2" rx="1.4" fill="#5B9BD5" stroke="#1a1a1a" stroke-width="1.1"/><line x1="5" y1="15.1" x2="14" y2="15.1" stroke="#1a1a1a" stroke-width="0.9" stroke-linecap="round"/><path d="M17.5 13v5.5l1.5-1 1.5 1V13z" fill="#E8564C" stroke="#1a1a1a" stroke-width="0.8"/></svg> Meine Charaktere</button>
     <button type="button" id="newCharBtn">+ Neuer Charakter</button>
   </div>
@@ -1970,11 +2062,27 @@
     </div>
   </div>
 
+  <div class="uni-overlay" id="uniOverlay">
+    <div class="uni-panel">
+      <div class="uni-head">
+        <h2>Welten</h2>
+        <button type="button" class="lib-close" id="uniCloseBtn" aria-label="Schließen">✕</button>
+      </div>
+      <p class="uni-sub">Wähle ein RPG-Universum, um zu seinen Charakteren zu kommen.</p>
+      <div class="uni-grid" id="uniGrid"></div>
+    </div>
+  </div>
+  <input type="file" id="uniCoverInput" accept="image/*" hidden>
+
   <div class="lib-overlay" id="libOverlay">
     <div class="lib-panel">
       <div class="lib-head">
         <h2>Meine Charaktere</h2>
         <button type="button" class="lib-close" id="libCloseBtn" aria-label="Schließen">✕</button>
+      </div>
+      <div class="lib-context" id="libContext">
+        <button type="button" id="libBackToUniBtn">← Welten</button>
+        <span class="lib-context-name">Welt: <strong id="libContextName"></strong></span>
       </div>
       <div class="lib-actions">
         <button type="button" id="libNewBtn">+ Neuer Charakter</button>
@@ -4116,7 +4224,7 @@
 
   libCloseBtn.addEventListener("click", closeLibrary);
   libOverlay.addEventListener("click", function(e){ if (e.target === libOverlay) closeLibrary(); });
-  myCharsBtn.addEventListener("click", openLibrary);
+  myCharsBtn.addEventListener("click", function(){ clearUniverseFilter(); openLibrary(); });
 
   /* ===================== Charakter-Vollansicht (alle Seiten wie ein PDF) ===================== */
   var sheetViewBar = document.getElementById("sheetViewBar");
@@ -4164,10 +4272,11 @@
     return name === null ? null : (name.trim() || "Neuer Charakter");
   }
 
-  function startNewCharacter(){
+  function startNewCharacter(presetUniverse){
     var name = promptNewCharacterName();
     if (name === null) return;
     var data = defaultCharacterData();
+    if (typeof presetUniverse === "string" && presetUniverse) data.universe = presetUniverse;
     createCharacter(name, data).then(function(ref){
       setActiveCharacter(ref.id, name, data);
       setEditMode(true);
@@ -4178,7 +4287,248 @@
     });
   }
   newCharBtn.addEventListener("click", startNewCharacter);
-  libNewBtn.addEventListener("click", startNewCharacter);
+  libNewBtn.addEventListener("click", function(){ startNewCharacter(libUniverseName || ""); });
+
+  /* ===================== Welten (RPG-Universen) =====================
+     Eine Welt ist zunaechst nur der Freitext im Charakterfeld "RPG-Universum".
+     Zusaetzliche Angaben (Titelbild) liegen als Karte im Nutzerdokument, damit
+     eine Welt auch ohne Charaktere existieren kann. Verglichen wird ueber einen
+     normalisierten Schluessel, damit "Aventurien" und "aventurien" dieselbe Welt sind. */
+  var uniOverlay = document.getElementById("uniOverlay");
+  var uniGrid = document.getElementById("uniGrid");
+  var uniCloseBtn = document.getElementById("uniCloseBtn");
+  var uniCoverInput = document.getElementById("uniCoverInput");
+  var worldsBtn = document.getElementById("worldsBtn");
+  var libContext = document.getElementById("libContext");
+  var libContextName = document.getElementById("libContextName");
+  var libBackToUniBtn = document.getElementById("libBackToUniBtn");
+
+  var universeMeta = {};        // slug -> { name, cover }
+  var libUniverseFilter = null; // slug oder null (= alle Charaktere)
+  var libUniverseName = "";     // Klarname der gefilterten Welt
+  var uniCoverTarget = null;    // slug, fuer den gerade ein Titelbild gewaehlt wird
+
+  /* Titelbild klein halten: alle Welten teilen sich das Nutzerdokument,
+     und ein Firestore-Dokument darf hoechstens 1 MB gross werden. */
+  var UNI_COVER_MAX_BYTES = 90000;
+  var UNI_META_BUDGET = 700000;
+
+  function universeSlug(name){
+    return String(name || "").trim().toLowerCase().replace(/\s+/g, " ");
+  }
+
+  function loadUniverseMeta(){
+    return userDocRef().get().then(function(snap){
+      universeMeta = (snap.exists && snap.data().universes) || {};
+      return universeMeta;
+    }).catch(function(){ universeMeta = {}; return universeMeta; });
+  }
+
+  function saveUniverseMeta(){
+    return userDocRef().set({ universes: universeMeta }, { merge: true });
+  }
+
+  function universeMetaBytes(){
+    try { return JSON.stringify(universeMeta).length; } catch(e){ return 0; }
+  }
+
+  function openUniverses(){
+    uniOverlay.classList.add("show");
+    renderUniverses();
+  }
+  function closeUniverses(){ uniOverlay.classList.remove("show"); }
+
+  function renderUniverses(){
+    uniGrid.innerHTML = '<div class="uni-empty">Lädt …</div>';
+    Promise.all([loadUniverseMeta(), charsColRef().get()]).then(function(res){
+      var snap = res[1];
+      var worlds = {}; // slug -> { name, count, cover }
+
+      Object.keys(universeMeta).forEach(function(slug){
+        var meta = universeMeta[slug] || {};
+        worlds[slug] = { name: meta.name || slug, count: 0, cover: meta.cover || null };
+      });
+      snap.forEach(function(docSnap){
+        var d = docSnap.data();
+        var raw = (d.data && d.data.universe) || "";
+        var slug = universeSlug(raw);
+        if (!slug) return;
+        if (!worlds[slug]) worlds[slug] = { name: raw.trim(), count: 0, cover: null };
+        worlds[slug].count++;
+      });
+
+      var slugs = Object.keys(worlds).sort(function(a, b){
+        return worlds[a].name.localeCompare(worlds[b].name, "de");
+      });
+
+      uniGrid.innerHTML = "";
+      slugs.forEach(function(slug){ uniGrid.appendChild(buildUniverseCard(slug, worlds[slug])); });
+
+      var addBtn = document.createElement("button");
+      addBtn.type = "button";
+      addBtn.className = "uni-add";
+      addBtn.innerHTML = "<span>+</span><span>Neue Welt</span>";
+      addBtn.addEventListener("click", createUniverse);
+      uniGrid.appendChild(addBtn);
+
+      if (!slugs.length){
+        var hint = document.createElement("div");
+        hint.className = "uni-empty";
+        hint.textContent = "Noch keine Welten – leg eine an oder trag bei einem Charakter ein RPG-Universum ein.";
+        uniGrid.insertBefore(hint, uniGrid.firstChild);
+      }
+    }).catch(function(err){
+      uniGrid.innerHTML = '<div class="uni-empty">Welten konnten nicht geladen werden: ' +
+        escapeAttr(err && err.message ? err.message : String(err)) + '</div>';
+    });
+  }
+
+  function buildUniverseCard(slug, world){
+    var card = document.createElement("div");
+    card.className = "uni-card";
+    var coverHtml = world.cover
+      ? '<img class="uni-cover" src="' + world.cover + '" alt="">'
+      : '<div class="uni-cover-empty">🌍</div>';
+    var label = world.count === 1 ? "1 Charakter" : world.count + " Charaktere";
+    card.innerHTML =
+      '<button type="button" class="uni-open">' +
+        coverHtml +
+        '<div class="uni-body">' +
+          '<div class="uni-name">' + escapeAttr(world.name) + '</div>' +
+          '<div class="uni-count">' + label + '</div>' +
+        '</div>' +
+      '</button>' +
+      '<div class="uni-actions">' +
+        '<button type="button" data-action="cover">🖼 Titelbild</button>' +
+        '<button type="button" data-action="rename">Umbenennen</button>' +
+        (world.cover ? '<button type="button" data-action="uncover" class="danger">Bild entfernen</button>' : '') +
+      '</div>';
+
+    card.querySelector(".uni-open").addEventListener("click", function(){
+      openLibraryForUniverse(slug, world.name);
+    });
+    card.querySelector('[data-action="cover"]').addEventListener("click", function(){
+      uniCoverTarget = slug;
+      universeMeta[slug] = universeMeta[slug] || { name: world.name };
+      if (!universeMeta[slug].name) universeMeta[slug].name = world.name;
+      uniCoverInput.value = "";
+      uniCoverInput.click();
+    });
+    card.querySelector('[data-action="rename"]').addEventListener("click", function(){
+      renameUniverse(slug, world.name);
+    });
+    var uncoverBtn = card.querySelector('[data-action="uncover"]');
+    if (uncoverBtn) uncoverBtn.addEventListener("click", function(){
+      if (universeMeta[slug]) universeMeta[slug].cover = null;
+      saveUniverseMeta().then(renderUniverses).catch(function(err){
+        showStatus("Titelbild konnte nicht entfernt werden: " + (err && err.message ? err.message : err));
+      });
+    });
+    return card;
+  }
+
+  function createUniverse(){
+    var name = window.prompt("Name der Welt:", "");
+    if (name === null) return;
+    name = name.trim();
+    if (!name) return;
+    var slug = universeSlug(name);
+    if (universeMeta[slug]){
+      showStatus("Die Welt „" + name + "“ gibt es schon.");
+      return;
+    }
+    universeMeta[slug] = { name: name, cover: null };
+    saveUniverseMeta().then(function(){
+      renderUniverses();
+      showStatus("Welt „" + name + "“ angelegt.");
+    }).catch(function(err){
+      showStatus("Welt konnte nicht angelegt werden: " + (err && err.message ? err.message : err));
+    });
+  }
+
+  /* Umbenennen zieht die Charaktere mit, sonst zerfaellt die Welt in zwei. */
+  function renameUniverse(slug, currentName){
+    var next = window.prompt("Welt umbenennen:", currentName);
+    if (next === null) return;
+    next = next.trim();
+    if (!next || next === currentName) return;
+    var nextSlug = universeSlug(next);
+    if (nextSlug !== slug && universeMeta[nextSlug]){
+      showStatus("Die Welt „" + next + "“ gibt es schon.");
+      return;
+    }
+    var meta = universeMeta[slug] || { cover: null };
+    delete universeMeta[slug];
+    universeMeta[nextSlug] = { name: next, cover: meta.cover || null };
+
+    charsColRef().get().then(function(snap){
+      var jobs = [];
+      snap.forEach(function(docSnap){
+        var d = docSnap.data();
+        if (universeSlug((d.data && d.data.universe) || "") !== slug) return;
+        var data = d.data || {};
+        data.universe = next;
+        jobs.push(charsColRef().doc(docSnap.id).update({ data: data }));
+      });
+      return Promise.all(jobs);
+    }).then(saveUniverseMeta).then(function(){
+      if (activeCharacterId){
+        var field = document.getElementById("rpg_universum");
+        if (field && universeSlug(field.value) === slug) field.value = next;
+      }
+      renderUniverses();
+      showStatus("Welt umbenannt in „" + next + "“.");
+    }).catch(function(err){
+      showStatus("Umbenennen fehlgeschlagen: " + (err && err.message ? err.message : err));
+    });
+  }
+
+  uniCoverInput.addEventListener("change", function(){
+    var file = uniCoverInput.files && uniCoverInput.files[0];
+    var slug = uniCoverTarget;
+    uniCoverTarget = null;
+    if (!file || !slug) return;
+    resizeImageFile(file, 700, 0.75, function(dataUrl){
+      var previous = universeMeta[slug].cover || null;
+      universeMeta[slug].cover = dataUrl;
+      if (universeMetaBytes() > UNI_META_BUDGET){
+        universeMeta[slug].cover = previous;
+        showStatus("Titelbild passt nicht mehr – zusammen sind die Titelbilder zu groß. Entferne zuerst eines.");
+        return;
+      }
+      saveUniverseMeta().then(function(){
+        renderUniverses();
+        showStatus("Titelbild gespeichert.");
+      }).catch(function(err){
+        universeMeta[slug].cover = previous;
+        showStatus("Titelbild konnte nicht gespeichert werden: " + (err && err.message ? err.message : err));
+      });
+    }, UNI_COVER_MAX_BYTES);
+  });
+
+  function openLibraryForUniverse(slug, name){
+    libUniverseFilter = slug;
+    libUniverseName = name;
+    libContextName.textContent = name;
+    libContext.classList.add("show");
+    closeUniverses();
+    openLibrary();
+  }
+
+  function clearUniverseFilter(){
+    libUniverseFilter = null;
+    libUniverseName = "";
+    libContext.classList.remove("show");
+  }
+
+  worldsBtn.addEventListener("click", openUniverses);
+  uniCloseBtn.addEventListener("click", closeUniverses);
+  uniOverlay.addEventListener("click", function(e){ if (e.target === uniOverlay) closeUniverses(); });
+  libBackToUniBtn.addEventListener("click", function(){
+    clearUniverseFilter();
+    closeLibrary();
+    openUniverses();
+  });
 
   function formatUpdatedAt(ts){
     if (!ts || !ts.toDate) return "";
@@ -4274,6 +4624,12 @@
       }
       var entries = [];
       snap.forEach(function(docSnap){ entries.push(docSnap); });
+      if (libUniverseFilter){
+        entries = entries.filter(function(docSnap){
+          var d = docSnap.data();
+          return universeSlug((d.data && d.data.universe) || "") === libUniverseFilter;
+        });
+      }
       if (libSearchQuery){
         entries = entries.filter(function(docSnap){
           var d = docSnap.data();
@@ -4283,7 +4639,11 @@
         });
       }
       if (!entries.length){
-        libList.innerHTML = '<div class="lib-empty">Keine Charaktere gefunden für „'+escapeAttr(libSearchInput.value.trim())+'".</div>';
+        if (libUniverseFilter && !libSearchQuery){
+          libList.innerHTML = '<div class="lib-empty">In dieser Welt gibt es noch keine Charaktere – leg oben einen neuen an.</div>';
+        } else {
+          libList.innerHTML = '<div class="lib-empty">Keine Charaktere gefunden für „'+escapeAttr(libSearchInput.value.trim())+'".</div>';
+        }
         return;
       }
       entries.sort(function(a, b){
