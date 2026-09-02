@@ -211,12 +211,19 @@
   }
   .sheet-view-bar button:hover { background: #fff; }
   .sheet-view-title { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 19px; font-weight: 600; color: var(--accent-strong); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sheet-view-dl-btn {
+    margin-left: auto; flex-shrink: 0;
+    width: 32px; height: 32px; padding: 0 !important;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50% !important; opacity: 0.6;
+  }
+  .sheet-view-dl-btn:hover { opacity: 1; }
+  .sheet-view-dl-btn svg { width: 15px; height: 15px; }
 
   body.sheet-view-mode .sheet-view-bar { display: flex; }
   body.sheet-view-mode .sidebar-toggle,
   body.sheet-view-mode .app-shell .sidebar,
   body.sheet-view-mode .sidebar-backdrop,
-  body.sheet-view-mode .dice-fab,
   body.sheet-view-mode .user-bar {
     display: none !important;
   }
@@ -916,6 +923,9 @@
   }
   .user-bar button:hover { background: rgba(255,255,255,0.95); }
   .user-bar .save-indicator { font-style: italic; margin-right: auto; }
+  .people-icon { width: 15px; height: 15px; fill: currentColor; vertical-align: -3px; }
+  .books-icon { width: 17px; height: 17px; vertical-align: -4px; }
+  #myCharsBtn .books-icon { margin-right: 2px; }
   #myCharsBtn, #newCharBtn {
     border: none !important;
     color: #fff !important;
@@ -1112,6 +1122,18 @@
     background: var(--accent); color: #fff; font-family: inherit; font-weight: 700; font-size: 14.5px; cursor: pointer;
   }
   .roll-btn:hover { background: var(--accent-strong); }
+
+  .roll-panel-history { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px; }
+  .roll-panel-history-head { font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 8px; }
+  .roll-panel-history-list { max-height: 220px; overflow-y: auto; padding-right: 2px; }
+  .roll-panel-history-list .rollpage-entry { padding: 7px 10px; gap: 8px; }
+  .roll-panel-history-list .rollpage-avatar { width: 28px; height: 28px; }
+  .roll-panel-history-list .rollpage-avatar-placeholder { font-size: 13px; }
+  .roll-panel-history-list .rollpage-title { font-size: 12px; }
+  .roll-panel-history-list .rollpage-detail { font-size: 11px; }
+  .roll-panel-history-list .rh-tag { font-size: 10px; padding: 2px 7px; }
+  .roll-panel-history-list .rollpage-time { font-size: 10px; }
+  .roll-panel-history-list .lib-empty { padding: 10px 0; font-size: 12px; }
 
   .rh-tag { font-weight: 700; padding: 3px 9px; border-radius: 999px; font-size: 11px; flex-shrink: 0; }
   .rh-tag.success { background: #E4F3E8; color: #1E7A3D; }
@@ -1360,17 +1382,17 @@
   <div id="appRoot" class="app-root">
 
   <div class="user-bar" id="userBar">
-    <span class="luck-badge-top" id="luckBadgeTop" title="Verfügbare / Gesamt Glückspunkte">🍀 0/0</span>
-    <button type="button" id="editToggleBtn" class="edit-toggle-btn">✎ Bearbeiten</button>
-    <span class="save-indicator" id="saveIndicator"></span>
     <div class="online-wrap">
-      <button type="button" id="onlineBtn">👥 0</button>
+      <button type="button" id="onlineBtn"><svg class="people-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M9 13c-4 0-7 2.5-7 6v1h14v-1c0-3.5-3-6-7-6z"/><circle cx="17" cy="8" r="3"/><path d="M17 13c-1 0-2 .15-2.85.55C15.9 15 17 17 17 19.2V20h6v-1c0-3-2.7-6-6-6z"/></svg> <span id="onlineCount">0</span></button>
       <div class="online-panel" id="onlinePanel">
         <div class="online-panel-head">Online</div>
         <div class="online-list" id="onlineList"></div>
       </div>
     </div>
-    <button type="button" id="myCharsBtn">📚 Meine Charaktere</button>
+    <button type="button" id="editToggleBtn" class="edit-toggle-btn">✎ Bearbeiten</button>
+    <span class="save-indicator" id="saveIndicator"></span>
+    <span class="luck-badge-top" id="luckBadgeTop" title="Verfügbare / Gesamt Glückspunkte">🍀 0/0</span>
+    <button type="button" id="myCharsBtn"><svg class="books-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="4.2" rx="1.4" fill="#F5A83C" stroke="#1a1a1a" stroke-width="1.1"/><line x1="5" y1="5.1" x2="14" y2="5.1" stroke="#1a1a1a" stroke-width="0.9" stroke-linecap="round"/><rect x="2" y="8" width="20" height="4.2" rx="1.4" fill="#E8564C" stroke="#1a1a1a" stroke-width="1.1"/><line x1="5" y1="10.1" x2="14" y2="10.1" stroke="#1a1a1a" stroke-width="0.9" stroke-linecap="round"/><rect x="2" y="13" width="20" height="4.2" rx="1.4" fill="#5B9BD5" stroke="#1a1a1a" stroke-width="1.1"/><line x1="5" y1="15.1" x2="14" y2="15.1" stroke="#1a1a1a" stroke-width="0.9" stroke-linecap="round"/><path d="M17.5 13v5.5l1.5-1 1.5 1V13z" fill="#E8564C" stroke="#1a1a1a" stroke-width="0.8"/></svg> Meine Charaktere</button>
     <button type="button" id="newCharBtn">+ Neuer Charakter</button>
   </div>
 
@@ -1480,7 +1502,6 @@
 
       <div class="help-section" id="help-sec-uebersicht">
         <h3>6. Übersicht: Welches Talent braucht welche Attribute?</h3>
-        <p>Diese Tabelle zeigt, aus welchen zwei Attributen sich jedes Talent zusammensetzt (dieselbe Info wie beim Hover in der Talente-Tabelle):</p>
         <div class="help-talent-table">
           <div class="htt-head"><div>Talent</div><div>Setzt sich zusammen aus</div></div>
           <div id="helpTalentTableRows"></div>
@@ -1492,6 +1513,9 @@
   <div class="sheet-view-bar" id="sheetViewBar">
     <button type="button" id="sheetViewBackBtn">← Zurück zur Bibliothek</button>
     <span class="sheet-view-title" id="sheetViewTitle"></span>
+    <button type="button" id="sheetViewDlBtn" class="sheet-view-dl-btn" title="Als PDF herunterladen" aria-label="Als PDF herunterladen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+    </button>
   </div>
 
   <button type="button" class="sidebar-toggle" id="sidebarToggleBtn" aria-label="Menü öffnen">☰</button>
@@ -1735,7 +1759,11 @@
       </div>
 
       <button type="button" class="roll-btn" id="rollBtn">🎲 Würfeln</button>
-      <p class="roll-hint" style="text-align:center; margin-top:10px;">Der vollständige Verlauf steht im Reiter „Würfelverlauf".</p>
+
+      <div class="roll-panel-history">
+        <div class="roll-panel-history-head">Verlauf</div>
+        <div class="rollpage-list roll-panel-history-list" id="rollPanelHistoryList"></div>
+      </div>
     </div>
   </div>
 
@@ -3874,6 +3902,7 @@
     window.scrollTo({ top: 0 });
   }
   sheetViewBackBtn.addEventListener("click", closeCharacterPreview);
+  document.getElementById("sheetViewDlBtn").addEventListener("click", function(){ dlBtn.click(); });
 
   function promptNewCharacterName(){
     var name = window.prompt("Name des neuen Charakters:", "Neuer Charakter");
@@ -4117,6 +4146,8 @@
   var rollResultEl = document.getElementById("rollResult");
   var rollBtn = document.getElementById("rollBtn");
   var rollHistoryPageEl = document.getElementById("rollHistoryPage");
+  var rollPanelHistoryEl = document.getElementById("rollPanelHistoryList");
+  var ROLL_PANEL_HISTORY_LIMIT = 8;
   var clearRollHistoryBtn = document.getElementById("clearRollHistoryBtn");
   var luckAvailableDisplay = document.getElementById("luckAvailableDisplay");
   var luckTotalDisplay = document.getElementById("luckTotalDisplay");
@@ -4231,40 +4262,48 @@
     return { success: roll <= gesamt, detail: "Wurf " + roll + " ≤ Wert " + gesamt };
   }
 
-  function renderRollHistory(){
-    rollHistoryPageEl.innerHTML = "";
-    if (!rollHistoryList.length){
-      rollHistoryPageEl.innerHTML = '<div class="lib-empty">Noch keine Würfe.</div>';
+  function buildRollHistoryRow(entry){
+    var row = document.createElement("div");
+    row.className = "rollpage-entry";
+    var rollDisplay = entry.sides === "2" ? formatD2(entry.roll) + " (" + entry.roll + ")" : entry.roll;
+    var whenStr = entry.createdAt ? formatUpdatedAt(entry.createdAt) : "";
+    var successState = (entry.success === null || entry.success === undefined) ? "plain" : (entry.success ? "success" : "fail");
+    var successLabel = (entry.success === null || entry.success === undefined) ? "Wurf" : (entry.success ? "Erfolg" : "Misserfolg");
+    var avatarHtml = entry.characterAvatar
+      ? '<img class="rollpage-avatar" src="' + entry.characterAvatar + '" alt="">'
+      : '<div class="rollpage-avatar rollpage-avatar-placeholder">🎲</div>';
+    row.innerHTML =
+      avatarHtml +
+      '<div class="rollpage-main">' +
+        '<div class="rollpage-title"><strong>' + escapeAttr(entry.characterName || "Unbenannt") + '</strong>' +
+          (entry.nickname ? ' <span class="rh-player">(' + escapeAttr(entry.nickname) + ')</span>' : '') +
+        '</div>' +
+        '<div class="rollpage-detail">' +
+          escapeAttr(entry.rollLabel ? entry.rollLabel : "Freier Wurf") + ' · ' + diceLabel(entry.sides) + ': ' + rollDisplay +
+          (entry.detail ? ' — ' + escapeAttr(entry.detail) : '') +
+          (entry.viaLuck ? ' <span class="rh-luck-tag">🍀 Glückspunkt</span>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="rollpage-meta">' +
+        '<span class="rh-tag ' + successState + '">' + successLabel + '</span>' +
+        '<span class="rollpage-time">' + escapeAttr(whenStr) + '</span>' +
+      '</div>';
+    return row;
+  }
+
+  function renderRollHistoryInto(container, list){
+    if (!container) return;
+    container.innerHTML = "";
+    if (!list.length){
+      container.innerHTML = '<div class="lib-empty">Noch keine Würfe.</div>';
       return;
     }
-    rollHistoryList.forEach(function(entry){
-      var row = document.createElement("div");
-      row.className = "rollpage-entry";
-      var rollDisplay = entry.sides === "2" ? formatD2(entry.roll) + " (" + entry.roll + ")" : entry.roll;
-      var whenStr = entry.createdAt ? formatUpdatedAt(entry.createdAt) : "";
-      var successState = (entry.success === null || entry.success === undefined) ? "plain" : (entry.success ? "success" : "fail");
-      var successLabel = (entry.success === null || entry.success === undefined) ? "Wurf" : (entry.success ? "Erfolg" : "Misserfolg");
-      var avatarHtml = entry.characterAvatar
-        ? '<img class="rollpage-avatar" src="' + entry.characterAvatar + '" alt="">'
-        : '<div class="rollpage-avatar rollpage-avatar-placeholder">🎲</div>';
-      row.innerHTML =
-        avatarHtml +
-        '<div class="rollpage-main">' +
-          '<div class="rollpage-title"><strong>' + escapeAttr(entry.characterName || "Unbenannt") + '</strong>' +
-            (entry.nickname ? ' <span class="rh-player">(' + escapeAttr(entry.nickname) + ')</span>' : '') +
-          '</div>' +
-          '<div class="rollpage-detail">' +
-            escapeAttr(entry.rollLabel ? entry.rollLabel : "Freier Wurf") + ' · ' + diceLabel(entry.sides) + ': ' + rollDisplay +
-            (entry.detail ? ' — ' + escapeAttr(entry.detail) : '') +
-            (entry.viaLuck ? ' <span class="rh-luck-tag">🍀 Glückspunkt</span>' : '') +
-          '</div>' +
-        '</div>' +
-        '<div class="rollpage-meta">' +
-          '<span class="rh-tag ' + successState + '">' + successLabel + '</span>' +
-          '<span class="rollpage-time">' + escapeAttr(whenStr) + '</span>' +
-        '</div>';
-      rollHistoryPageEl.appendChild(row);
-    });
+    list.forEach(function(entry){ container.appendChild(buildRollHistoryRow(entry)); });
+  }
+
+  function renderRollHistory(){
+    renderRollHistoryInto(rollHistoryPageEl, rollHistoryList);
+    renderRollHistoryInto(rollPanelHistoryEl, rollHistoryList.slice(0, ROLL_PANEL_HISTORY_LIMIT));
   }
 
   function clearRollHistory(){
@@ -4494,7 +4533,7 @@
       var entry = onlineMap[uid];
       if (now - entry.lastSeen < ONLINE_THRESHOLD_MS) names.push(entry.nickname);
     });
-    onlineBtn.textContent = "👥 " + names.length;
+    document.getElementById("onlineCount").textContent = names.length;
     onlineList.innerHTML = "";
     if (!names.length){
       onlineList.innerHTML = '<div class="online-empty">Niemand sonst online.</div>';
