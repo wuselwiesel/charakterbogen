@@ -1152,6 +1152,8 @@
     border-top-color: #3B3350;
   }
   .tooltip-anchor:hover .info-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
+  /* Ein aktiver Fehler/Warnung (rot/orange) hat Vorrang vor dem Hover-Infotext (z. B. Budget-Hinweis) */
+  .tooltip-anchor:hover .attr-tooltip.show ~ .info-tooltip { opacity: 0 !important; }
   .talent-row .attr-name.tooltip-anchor { cursor: help; }
   .talent-row .attr-name.tooltip-anchor .code { border-bottom: 1px dotted var(--muted); }
   .talent-row .attr-cell.tooltip-anchor input[readonly] { cursor: help; }
@@ -1450,8 +1452,10 @@
         <h3>4. Talentpunkte selbst verteilen (Bonus)</h3>
         <p>Zusätzlich zum automatischen Basiswert hast du <strong>20 Talentpunkte</strong>, die du frei als „Bonus" auf die Talente verteilen darfst, um deinen Charakter individueller zu machen.</p>
         <ul>
-          <li>Jeder Talent-Bonus muss zwischen 0 und 19 liegen.</li>
-          <li>Basiswert + Bonus darf zusammen nie über 19 gehen – ist die Summe höher, wird sie einfach bei 19 gedeckelt. Das Bonus-Feld zeigt dafür eine orange Warnung, damit du siehst, dass der Bonus so nicht voll wirkt.</li>
+          <li>Jeder Talent-Bonus muss zwischen <strong>-3 und 19</strong> liegen. Ein negativer Bonus (bis -3) senkt den Gesamtwert dieses Talents, gibt dir dafür aber wieder Punkte frei, die du bei anderen Talenten einsetzen kannst.</li>
+          <li>Insgesamt darfst du nie mehr als 20 Talentpunkte verteilt haben. Fährst du mit der Maus über ein Bonus-Feld, zeigt dir ein kleines Popup jederzeit, wie viele Punkte du noch übrig hast – auch beim Bearbeiten, ohne extra zur Summenzeile scrollen zu müssen.</li>
+          <li>Überschreitest du die 20 Punkte, wird das zuletzt bearbeitete Bonus-Feld orange markiert und zeigt, um wie viel du gerade drüber bist. Solange das der Fall ist, <strong>kann nicht gespeichert werden</strong> – erst wenn wieder höchstens 20 Punkte verteilt sind, geht das Speichern normal weiter.</li>
+          <li>Basiswert + Bonus darf zusammen nie über 19 gehen – ist die Summe höher, wird sie einfach bei 19 gedeckelt. Das Bonus-Feld zeigt dafür eine eigene orange Warnung, damit du siehst, dass der Bonus so nicht voll wirkt.</li>
           <li>Gesamtwert des Talents = Basiswert + Bonus (maximal 19). Das ist der Wert, gegen den du beim „Ohne SG"-Würfeln antrittst.</li>
         </ul>
       </div>
@@ -2287,7 +2291,7 @@
     row.innerHTML =
       '<div class="attr-name tooltip-anchor'+tb+'"><span class="code">'+name+'</span><div class="info-tooltip">'+attrNames+'</div></div>' +
       '<div class="attr-cell tooltip-anchor'+tb+'"><input type="text" id="'+tid+'_basis" readonly tabindex="-1"><div class="info-tooltip" id="'+tid+'_basis_info_tt"></div></div>' +
-      '<div class="attr-cell tooltip-anchor'+tb+'"><input type="number" id="'+tid+'_bonus" inputmode="numeric" min="0" max="19" step="1"><div class="attr-tooltip" id="'+tid+'_bonus_tt"></div></div>' +
+      '<div class="attr-cell tooltip-anchor'+tb+'"><input type="number" id="'+tid+'_bonus" inputmode="numeric" min="-3" max="19" step="1"><div class="attr-tooltip" id="'+tid+'_bonus_tt"></div><div class="info-tooltip" id="'+tid+'_bonus_budget_tt"></div></div>' +
       '<div class="attr-cell"><input type="text" id="'+tid+'_gesamt" readonly tabindex="-1"></div>';
     talentWrap.appendChild(row);
   });
@@ -2462,7 +2466,10 @@
 
   /* ===================== Talente: Live-Berechnung & Validierung ===================== */
   var talentHasErrors = false;
-  var TALENT_BONUS_MIN = 0, TALENT_BONUS_MAX = 19, TALENT_BONUS_BUDGET = 20;
+  var talentBudgetExceeded = false;
+  var TALENT_BONUS_MIN = -3, TALENT_BONUS_MAX = 19, TALENT_BONUS_BUDGET = 20;
+  var lastEditedTalentBonusTid = null;
+  var budgetCulpritTid = null;
 
   function updateTalentBudgetNote(remaining){
     var note = document.getElementById("talentBudgetNote");
@@ -2489,6 +2496,17 @@
   function recalcTalents(){
     var anyFieldError = false;
     var basisVals = [], bonusVals = [], gesamtVals = [];
+
+    /* Vorherige "Budget überschritten"-Markierung erst mal zurücksetzen - der Haupt-Durchlauf
+       unten setzt field-warning ggf. ohnehin neu, falls das Feld weiterhin einen eigenen
+       Basiswert+Bonus>19-Grund dafür hat. */
+    if (budgetCulpritTid){
+      var prevEl = document.getElementById(budgetCulpritTid + "_bonus");
+      var prevTt = document.getElementById(budgetCulpritTid + "_bonus_tt");
+      if (prevEl) prevEl.classList.remove("field-warning");
+      if (prevTt) { prevTt.classList.remove("show", "warning"); }
+      budgetCulpritTid = null;
+    }
 
     TALENT_LIST.forEach(function(name){
       var tid = talentSlug(name);
@@ -2552,14 +2570,46 @@
     var remaining = TALENT_BONUS_BUDGET - bonusSum;
     updateTalentBudgetNote(remaining);
 
-    talentHasErrors = anyFieldError || remaining < 0;
+    /* Hover-Hinweis auf jedem Bonus-Feld: wie viele Talentpunkte sind noch übrig?
+       So sieht man es direkt beim Bearbeiten, ohne zur Summenzeile scrollen zu müssen. */
+    TALENT_LIST.forEach(function(name){
+      var tid = talentSlug(name);
+      var budgetTt = document.getElementById(tid + "_bonus_budget_tt");
+      if (!budgetTt) return;
+      if (remaining > 0) {
+        budgetTt.textContent = "Noch " + remaining + " von " + TALENT_BONUS_BUDGET + " Talentpunkten übrig";
+      } else if (remaining === 0) {
+        budgetTt.textContent = "Alle " + TALENT_BONUS_BUDGET + " Talentpunkte verteilt";
+      } else {
+        budgetTt.textContent = (-remaining) + " Talentpunkt" + (-remaining === 1 ? "" : "e") + " zu viel verteilt";
+      }
+    });
+
+    /* Über dem Budget: das zuletzt bearbeitete Bonus-Feld direkt markieren, damit man
+       sofort sieht, wo man gerade zu viel eingetragen hat - ohne erst runterzuscrollen. */
+    if (remaining < 0 && lastEditedTalentBonusTid){
+      var culpritEl = document.getElementById(lastEditedTalentBonusTid + "_bonus");
+      var culpritTt = document.getElementById(lastEditedTalentBonusTid + "_bonus_tt");
+      if (culpritEl && culpritTt && !culpritEl.classList.contains("field-error") && !culpritEl.classList.contains("field-warning")){
+        culpritEl.classList.add("field-warning");
+        culpritTt.textContent = "Talentpunkte-Budget überschritten: " + (-remaining) + " Punkt" + (-remaining === 1 ? "" : "e") + " zu viel verteilt (max. " + TALENT_BONUS_BUDGET + ")";
+        culpritTt.classList.add("show");
+        budgetCulpritTid = lastEditedTalentBonusTid;
+      }
+    }
+
+    talentBudgetExceeded = remaining < 0;
+    talentHasErrors = anyFieldError || talentBudgetExceeded;
     updateDownloadButtonState();
     scheduleAutosave();
   }
 
   TALENT_LIST.forEach(function(name){
     var tid = talentSlug(name);
-    document.getElementById(tid + "_bonus").addEventListener("input", recalcTalents);
+    document.getElementById(tid + "_bonus").addEventListener("input", function(){
+      lastEditedTalentBonusTid = tid;
+      recalcTalents();
+    });
   });
   recalc();
 
@@ -3705,6 +3755,14 @@
 
   function doAutosave(){
     if (!currentUser || !activeCharacterId) return;
+    if (talentBudgetExceeded){
+      setSaveIndicator("");
+      showStatus(
+        "Talentpunkte-Budget überschritten – bitte zuerst reduzieren. Es kann erst wieder gespeichert werden, wenn nicht mehr als " + TALENT_BONUS_BUDGET + " Talentpunkte insgesamt verteilt sind.",
+        true
+      );
+      return;
+    }
     var data = collectCharacterData();
     if (estimateSize(data) > 900000){
       setSaveIndicator("");
