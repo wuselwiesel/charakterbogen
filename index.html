@@ -565,6 +565,24 @@
     border-top-color: #A3312F;
   }
   .attr-tooltip.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .attr-tooltip.warning { background: #B5651D; box-shadow: 0 6px 16px -4px rgba(181,101,29,0.5); }
+  .attr-tooltip.warning::after { border-top-color: #B5651D; }
+  .attr-row input.field-warning, .attr-sum input.field-warning {
+    border-color: #B5651D !important;
+    box-shadow: 0 0 0 2px rgba(181,101,29,0.18);
+    color: #B5651D;
+  }
+  /* Erste Tabellenzeile: Tooltip nach unten statt oben, sonst wird er vom
+     abgerundeten .attr-table (overflow:hidden) oben abgeschnitten. */
+  .tooltip-below .attr-tooltip, .tooltip-below .info-tooltip {
+    bottom: auto; top: calc(100% + 9px); transform: translateX(-50%) translateY(-4px);
+  }
+  .tooltip-below .attr-tooltip::after, .tooltip-below .info-tooltip::after {
+    top: auto; bottom: 100%; border-top-color: transparent;
+  }
+  .tooltip-below .attr-tooltip::after { border-bottom-color: #A3312F; }
+  .tooltip-below .attr-tooltip.warning::after { border-bottom-color: #B5651D; }
+  .tooltip-below .info-tooltip::after { border-bottom-color: #3B3350; }
   .attr-row input.field-error,
   .attr-sum input.field-error {
     border-color: #A3312F !important;
@@ -1377,10 +1395,10 @@
 
       <div class="help-section" id="help-sec-talentpunkte">
         <h3>4. Talentpunkte selbst verteilen (Bonus)</h3>
-        <p>Zusätzlich zum automatischen Basiswert hast du <strong>35 Talentpunkte</strong>, die du frei als „Bonus" auf die Talente verteilen darfst, um deinen Charakter individueller zu machen.</p>
+        <p>Zusätzlich zum automatischen Basiswert hast du <strong>20 Talentpunkte</strong>, die du frei als „Bonus" auf die Talente verteilen darfst, um deinen Charakter individueller zu machen.</p>
         <ul>
           <li>Jeder Talent-Bonus muss zwischen 0 und 19 liegen.</li>
-          <li>Basiswert + Bonus darf zusammen nie über 19 gehen – ist die Summe höher, wird sie einfach bei 19 gedeckelt.</li>
+          <li>Basiswert + Bonus darf zusammen nie über 19 gehen – ist die Summe höher, wird sie einfach bei 19 gedeckelt. Das Bonus-Feld zeigt dafür eine orange Warnung, damit du siehst, dass der Bonus so nicht voll wirkt.</li>
           <li>Gesamtwert des Talents = Basiswert + Bonus (maximal 19). Das ist der Wert, gegen den du beim „Ohne SG"-Würfeln antrittst.</li>
         </ul>
       </div>
@@ -1550,7 +1568,7 @@
           <div class="attr-cell"><input id="talent_summe_gesamt" readonly tabindex="-1"></div>
         </div>
       </div>
-      <div class="note-box" id="talentBudgetNote">35 Punkte zu verteilen</div>
+      <div class="note-box" id="talentBudgetNote">20 Punkte zu verteilen</div>
     </section>
 
     <!-- SEITE 6: NOTIZEN -->
@@ -2132,18 +2150,19 @@
 
   /* ===================== Attributwerte rendern ===================== */
   var attrWrap = document.getElementById("attrRows");
-  ATTR_TABLE.forEach(function(a){
+  ATTR_TABLE.forEach(function(a, idx){
     var isLuck = a.code === "GL";
+    var tb = idx === 0 ? " tooltip-below" : "";
     var row = document.createElement("div");
     row.className = "attr-row" + (isLuck ? " attr-row-gl" : "");
     row.style.background = a.color;
     row.innerHTML =
       '<div class="attr-name"><span class="code">'+a.code+'</span><span class="name">'+a.name+'</span></div>' +
-      '<div class="attr-cell tooltip-anchor"><input type="number" id="'+a.code+'_basis" inputmode="numeric" min="1" max="19" step="1"><div class="attr-tooltip" id="'+a.code+'_basis_tt"></div></div>' +
+      '<div class="attr-cell tooltip-anchor'+tb+'"><input type="number" id="'+a.code+'_basis" inputmode="numeric" min="1" max="19" step="1"><div class="attr-tooltip" id="'+a.code+'_basis_tt"></div></div>' +
       (isLuck
-        ? '<div class="attr-cell attr-cell-na tooltip-anchor"><input type="text" id="GL_bonus" value="" disabled placeholder="–" tabindex="-1"><div class="attr-tooltip" id="GL_bonus_tt"></div></div>' +
-          '<div class="attr-cell attr-cell-na tooltip-anchor"><input type="text" id="GL_gesamt" readonly disabled placeholder="–" tabindex="-1"><div class="info-tooltip">Glück hat keinen Bonus und keinen Gesamtwert – der Basiswert ergibt direkt deine Glückspunkte (siehe unten).</div></div>'
-        : '<div class="attr-cell tooltip-anchor"><input type="number" id="'+a.code+'_bonus" inputmode="numeric" min="-19" max="19" step="1"><div class="attr-tooltip" id="'+a.code+'_bonus_tt"></div></div>' +
+        ? '<div class="attr-cell attr-cell-na tooltip-anchor'+tb+'"><input type="text" id="GL_bonus" value="" disabled placeholder="–" tabindex="-1"><div class="attr-tooltip" id="GL_bonus_tt"></div></div>' +
+          '<div class="attr-cell attr-cell-na tooltip-anchor'+tb+'"><input type="text" id="GL_gesamt" readonly disabled placeholder="–" tabindex="-1"><div class="info-tooltip">Glück hat keinen Bonus und keinen Gesamtwert – der Basiswert ergibt direkt deine Glückspunkte (siehe unten).</div></div>'
+        : '<div class="attr-cell tooltip-anchor'+tb+'"><input type="number" id="'+a.code+'_bonus" inputmode="numeric" min="-19" max="19" step="1"><div class="attr-tooltip" id="'+a.code+'_bonus_tt"></div></div>' +
           '<div class="attr-cell"><input type="text" id="'+a.code+'_gesamt" readonly tabindex="-1"></div>');
     attrWrap.appendChild(row);
   });
@@ -2205,12 +2224,13 @@
     var tid = talentSlug(name);
     var attrs = TALENT_ATTR_MAP[name] || [];
     var attrNames = attrs.map(function(c){ return ATTR_NAME_BY_CODE[c] || c; }).join(" + ");
+    var tb = idx === 0 ? " tooltip-below" : "";
     var row = document.createElement("div");
     row.className = "attr-row talent-row" + (idx % 2 === 1 ? " row-alt" : "");
     row.innerHTML =
-      '<div class="attr-name tooltip-anchor"><span class="code">'+name+'</span><div class="info-tooltip">'+name+' = '+attrNames+'</div></div>' +
-      '<div class="attr-cell tooltip-anchor"><input type="text" id="'+tid+'_basis" readonly tabindex="-1"><div class="info-tooltip" id="'+tid+'_basis_info_tt"></div></div>' +
-      '<div class="attr-cell tooltip-anchor"><input type="number" id="'+tid+'_bonus" inputmode="numeric" min="0" max="19" step="1"><div class="attr-tooltip" id="'+tid+'_bonus_tt"></div></div>' +
+      '<div class="attr-name tooltip-anchor'+tb+'"><span class="code">'+name+'</span><div class="info-tooltip">'+attrNames+'</div></div>' +
+      '<div class="attr-cell tooltip-anchor'+tb+'"><input type="text" id="'+tid+'_basis" readonly tabindex="-1"><div class="info-tooltip" id="'+tid+'_basis_info_tt"></div></div>' +
+      '<div class="attr-cell tooltip-anchor'+tb+'"><input type="number" id="'+tid+'_bonus" inputmode="numeric" min="0" max="19" step="1"><div class="attr-tooltip" id="'+tid+'_bonus_tt"></div></div>' +
       '<div class="attr-cell"><input type="text" id="'+tid+'_gesamt" readonly tabindex="-1"></div>';
     talentWrap.appendChild(row);
   });
@@ -2385,7 +2405,7 @@
 
   /* ===================== Talente: Live-Berechnung & Validierung ===================== */
   var talentHasErrors = false;
-  var TALENT_BONUS_MIN = 0, TALENT_BONUS_MAX = 19, TALENT_BONUS_BUDGET = 35;
+  var TALENT_BONUS_MIN = 0, TALENT_BONUS_MAX = 19, TALENT_BONUS_BUDGET = 20;
 
   function updateTalentBudgetNote(remaining){
     var note = document.getElementById("talentBudgetNote");
@@ -2429,12 +2449,10 @@
       bEl.value = isNaN(basisNum) ? "" : String(basisNum);
 
       if (basisInfoTt){
-        var name1 = ATTR_NAME_BY_CODE[attrs[0]] || attrs[0];
-        var name2 = ATTR_NAME_BY_CODE[attrs[1]] || attrs[1];
         if (!isNaN(a1) && !isNaN(a2)){
-          basisInfoTt.textContent = name1 + " " + a1 + " + " + name2 + " " + a2 + " = " + (a1 + a2) + ", ÷ 2 = " + basisNum + " (gerundet)";
+          basisInfoTt.textContent = a1 + " + " + a2 + " ÷ 2 = " + basisNum;
         } else {
-          basisInfoTt.textContent = name1 + " und " + name2 + " müssen erst ausgefüllt sein.";
+          basisInfoTt.textContent = "noch nicht ausgefüllt";
         }
       }
 
@@ -2445,6 +2463,18 @@
 
       var boOk = boRaw !== "" && !boErr;
       var boNum = boOk ? parseInt(boRaw, 10) : NaN;
+
+      /* Bonus ist an sich gültig (0-19), aber Basiswert+Bonus wird bei 19 gedeckelt -
+         das soll sichtbar sein, ohne als harter Validierungsfehler zu zählen. */
+      var overCap = !boErr && !isNaN(basisNum) && boOk && (basisNum + boNum) > TALENT_BONUS_MAX;
+      boEl.classList.toggle("field-warning", overCap);
+      boTt.classList.toggle("warning", overCap);
+      if (overCap){
+        boTt.textContent = basisNum + " + " + boNum + " = " + (basisNum + boNum) + " > 19 – wird auf 19 gedeckelt";
+        boTt.classList.add("show");
+      } else if (!boErr) {
+        boTt.classList.remove("show");
+      }
 
       if (isNaN(basisNum)) {
         gEl.value = "";
