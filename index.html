@@ -1112,9 +1112,9 @@
   .help-toc a { color: var(--text); text-decoration: none; border-bottom: 1px dotted var(--muted); cursor: pointer; }
   .help-toc a:hover { color: var(--accent-strong); border-bottom-color: var(--accent-strong); }
 
-  .help-section { margin-bottom: 26px; scroll-margin-top: 10px; }
-  .help-section:last-child { margin-bottom: 0; }
-  .help-section h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 19px; color: var(--accent-strong); margin: 0 0 8px; padding-bottom: 6px; border-bottom: 2px solid var(--border); }
+  .help-section { margin-bottom: 20px; scroll-margin-top: 10px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .help-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .help-section h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 19px; color: var(--accent-strong); margin: 0 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--border); }
   .help-section p { font-size: 13.5px; line-height: 1.55; margin: 0 0 10px; }
   .help-section ul, .help-section ol.help-list { font-size: 13.5px; line-height: 1.55; margin: 0 0 10px; padding-left: 20px; }
   .help-section li { margin-bottom: 4px; }
@@ -1322,10 +1322,9 @@
   <div class="help-overlay" id="helpOverlay">
     <div class="help-panel">
       <div class="help-panel-head">
-        <h2>❓ Hilfe: Wie funktioniert das Spiel?</h2>
+        <h2>Hilfe: Wie funktioniert das System?</h2>
         <button type="button" class="help-close" id="helpCloseBtn" aria-label="Schließen">✕</button>
       </div>
-      <p class="help-sub">Eine einfache Erklärung des Würfel- und Talentsystems – von oben nach unten lesbar.</p>
 
       <div class="help-toc">
         <h3>Inhaltsverzeichnis</h3>
@@ -1341,16 +1340,16 @@
 
       <div class="help-section" id="help-sec-wuerfeln">
         <h3>1. Wie funktioniert das Würfeln?</h3>
-        <p>Klick unten rechts auf den 🎲-Button. Es gibt zwei verschiedene Arten von Proben, je nachdem, was du würfelst:</p>
+        <p>Klick unten rechts auf den 🎲-Button, wähl (optional) ein Attribut oder Talent aus und würfle. Es gibt zwei Modi – <strong>„Mit SG" ist dabei nur eine Option</strong>, kein festes Merkmal von Attributen oder Talenten. Du kannst jedes Attribut und jedes Talent sowohl „Mit SG" als auch „Ohne SG" würfeln. Standardmäßig ist „Ohne SG" ausgewählt.</p>
         <ul>
-          <li><strong>Proben „Mit SG" (für Attribute):</strong> Du würfelst einen W10 und zählst deinen Attribut-Gesamtwert dazu. Ist die Summe <strong>größer</strong> als der Schwierigkeitsgrad (SG), hast du es geschafft.</li>
-          <li><strong>Proben „Ohne SG" (für Talente):</strong> Du würfelst einen W20. Ist der Wurf <strong>kleiner oder gleich</strong> deinem Talent-Gesamtwert, hast du es geschafft.</li>
+          <li><strong>„Ohne SG" (Standard):</strong> Du würfelst einen W20. Ist der Wurf <strong>kleiner oder gleich</strong> deinem Gesamtwert, ist es ein Erfolg.</li>
+          <li><strong>„Mit SG" (optional):</strong> Du würfelst einen W10 und zählst deinen Gesamtwert dazu. Ist die Summe <strong>größer</strong> als der Schwierigkeitsgrad (SG), ist es ein Erfolg.</li>
         </ul>
         <div class="help-example">
-          <strong>Beispiel „Mit SG":</strong> Attribut-Gesamtwert 15, Schwierigkeitsgrad „Normal" (20), Wurf 8 → 15 + 8 = 23, das ist mehr als 20 → geschafft!<br><br>
-          <strong>Beispiel „Ohne SG":</strong> Talent-Gesamtwert 12, Wurf 9 → 9 ist kleiner als 12 → geschafft! Bei einem Wurf von 15 wäre es nicht geschafft, weil 15 größer als 12 ist.
+          <strong>Beispiel „Ohne SG":</strong> Gesamtwert 12, Wurf 9 → 9 ist kleiner als 12 → Erfolg! Bei einem Wurf von 15 wäre es ein Misserfolg, weil 15 größer als 12 ist.<br><br>
+          <strong>Beispiel „Mit SG":</strong> Gesamtwert 15, Schwierigkeitsgrad „Normal" (20), Wurf 8 → 15 + 8 = 23, das ist mehr als 20 → Erfolg!
         </div>
-        <p>Wählst du im Würfel-Fenster kein Attribut oder Talent aus („freier Wurf"), wird einfach nur gewürfelt – ohne „geschafft"/„nicht geschafft".</p>
+        <p>Das Ergebnis wird fett angezeigt: <strong style="color:#2E7D46;">Erfolg!</strong> in Grün oder <strong style="color:#B23A3A;">Misserfolg</strong> in Rot. Wählst du im Würfel-Fenster kein Attribut oder Talent aus („freier Wurf"), wird einfach nur gewürfelt – ohne Erfolg/Misserfolg.</p>
       </div>
 
       <div class="help-section" id="help-sec-attribute">
@@ -1432,7 +1431,7 @@
         <button class="tab-btn" data-page="notizen">Notizen</button>
         <button class="tab-btn" data-page="wuerfelverlauf">Würfelverlauf</button>
         <button class="tab-btn" data-page="kommentare">Feed</button>
-        <button class="tab-btn" id="helpTabBtn" type="button">❓ Hilfe</button>
+        <button class="tab-btn" id="helpTabBtn" type="button">Hilfe</button>
       </div>
 
       <div class="sidebar-footer">
@@ -1627,26 +1626,26 @@
         <select id="rollDiceType">
           <option value="2">d2 (Ja / Nein)</option>
           <option value="6">d6</option>
-          <option value="10" selected>d10</option>
-          <option value="20">d20</option>
+          <option value="10">d10</option>
+          <option value="20" selected>d20</option>
         </select>
       </div>
 
       <div class="roll-tabs" role="tablist">
-        <button type="button" class="roll-tab active" id="rollTabWith" role="tab">Mit SG</button>
-        <button type="button" class="roll-tab" id="rollTabWithout" role="tab">Ohne SG</button>
+        <button type="button" class="roll-tab" id="rollTabWith" role="tab">Mit SG</button>
+        <button type="button" class="roll-tab active" id="rollTabWithout" role="tab">Ohne SG</button>
       </div>
 
-      <div class="roll-mode-fields active" id="rollFieldsWith">
+      <div class="roll-mode-fields" id="rollFieldsWith">
         <div class="roll-field">
           <label for="rollDifficulty">Schwierigkeitsgrad</label>
           <input type="number" id="rollDifficulty" value="20">
         </div>
         <div class="roll-diff-presets" id="rollDiffPresets"></div>
-        <p class="roll-hint">Geschafft, wenn (Wert + Würfel) &gt; Schwierigkeitsgrad ist.</p>
+        <p class="roll-hint">Erfolg, wenn (Wert + Würfel) &gt; Schwierigkeitsgrad ist.</p>
       </div>
-      <div class="roll-mode-fields" id="rollFieldsWithout">
-        <p class="roll-hint">Geschafft, wenn der Wurf ≤ Wert ist.</p>
+      <div class="roll-mode-fields active" id="rollFieldsWithout">
+        <p class="roll-hint">Erfolg, wenn der Wurf ≤ Wert ist.</p>
       </div>
 
       <div class="roll-stage">
@@ -3936,7 +3935,7 @@
   var luckRerollBtn = document.getElementById("luckRerollBtn");
   var lastRollSides = null;
 
-  var rollMode = "with";
+  var rollMode = "without";
   var rollHistoryList = [];
 
   function updateLuckDisplay(){
@@ -4010,14 +4009,10 @@
   rollTabWith.addEventListener("click", function(){ setRollMode("with"); });
   rollTabWithout.addEventListener("click", function(){ setRollMode("without"); });
 
+  /* "Mit SG" und "Ohne SG" sind für Attribute UND Talente gleichermaßen wählbar
+     (Ohne SG ist der Standard) - die Auswahl eines Ziels ändert den Modus daher nicht. */
   rollTargetSel.addEventListener("change", function(){
     updateRollValueDisplay();
-    var targetKey = rollTargetSel.value;
-    if (targetKey.indexOf("attr:") === 0){
-      setRollMode("with");
-    } else if (targetKey.indexOf("talent:") === 0){
-      setRollMode("without");
-    }
   });
 
   function openRollPanel(){
@@ -4059,7 +4054,7 @@
       var rollDisplay = entry.sides === "2" ? formatD2(entry.roll) + " (" + entry.roll + ")" : entry.roll;
       var whenStr = entry.createdAt ? formatUpdatedAt(entry.createdAt) : "";
       var successState = (entry.success === null || entry.success === undefined) ? "plain" : (entry.success ? "success" : "fail");
-      var successLabel = (entry.success === null || entry.success === undefined) ? "Wurf" : (entry.success ? "Geschafft" : "Nicht geschafft");
+      var successLabel = (entry.success === null || entry.success === undefined) ? "Wurf" : (entry.success ? "Erfolg" : "Misserfolg");
       var avatarHtml = entry.characterAvatar
         ? '<img class="rollpage-avatar" src="' + entry.characterAvatar + '" alt="">'
         : '<div class="rollpage-avatar rollpage-avatar-placeholder">🎲</div>';
@@ -4107,7 +4102,7 @@
     var targetKey = rollTargetSel.value;
     var result = targetKey ? evaluateRoll(roll) : null;
     if (result){
-      rollResultEl.textContent = (result.success ? "Geschafft! (" : "Nicht geschafft. (") + result.detail + ")";
+      rollResultEl.textContent = (result.success ? "Erfolg! (" : "Misserfolg (") + result.detail + ")";
       rollResultEl.className = "roll-result " + (result.success ? "success" : "fail");
     } else {
       rollResultEl.textContent = "Wurf: " + (sides === "2" ? formatD2(roll) : roll);
