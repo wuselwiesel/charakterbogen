@@ -1355,10 +1355,14 @@
         <div class="attr-sum talent-sum">
           <div class="attr-name">Summe</div>
           <div class="attr-cell"><input id="talent_summe_basis" readonly tabindex="-1"></div>
-          <div class="attr-cell"><input id="talent_summe_bonus" readonly tabindex="-1"></div>
+          <div class="attr-cell tooltip-anchor">
+            <input id="talent_summe_bonus" readonly tabindex="-1">
+            <div class="attr-tooltip" id="talentBudgetTooltip"></div>
+          </div>
           <div class="attr-cell"><input id="talent_summe_gesamt" readonly tabindex="-1"></div>
         </div>
       </div>
+      <div class="note-box" id="talentBudgetNote">35 Punkte zu verteilen</div>
     </section>
 
     <!-- SEITE 6: NOTIZEN -->
@@ -1540,6 +1544,32 @@
     "Tierkunde", "Pflanzenkunde", "Mythologie", "Reparieren", "Empathie",
     "Sinnessch\u00E4rfe", "\u00DCberleben"
   ];
+
+  /* Jedes Talent wird aus dem gerundeten Durchschnitt zweier Attribute berechnet */
+  var TALENT_ATTR_MAP = {
+    "Körperbeherrschung": ["GE", "KO"],
+    "Manipulation/Überzeugen": ["CH", "IG"],
+    "Betören": ["CH", "GE"],
+    "Beruhigen": ["CH", "SB"],
+    "Menschenkenntnis": ["IN", "IG"],
+    "Willensstärke": ["SB", "MU"],
+    "Lügen": ["CH", "IG"],
+    "Verbergen/Verheimlichen": ["GE", "IN"],
+    "Singen": ["CH", "KO"],
+    "Tanzen": ["GE", "CH"],
+    "Reflexe": ["GE", "IN"],
+    "Schwimmen": ["KO", "KK"],
+    "Klettern": ["GE", "KK"],
+    "Werfen": ["FF", "KK"],
+    "Medizin": ["IG", "FF"],
+    "Tierkunde": ["IG", "IN"],
+    "Pflanzenkunde": ["IG", "IN"],
+    "Mythologie": ["IG", "IN"],
+    "Reparieren": ["FF", "IG"],
+    "Empathie": ["IN", "CH"],
+    "Sinnesschärfe": ["IN", "GE"],
+    "Überleben": ["IN", "KO"]
+  };
 
   function talentSlug(name){
     return "talent_" + name.toLowerCase()
@@ -1975,8 +2005,8 @@
     row.className = "attr-row talent-row" + (idx % 2 === 1 ? " row-alt" : "");
     row.innerHTML =
       '<div class="attr-name"><span class="code">'+name+'</span></div>' +
-      '<div class="attr-cell tooltip-anchor"><input type="number" id="'+tid+'_basis" inputmode="numeric" min="1" max="19" step="1"><div class="attr-tooltip" id="'+tid+'_basis_tt"></div></div>' +
-      '<div class="attr-cell tooltip-anchor"><input type="number" id="'+tid+'_bonus" inputmode="numeric" step="1"><div class="attr-tooltip" id="'+tid+'_bonus_tt"></div></div>' +
+      '<div class="attr-cell"><input type="text" id="'+tid+'_basis" readonly tabindex="-1"></div>' +
+      '<div class="attr-cell tooltip-anchor"><input type="number" id="'+tid+'_bonus" inputmode="numeric" min="0" max="19" step="1"><div class="attr-tooltip" id="'+tid+'_bonus_tt"></div></div>' +
       '<div class="attr-cell"><input type="text" id="'+tid+'_gesamt" readonly tabindex="-1"></div>';
     talentWrap.appendChild(row);
   });
@@ -2100,7 +2130,9 @@
 
     attrHasErrors = anyFieldError || remaining < 0;
     updateDownloadButtonState();
-    scheduleAutosave();
+    /* Talent-Basiswerte hängen von den Attribut-Gesamtwerten ab und müssen
+       bei jeder Attributänderung (inkl. Werwolf/Vampir-Boni) neu berechnet werden. */
+    recalcTalents();
   }
 
   ATTR_TABLE.forEach(function(a){
@@ -2109,17 +2141,31 @@
     basisEl.addEventListener("input", recalc);
     bonusEl.addEventListener("input", recalc);
   });
-  recalc();
 
   /* ===================== Talente: Live-Berechnung & Validierung ===================== */
   var talentHasErrors = false;
-  var TALENT_BASIS_MIN = 1, TALENT_BASIS_MAX = 19;
+  var TALENT_BONUS_MIN = 0, TALENT_BONUS_MAX = 19, TALENT_BONUS_BUDGET = 35;
 
-  /* Talent-Bonus hat keine feste Ober-/Untergrenze, nur ganzzahlige Werte */
-  function validateTalentBonus(raw){
-    if (raw === "") return null;
-    if (!/^-?\d+$/.test(raw)) return "Nur ganze Zahlen erlaubt";
-    return null;
+  function updateTalentBudgetNote(remaining){
+    var note = document.getElementById("talentBudgetNote");
+    var summeBonusInput = document.getElementById("talent_summe_bonus");
+    var tooltip = document.getElementById("talentBudgetTooltip");
+
+    note.classList.remove("budget-complete");
+    summeBonusInput.classList.remove("field-error");
+    tooltip.classList.remove("show");
+
+    if (remaining > 0) {
+      note.textContent = remaining + " von " + TALENT_BONUS_BUDGET + " Talentpunkten noch zu verteilen";
+    } else if (remaining === 0) {
+      note.textContent = "Alle " + TALENT_BONUS_BUDGET + " Talentpunkte verteilt ✓";
+      note.classList.add("budget-complete");
+    } else {
+      note.textContent = TALENT_BONUS_BUDGET + " Talentpunkte insgesamt erlaubt";
+      summeBonusInput.classList.add("field-error");
+      tooltip.textContent = (-remaining) + " Punkt" + (-remaining === 1 ? "" : "e") + " zu viel verteilt – max. " + TALENT_BONUS_BUDGET + " Talentpunkte insgesamt";
+      tooltip.classList.add("show");
+    }
   }
 
   function recalcTalents(){
@@ -2128,31 +2174,32 @@
 
     TALENT_LIST.forEach(function(name){
       var tid = talentSlug(name);
+      var attrs = TALENT_ATTR_MAP[name] || [];
+      var a1 = parseFloat(val(attrs[0] + "_gesamt"));
+      var a2 = parseFloat(val(attrs[1] + "_gesamt"));
+      var basisNum = (!isNaN(a1) && !isNaN(a2)) ? Math.round((a1 + a2) / 2) : NaN;
+
       var bEl = document.getElementById(tid + "_basis");
       var boEl = document.getElementById(tid + "_bonus");
       var gEl = document.getElementById(tid + "_gesamt");
-      var bTt = document.getElementById(tid + "_basis_tt");
       var boTt = document.getElementById(tid + "_bonus_tt");
 
-      var bRaw = bEl.value.trim(), boRaw = boEl.value.trim();
-      var bErr = validateAttrValue(bRaw, TALENT_BASIS_MIN, TALENT_BASIS_MAX);
-      var boErr = validateTalentBonus(boRaw);
-      setFieldError(bEl, bTt, bErr);
+      bEl.value = isNaN(basisNum) ? "" : String(basisNum);
+
+      var boRaw = boEl.value.trim();
+      var boErr = validateAttrValue(boRaw, TALENT_BONUS_MIN, TALENT_BONUS_MAX);
       setFieldError(boEl, boTt, boErr);
-      if (bErr) anyFieldError = true;
       if (boErr) anyFieldError = true;
 
-      var bOk = bRaw !== "" && !bErr;
       var boOk = boRaw !== "" && !boErr;
-      var bNum = bOk ? parseInt(bRaw, 10) : NaN;
       var boNum = boOk ? parseInt(boRaw, 10) : NaN;
 
-      if (!bOk && !boOk) {
+      if (isNaN(basisNum)) {
         gEl.value = "";
       } else {
-        gEl.value = String((bOk ? bNum : 0) + (boOk ? boNum : 0));
+        gEl.value = String(Math.min(TALENT_BONUS_MAX, basisNum + (boOk ? boNum : 0)));
       }
-      basisVals.push(bOk ? String(bNum) : "");
+      basisVals.push(isNaN(basisNum) ? "" : String(basisNum));
       bonusVals.push(boOk ? String(boNum) : "");
       gesamtVals.push(gEl.value);
     });
@@ -2161,17 +2208,21 @@
     document.getElementById("talent_summe_bonus").value = sumField(bonusVals);
     document.getElementById("talent_summe_gesamt").value = sumField(gesamtVals);
 
-    talentHasErrors = anyFieldError;
+    var bonusSum = 0;
+    bonusVals.forEach(function(v){ if (v !== "") bonusSum += parseFloat(v); });
+    var remaining = TALENT_BONUS_BUDGET - bonusSum;
+    updateTalentBudgetNote(remaining);
+
+    talentHasErrors = anyFieldError || remaining < 0;
     updateDownloadButtonState();
     scheduleAutosave();
   }
 
   TALENT_LIST.forEach(function(name){
     var tid = talentSlug(name);
-    document.getElementById(tid + "_basis").addEventListener("input", recalcTalents);
     document.getElementById(tid + "_bonus").addEventListener("input", recalcTalents);
   });
-  recalcTalents();
+  recalc();
 
   /* ===================== Bild-Upload ===================== */
   var dropzone = document.getElementById("dropzone");
