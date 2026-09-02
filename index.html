@@ -1059,6 +1059,72 @@
   .profile-error { color: #B23A3A; font-size: 12px; text-align: center; min-height: 1em; margin-bottom: 8px; }
   .profile-skip { display: block; margin: 10px auto 0; border: none; background: none; color: var(--muted); font-size: 12px; cursor: pointer; text-decoration: underline; }
 
+  /* ===== Info-Tooltips (Talent-Zusammensetzung & Berechnung, per Hover) ===== */
+  .info-tooltip {
+    position: absolute; bottom: calc(100% + 9px); left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: #3B3350; color: #fff;
+    font-size: 11px; font-weight: 600; line-height: 1.35;
+    padding: 7px 11px; border-radius: 7px; white-space: normal;
+    width: max-content; max-width: 220px; text-align: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 6; box-shadow: 0 6px 16px -4px rgba(59,51,80,0.5);
+  }
+  .info-tooltip::after {
+    content: ""; position: absolute; top: 100%; left: 50%;
+    transform: translateX(-50%); border: 5px solid transparent;
+    border-top-color: #3B3350;
+  }
+  .tooltip-anchor:hover .info-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .talent-row .attr-name.tooltip-anchor { cursor: help; }
+  .talent-row .attr-name.tooltip-anchor .code { border-bottom: 1px dotted var(--muted); }
+  .talent-row .attr-cell.tooltip-anchor input[readonly] { cursor: help; }
+
+  /* ===== Hilfe-Fenster ===== */
+  .help-overlay {
+    position: fixed; inset: 0; z-index: 200; display: none;
+    align-items: flex-start; justify-content: center;
+    background: rgba(20,15,30,0.6); padding: 5vh 20px;
+    overflow-y: auto;
+  }
+  .help-overlay.show { display: flex; }
+  .help-panel {
+    width: 100%; max-width: 720px; background: var(--paper);
+    border-radius: 14px; box-shadow: var(--shadow); padding: 26px 28px 34px;
+  }
+  .help-panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .help-panel-head h2 { margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 26px; color: var(--accent-strong); }
+  .help-close { border: none; background: transparent; font-size: 18px; cursor: pointer; color: var(--muted); }
+  .help-sub { color: var(--muted); font-size: 13px; margin: 0 0 18px; }
+
+  .help-toc { background: var(--row-light); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 22px; }
+  .help-toc h3 { margin: 0 0 8px; font-size: 13px; color: var(--accent-strong); }
+  .help-toc ol { margin: 0; padding-left: 20px; }
+  .help-toc li { margin-bottom: 4px; font-size: 13px; }
+  .help-toc a { color: var(--text); text-decoration: none; border-bottom: 1px dotted var(--muted); cursor: pointer; }
+  .help-toc a:hover { color: var(--accent-strong); border-bottom-color: var(--accent-strong); }
+
+  .help-section { margin-bottom: 26px; scroll-margin-top: 10px; }
+  .help-section:last-child { margin-bottom: 0; }
+  .help-section h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 19px; color: var(--accent-strong); margin: 0 0 8px; padding-bottom: 6px; border-bottom: 2px solid var(--border); }
+  .help-section p { font-size: 13.5px; line-height: 1.55; margin: 0 0 10px; }
+  .help-section ul, .help-section ol.help-list { font-size: 13.5px; line-height: 1.55; margin: 0 0 10px; padding-left: 20px; }
+  .help-section li { margin-bottom: 4px; }
+  .help-example {
+    background: var(--row-light); border: 1px dashed var(--border-strong); border-radius: 8px;
+    padding: 10px 13px; font-size: 12.5px; margin: 0 0 10px;
+  }
+  .help-example strong { color: var(--accent-strong); }
+  .help-talent-table { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; font-size: 12.5px; margin-top: 4px; }
+  .help-talent-table .htt-head { display: grid; grid-template-columns: 1fr 1.2fr; background: #EFEFEF; font-weight: 700; text-align: center; }
+  .help-talent-table .htt-head > div { padding: 7px; border-right: 1px solid var(--border); }
+  .help-talent-table .htt-head > div:last-child { border-right: none; }
+  .help-talent-table .htt-row { display: grid; grid-template-columns: 1fr 1.2fr; border-top: 1px solid var(--border); }
+  .help-talent-table .htt-row > div { padding: 6px 9px; }
+  .help-talent-table .htt-row > div:first-child { border-right: 1px solid var(--border); font-weight: 700; }
+  .help-talent-table .htt-row:nth-child(odd) { background: #FAFAFA; }
+
   /* ===== Online-Anzeige ===== */
   .online-wrap { position: relative; }
   .online-panel {
@@ -1244,6 +1310,99 @@
       <button type="button" class="profile-skip" id="profileCloseBtn" hidden>Schließen</button>
     </div>
   </div>
+
+  <div class="help-overlay" id="helpOverlay">
+    <div class="help-panel">
+      <div class="help-panel-head">
+        <h2>❓ Hilfe: Wie funktioniert das Spiel?</h2>
+        <button type="button" class="help-close" id="helpCloseBtn" aria-label="Schließen">✕</button>
+      </div>
+      <p class="help-sub">Eine einfache Erklärung des Würfel- und Talentsystems – von oben nach unten lesbar.</p>
+
+      <div class="help-toc">
+        <h3>Inhaltsverzeichnis</h3>
+        <ol>
+          <li><a data-target="help-sec-wuerfeln">Wie funktioniert das Würfeln?</a></li>
+          <li><a data-target="help-sec-attribute">Attribute: Basiswert, Bonus, Gesamtwert</a></li>
+          <li><a data-target="help-sec-talente">Talente: Wie wird der Wert berechnet?</a></li>
+          <li><a data-target="help-sec-talentpunkte">Talentpunkte selbst verteilen (Bonus)</a></li>
+          <li><a data-target="help-sec-gluecksfeld">Glückspunkte: Nochmal würfeln bei Pech</a></li>
+          <li><a data-target="help-sec-uebersicht">Übersicht: Welches Talent braucht welche Attribute?</a></li>
+        </ol>
+      </div>
+
+      <div class="help-section" id="help-sec-wuerfeln">
+        <h3>1. Wie funktioniert das Würfeln?</h3>
+        <p>Klick unten rechts auf den 🎲-Button. Es gibt zwei verschiedene Arten von Proben, je nachdem, was du würfelst:</p>
+        <ul>
+          <li><strong>Proben „Mit SG" (für Attribute):</strong> Du würfelst einen W10 und zählst deinen Attribut-Gesamtwert dazu. Ist die Summe <strong>größer</strong> als der Schwierigkeitsgrad (SG), hast du es geschafft.</li>
+          <li><strong>Proben „Ohne SG" (für Talente):</strong> Du würfelst einen W20. Ist der Wurf <strong>kleiner oder gleich</strong> deinem Talent-Gesamtwert, hast du es geschafft.</li>
+        </ul>
+        <div class="help-example">
+          <strong>Beispiel „Mit SG":</strong> Attribut-Gesamtwert 15, Schwierigkeitsgrad „Normal" (20), Wurf 8 → 15 + 8 = 23, das ist mehr als 20 → geschafft!<br><br>
+          <strong>Beispiel „Ohne SG":</strong> Talent-Gesamtwert 12, Wurf 9 → 9 ist kleiner als 12 → geschafft! Bei einem Wurf von 15 wäre es nicht geschafft, weil 15 größer als 12 ist.
+        </div>
+        <p>Wählst du im Würfel-Fenster kein Attribut oder Talent aus („freier Wurf"), wird einfach nur gewürfelt – ohne „geschafft"/„nicht geschafft".</p>
+      </div>
+
+      <div class="help-section" id="help-sec-attribute">
+        <h3>2. Attribute: Basiswert, Bonus, Gesamtwert</h3>
+        <p>Dein Charakter hat 10 Attribute (z. B. Mut, Gewandtheit, Charisma …). Jedes Attribut hat drei Spalten:</p>
+        <ul>
+          <li><strong>Basiswert:</strong> Eine Zahl von 1 bis 19, die du selbst vergibst. Insgesamt stehen dir 90 Punkte zur Verfügung, die du frei auf alle 10 Attribute verteilst.</li>
+          <li><strong>Bonus:</strong> Normalerweise 0. Nur wenn dein Charakter z. B. ein Werwolf oder Vampir ist, gibt es hier automatisch feste Boni auf bestimmte Attribute.</li>
+          <li><strong>Gesamtwert:</strong> Basiswert + Bonus. Das ist der Wert, der beim Würfeln wirklich zählt.</li>
+        </ul>
+        <p>Was jedes Attribut genau bedeutet, steht im Reiter „Attribute erklärt".</p>
+      </div>
+
+      <div class="help-section" id="help-sec-talente">
+        <h3>3. Talente: Wie wird der Wert berechnet?</h3>
+        <p>Talente sind Fähigkeiten wie „Lügen" oder „Klettern". Jedes Talent baut auf genau <strong>zwei</strong> deiner Attribute auf.</p>
+        <p><strong>Der Basiswert eines Talents wird automatisch berechnet</strong> – du kannst ihn nicht selbst eintippen. Die Formel: Nimm die Gesamtwerte der zwei zugehörigen Attribute, addiere sie, teile durch 2, und runde kaufmännisch (0,5 wird aufgerundet).</p>
+        <div class="help-example">
+          <strong>Beispiel:</strong> Das Talent „Klettern" braucht Gewandtheit + Körperkraft. Ist Gewandtheit-Gesamtwert 14 und Körperkraft-Gesamtwert 12, dann ist (14 + 12) ÷ 2 = 13 → der Klettern-Basiswert ist 13.
+        </div>
+        <p>Ändert sich später eines der beiden Attribute (z. B. weil du es hochsetzt oder ein Rassenbonus dazukommt), berechnet sich der Talent-Basiswert automatisch neu.</p>
+        <p><strong>Tipp:</strong> Fahr mit der Maus über einen Talentnamen in der Tabelle – dann siehst du, aus welchen zwei Attributen sich das Talent zusammensetzt. Fahr mit der Maus über den Basiswert selbst – dann siehst du die genaue Rechnung mit den aktuellen Zahlen.</p>
+      </div>
+
+      <div class="help-section" id="help-sec-talentpunkte">
+        <h3>4. Talentpunkte selbst verteilen (Bonus)</h3>
+        <p>Zusätzlich zum automatischen Basiswert hast du <strong>35 Talentpunkte</strong>, die du frei als „Bonus" auf die Talente verteilen darfst, um deinen Charakter individueller zu machen.</p>
+        <ul>
+          <li>Jeder Talent-Bonus muss zwischen 0 und 19 liegen.</li>
+          <li>Basiswert + Bonus darf zusammen nie über 19 gehen – ist die Summe höher, wird sie einfach bei 19 gedeckelt.</li>
+          <li>Gesamtwert des Talents = Basiswert + Bonus (maximal 19). Das ist der Wert, gegen den du beim „Ohne SG"-Würfeln antrittst.</li>
+        </ul>
+      </div>
+
+      <div class="help-section" id="help-sec-gluecksfeld">
+        <h3>5. Glückspunkte: Nochmal würfeln bei Pech</h3>
+        <p>Aus deinem Attribut „Glück" (GL) ergeben sich automatisch <strong>Glückspunkte</strong>: Glück-Gesamtwert ÷ 5, aufgerundet.</p>
+        <div class="help-example">
+          <strong>Beispiel:</strong> Glück-Gesamtwert 13 → 13 ÷ 5 = 2,6 → aufgerundet sind das 3 Glückspunkte.
+        </div>
+        <p>Glückspunkte werden auf der Seite „Attributwerte" angezeigt. Verwendet werden sie im Würfel-Fenster:</p>
+        <ul>
+          <li>Wenn du bei einer Probe „Ohne SG" (W20, also gegen ein Attribut oder Talent) danebenwürfelst, kannst du einen Glückspunkt einsetzen, um den Würfel <strong>einmal neu zu werfen</strong>.</li>
+          <li>Das geht nur bei fehlgeschlagenen W20-Würfen gegen ein Attribut/Talent – nicht bei freien Würfen und nicht bei anderen Würfeln (W2, W6, W10).</li>
+          <li>Jeder eingesetzte Glückspunkt wird sofort gespeichert, damit er nicht verloren geht.</li>
+          <li>Über den „↺ Zurücksetzen"-Button im Würfel-Fenster kannst du verbrauchte Glückspunkte wieder auf 0 setzen (z. B. nach einer Spielpause).</li>
+        </ul>
+      </div>
+
+      <div class="help-section" id="help-sec-uebersicht">
+        <h3>6. Übersicht: Welches Talent braucht welche Attribute?</h3>
+        <p>Diese Tabelle zeigt, aus welchen zwei Attributen sich jedes Talent zusammensetzt (dieselbe Info wie beim Hover in der Talente-Tabelle):</p>
+        <div class="help-talent-table">
+          <div class="htt-head"><div>Talent</div><div>Setzt sich zusammen aus</div></div>
+          <div id="helpTalentTableRows"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <button type="button" class="sidebar-toggle" id="sidebarToggleBtn" aria-label="Menü öffnen">☰</button>
 
   <div class="app-shell">
@@ -1261,6 +1420,7 @@
         <button class="tab-btn" data-page="notizen">Notizen</button>
         <button class="tab-btn" data-page="wuerfelverlauf">Würfelverlauf</button>
         <button class="tab-btn" data-page="kommentare">Feed</button>
+        <button class="tab-btn" id="helpTabBtn" type="button">❓ Hilfe</button>
       </div>
 
       <div class="sidebar-footer">
@@ -1538,6 +1698,9 @@
     {code:"GL", name:"Glück", color:"#EEF6EE"}
   ];
 
+  var ATTR_NAME_BY_CODE = {};
+  ATTR_TABLE.forEach(function(a){ ATTR_NAME_BY_CODE[a.code] = a.name; });
+
   var LEGEND = [
     {code:"MU", name:"Mut", desc:"Willenskraft und Entschlossenheit", detail:"Mutprobe gegen Angst oder Einschüchterung, Durchhalten, etwas riskieren", color:"#FBEFEF"},
     {code:"IG", name:"Intelligenz", desc:"Geistige Kapazität, logisches Denken und Wissen", detail:"Lösen von Rätseln, Finden von Hinweisen, Erkennen von Mustern", color:"#F3EEFB"},
@@ -1621,7 +1784,7 @@
   sidebarBackdrop.addEventListener("click", function(){ setSidebarVisible(false); });
 
   /* ===================== Tabs ===================== */
-  var tabButtons = document.querySelectorAll(".tab-btn");
+  var tabButtons = document.querySelectorAll(".tab-btn[data-page]");
   var pages = document.querySelectorAll(".paper");
   tabButtons.forEach(function(btn){
     btn.addEventListener("click", function(){
@@ -2024,14 +2187,26 @@
   var talentWrap = document.getElementById("talentRows");
   TALENT_LIST.forEach(function(name, idx){
     var tid = talentSlug(name);
+    var attrs = TALENT_ATTR_MAP[name] || [];
+    var attrNames = attrs.map(function(c){ return ATTR_NAME_BY_CODE[c] || c; }).join(" + ");
     var row = document.createElement("div");
     row.className = "attr-row talent-row" + (idx % 2 === 1 ? " row-alt" : "");
     row.innerHTML =
-      '<div class="attr-name"><span class="code">'+name+'</span></div>' +
-      '<div class="attr-cell"><input type="text" id="'+tid+'_basis" readonly tabindex="-1"></div>' +
+      '<div class="attr-name tooltip-anchor"><span class="code">'+name+'</span><div class="info-tooltip">'+name+' = '+attrNames+'</div></div>' +
+      '<div class="attr-cell tooltip-anchor"><input type="text" id="'+tid+'_basis" readonly tabindex="-1"><div class="info-tooltip" id="'+tid+'_basis_info_tt"></div></div>' +
       '<div class="attr-cell tooltip-anchor"><input type="number" id="'+tid+'_bonus" inputmode="numeric" min="0" max="19" step="1"><div class="attr-tooltip" id="'+tid+'_bonus_tt"></div></div>' +
       '<div class="attr-cell"><input type="text" id="'+tid+'_gesamt" readonly tabindex="-1"></div>';
     talentWrap.appendChild(row);
+  });
+
+  var helpTalentTableRows = document.getElementById("helpTalentTableRows");
+  TALENT_LIST.forEach(function(name){
+    var attrs = TALENT_ATTR_MAP[name] || [];
+    var attrNames = attrs.map(function(c){ return ATTR_NAME_BY_CODE[c] || c; }).join(" + ");
+    var row = document.createElement("div");
+    row.className = "htt-row";
+    row.innerHTML = "<div>"+name+"</div><div>"+attrNames+"</div>";
+    helpTalentTableRows.appendChild(row);
   });
 
   /* ===================== Legende rendern ===================== */
@@ -2225,8 +2400,19 @@
       var boEl = document.getElementById(tid + "_bonus");
       var gEl = document.getElementById(tid + "_gesamt");
       var boTt = document.getElementById(tid + "_bonus_tt");
+      var basisInfoTt = document.getElementById(tid + "_basis_info_tt");
 
       bEl.value = isNaN(basisNum) ? "" : String(basisNum);
+
+      if (basisInfoTt){
+        var name1 = ATTR_NAME_BY_CODE[attrs[0]] || attrs[0];
+        var name2 = ATTR_NAME_BY_CODE[attrs[1]] || attrs[1];
+        if (!isNaN(a1) && !isNaN(a2)){
+          basisInfoTt.textContent = name1 + " " + a1 + " + " + name2 + " " + a2 + " = " + (a1 + a2) + ", ÷ 2 = " + basisNum + " (gerundet)";
+        } else {
+          basisInfoTt.textContent = name1 + " und " + name2 + " müssen erst ausgefüllt sein.";
+        }
+      }
 
       var boRaw = boEl.value.trim();
       var boErr = validateAttrValue(boRaw, TALENT_BONUS_MIN, TALENT_BONUS_MAX);
@@ -3989,6 +4175,28 @@
 
   profileCloseBtn.addEventListener("click", closeProfileModal);
   profileEditBtn.addEventListener("click", function(){ openProfileModal(false); });
+
+  /* ===================== Hilfe ===================== */
+  var helpOverlay = document.getElementById("helpOverlay");
+  var helpTabBtn = document.getElementById("helpTabBtn");
+  var helpCloseBtn = document.getElementById("helpCloseBtn");
+
+  function openHelpModal(){
+    helpOverlay.classList.add("show");
+    helpOverlay.scrollTop = 0;
+    if (mobileMedia.matches) setSidebarVisible(false);
+  }
+  function closeHelpModal(){ helpOverlay.classList.remove("show"); }
+
+  helpTabBtn.addEventListener("click", openHelpModal);
+  helpCloseBtn.addEventListener("click", closeHelpModal);
+  helpOverlay.addEventListener("click", function(e){ if (e.target === helpOverlay) closeHelpModal(); });
+  helpOverlay.querySelectorAll(".help-toc a").forEach(function(link){
+    link.addEventListener("click", function(){
+      var target = document.getElementById(link.dataset.target);
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
 
   profileSaveBtn.addEventListener("click", function(){
     var username = profileUsernameInput.value.trim();
