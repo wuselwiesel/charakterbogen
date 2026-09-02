@@ -1683,7 +1683,7 @@
         document.execCommand("insertHTML", false, '<img src="'+dataUrl+'" draggable="false" style="max-width:100%;height:auto;">');
         updateEditorEmptyState(editor);
         scheduleAutosave();
-      });
+      }, 250000);
       imgInput.value = "";
     });
 
@@ -3036,22 +3036,39 @@
   });
 
   /* ===================== Bilder verkleinern vor Speicherung ===================== */
-  function resizeImageFile(file, maxDim, quality, callback){
+  function resizeImageFile(file, maxDim, quality, callback, maxBytes){
+    var budget = maxBytes || 450000;
     var reader = new FileReader();
     reader.onload = function(e){
       var img = new Image();
       img.onload = function(){
         var w = img.naturalWidth, h = img.naturalHeight;
-        var scale = Math.min(1, maxDim / Math.max(w, h));
-        var outW = Math.max(1, Math.round(w * scale));
-        var outH = Math.max(1, Math.round(h * scale));
         var canvas = document.createElement("canvas");
-        canvas.width = outW; canvas.height = outH;
         var ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0, outW, outH);
-        var mime = file.type === "image/png" ? "image/png" : "image/jpeg";
-        var dataUrl = canvas.toDataURL(mime, quality);
-        callback(dataUrl, outW, outH);
+
+        function renderAt(dim, q){
+          var scale = Math.min(1, dim / Math.max(w, h));
+          var outW = Math.max(1, Math.round(w * scale));
+          var outH = Math.max(1, Math.round(h * scale));
+          canvas.width = outW; canvas.height = outH;
+          ctx.clearRect(0, 0, outW, outH);
+          ctx.drawImage(img, 0, 0, outW, outH);
+          /* Immer als JPEG re-komprimieren: PNG bleibt bei Fotos/Screenshots
+             verlustfrei und damit oft mehrere hundert KB bis MB groß, egal
+             wie klein die Abmessungen sind. */
+          return { dataUrl: canvas.toDataURL("image/jpeg", q), w: outW, h: outH };
+        }
+
+        var dim = maxDim, q = quality;
+        var result = renderAt(dim, q);
+        var attempts = 0;
+        while (result.dataUrl.length > budget && attempts < 6){
+          attempts++;
+          if (q > 0.5) q = Math.max(0.5, q - 0.15);
+          else dim = Math.round(dim * 0.75);
+          result = renderAt(dim, q);
+        }
+        callback(result.dataUrl, result.w, result.h);
       };
       img.onerror = function(){ callback(e.target.result, 0, 0); };
       img.src = e.target.result;
@@ -3256,6 +3273,31 @@
     try { return JSON.stringify(data).length; } catch(e){ return 0; }
   }
 
+  function formatKB(bytes){ return Math.round(bytes / 1024) + " KB"; }
+
+  function describeCharacterSize(data){
+    var total = estimateSize(data);
+    var portraitBytes = (data.portrait && data.portrait.dataUrl) ? data.portrait.dataUrl.length : 0;
+
+    var notesImgRe = /<img[^>]+src="(data:[^"]*)"/g;
+    var notesImageBytes = 0, notesImageCount = 0;
+    (data.notesBlocks || []).forEach(function(b){
+      var html = b.html || "";
+      var m;
+      notesImgRe.lastIndex = 0;
+      while ((m = notesImgRe.exec(html))){ notesImageBytes += m[1].length; notesImageCount++; }
+    });
+
+    var parts = [];
+    if (portraitBytes) parts.push({ label: "Charakterbild", bytes: portraitBytes });
+    if (notesImageBytes) parts.push({ label: notesImageCount + " Bild" + (notesImageCount === 1 ? "" : "er") + " in Notizen", bytes: notesImageBytes });
+    var restBytes = Math.max(0, total - portraitBytes - notesImageBytes);
+    parts.push({ label: "Text & übrige Daten", bytes: restBytes });
+    parts.sort(function(a, b){ return b.bytes - a.bytes; });
+
+    return { total: total, biggest: parts[0], parts: parts };
+  }
+
   function setSaveIndicator(text){ saveIndicator.textContent = text; }
 
   function scheduleAutosave(){
@@ -3270,7 +3312,12 @@
     var data = collectCharacterData();
     if (estimateSize(data) > 900000){
       setSaveIndicator("");
-      showStatus("Charakter ist zu groß zum Speichern – bitte Bilder verkleinern oder entfernen.");
+      var info = describeCharacterSize(data);
+      showStatus(
+        "Charakter ist zu groß zum Speichern (" + formatKB(info.total) + " von 900 KB). " +
+        "Größter Anteil: " + info.biggest.label + " (" + formatKB(info.biggest.bytes) + ") – bitte verkleinern oder entfernen.",
+        true
+      );
       return;
     }
     charsColRef().doc(activeCharacterId).set({
@@ -3278,6 +3325,7 @@
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true }).then(function(){
       setSaveIndicator("Gespeichert");
+      hideStatus();
     }).catch(function(err){
       setSaveIndicator("");
       showStatus("Speichern fehlgeschlagen: " + (err && err.message ? err.message : err));
