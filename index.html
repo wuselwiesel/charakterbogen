@@ -102,7 +102,8 @@
     height: 100vh;
     width: 226px;
     flex-shrink: 0;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     padding: 30px 16px;
     display: flex;
     flex-direction: column;
@@ -110,6 +111,7 @@
     background: rgba(255,255,255,0.94);
     border-right: 1px solid var(--paper-edge);
     transition: width 0.22s ease, padding 0.22s ease;
+    scrollbar-width: thin;
   }
   .app-shell.sidebar-closed .sidebar {
     width: 0;
