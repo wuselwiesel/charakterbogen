@@ -528,6 +528,7 @@
     transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   }
   .note-box.budget-complete { background: #E6F5E9; border-color: #B9DDC1; color: #256B3A; }
+  .note-box.luck-note { background: #FBF6E4; border-color: #E7D9A8; color: #7A5E1E; margin-top: 8px; }
 
   .tooltip-anchor { position: relative; overflow: visible !important; }
   .attr-tooltip {
@@ -1327,6 +1328,7 @@
         </div>
       </div>
       <div class="note-box" id="budgetNote">90 Punkte zu verteilen (Basiswert je Attribut: 1 – 19)</div>
+      <div class="note-box luck-note" id="luckNote">🍀 0 Glückspunkte (GL ÷ 5, aufgerundet)</div>
 
       <h3 class="sub-h">Schwierigkeitsgrade</h3>
       <div class="diff-table">
@@ -1545,30 +1547,31 @@
     "Sinnessch\u00E4rfe", "\u00DCberleben"
   ];
 
-  /* Jedes Talent wird aus dem gerundeten Durchschnitt zweier Attribute berechnet */
+  /* Jedes Talent wird aus dem gerundeten Durchschnitt zweier Attribute berechnet.
+     GL fließt bewusst in kein Talent ein – siehe LUCK_DIVISOR/Glückspunkte unten. */
   var TALENT_ATTR_MAP = {
-    "Körperbeherrschung": ["GE", "KO"],
+    "Körperbeherrschung": ["GE", "SB"],
     "Manipulation/Überzeugen": ["CH", "IG"],
-    "Betören": ["CH", "GE"],
+    "Betören": ["CH", "IN"],
     "Beruhigen": ["CH", "SB"],
-    "Menschenkenntnis": ["IN", "IG"],
-    "Willensstärke": ["SB", "MU"],
+    "Menschenkenntnis": ["IN", "SB"],
+    "Willensstärke": ["MU", "SB"],
     "Lügen": ["CH", "IG"],
     "Verbergen/Verheimlichen": ["GE", "IN"],
     "Singen": ["CH", "KO"],
-    "Tanzen": ["GE", "CH"],
+    "Tanzen": ["GE", "FF"],
     "Reflexe": ["GE", "IN"],
     "Schwimmen": ["KO", "KK"],
     "Klettern": ["GE", "KK"],
     "Werfen": ["FF", "KK"],
     "Medizin": ["IG", "FF"],
-    "Tierkunde": ["IG", "IN"],
+    "Tierkunde": ["IN", "MU"],
     "Pflanzenkunde": ["IG", "IN"],
-    "Mythologie": ["IG", "IN"],
+    "Mythologie": ["IG", "MU"],
     "Reparieren": ["FF", "IG"],
     "Empathie": ["IN", "CH"],
-    "Sinnesschärfe": ["IN", "GE"],
-    "Überleben": ["IN", "KO"]
+    "Sinnesschärfe": ["IN", "IG"],
+    "Überleben": ["KO", "MU"]
   };
 
   function talentSlug(name){
@@ -2055,6 +2058,15 @@
     }
   }
 
+  var LUCK_DIVISOR = 5;
+
+  function updateLuckPoints(){
+    var glGesamt = parseFloat(val("GL_gesamt"));
+    var luckPoints = isNaN(glGesamt) ? 0 : Math.ceil(glGesamt / LUCK_DIVISOR);
+    var note = document.getElementById("luckNote");
+    note.textContent = "🍀 " + luckPoints + " Glückspunkt" + (luckPoints === 1 ? "" : "e") + " (GL ÷ " + LUCK_DIVISOR + ", aufgerundet)";
+  }
+
   function updateBudgetNote(remaining){
     var note = document.getElementById("budgetNote");
     var summeBasisInput = document.getElementById("summe_basis");
@@ -2127,6 +2139,7 @@
     basisVals.forEach(function(v){ if (v !== "") basisSum += parseFloat(v); });
     var remaining = BASIS_BUDGET - basisSum;
     updateBudgetNote(remaining);
+    updateLuckPoints();
 
     attrHasErrors = anyFieldError || remaining < 0;
     updateDownloadButtonState();
