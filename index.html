@@ -1246,6 +1246,16 @@
   .online-item { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--text); }
   .online-item .dot { width: 7px; height: 7px; border-radius: 50%; background: #3FAE63; flex-shrink: 0; }
   .online-empty { font-size: 12px; color: var(--muted); }
+  .luck-badge-wrap { position: relative; }
+  .luck-badge-panel {
+    position: absolute; top: calc(100% + 6px); right: 0;
+    min-width: 170px; white-space: nowrap;
+    background: var(--paper); border: 1px solid var(--border);
+    border-radius: 10px; box-shadow: var(--shadow); padding: 10px 12px;
+    display: none; z-index: 60;
+    font-size: 12.5px; font-weight: 700; color: #7A5E1E;
+  }
+  .luck-badge-panel.show { display: block; }
   .rh-player { color: var(--muted); font-weight: 400; font-size: 11px; }
   .rh-luck-tag { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; background: #FBF6E4; color: #7A5E1E; font-weight: 700; font-size: 10px; }
 
@@ -1395,7 +1405,10 @@
     </div>
     <button type="button" id="editToggleBtn" class="edit-toggle-btn">✎ Bearbeiten</button>
     <span class="save-indicator" id="saveIndicator"></span>
-    <button type="button" class="luck-badge-top" id="luckBadgeTop" title="Verfügbare / Gesamt Glückspunkte">🍀 0/0</button>
+    <div class="luck-badge-wrap">
+      <button type="button" class="luck-badge-top" id="luckBadgeTop" title="Verfügbare / Gesamt Glückspunkte">🍀 0/0</button>
+      <div class="luck-badge-panel" id="luckBadgePanel"></div>
+    </div>
     <button type="button" id="myCharsBtn"><svg class="books-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="4.2" rx="1.4" fill="#F5A83C" stroke="#1a1a1a" stroke-width="1.1"/><line x1="5" y1="5.1" x2="14" y2="5.1" stroke="#1a1a1a" stroke-width="0.9" stroke-linecap="round"/><rect x="2" y="8" width="20" height="4.2" rx="1.4" fill="#E8564C" stroke="#1a1a1a" stroke-width="1.1"/><line x1="5" y1="10.1" x2="14" y2="10.1" stroke="#1a1a1a" stroke-width="0.9" stroke-linecap="round"/><rect x="2" y="13" width="20" height="4.2" rx="1.4" fill="#5B9BD5" stroke="#1a1a1a" stroke-width="1.1"/><line x1="5" y1="15.1" x2="14" y2="15.1" stroke="#1a1a1a" stroke-width="0.9" stroke-linecap="round"/><path d="M17.5 13v5.5l1.5-1 1.5 1V13z" fill="#E8564C" stroke="#1a1a1a" stroke-width="0.8"/></svg> Meine Charaktere</button>
     <button type="button" id="newCharBtn">+ Neuer Charakter</button>
   </div>
@@ -4170,9 +4183,17 @@
     luckAvailableDisplay.textContent = getLuckPointsAvailable();
   }
 
-  document.getElementById("luckBadgeTop").addEventListener("click", function(){
+  var luckBadgePanel = document.getElementById("luckBadgePanel");
+  document.getElementById("luckBadgeTop").addEventListener("click", function(e){
+    e.stopPropagation();
     var n = getLuckPointsAvailable();
-    showStatus(n + " Glückspunkt" + (n === 1 ? "" : "e") + " verfügbar");
+    luckBadgePanel.textContent = n + " Glückspunkt" + (n === 1 ? "" : "e") + " verfügbar";
+    luckBadgePanel.classList.toggle("show");
+  });
+  document.addEventListener("click", function(e){
+    if (!luckBadgePanel.contains(e.target) && e.target !== document.getElementById("luckBadgeTop")){
+      luckBadgePanel.classList.remove("show");
+    }
   });
 
   resetLuckBtn.addEventListener("click", function(){
