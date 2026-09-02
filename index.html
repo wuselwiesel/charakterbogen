@@ -483,6 +483,8 @@
     font-weight: 800;
     font-size: 17px;
   }
+  .attr-cell-na input { color: var(--muted) !important; -webkit-text-fill-color: var(--muted) !important; font-style: italic; font-weight: 400 !important; font-size: 14px !important; }
+  .attr-cell-na input::placeholder { color: var(--muted); opacity: 0.7; }
 
   /* Talente table (variant of attr-table) */
   .attr-head.talent-head, .attr-row.talent-row, .attr-sum.talent-sum { grid-template-columns: 2fr 1fr 1fr 1fr; }
@@ -875,6 +877,11 @@
     border-color: var(--accent-strong) !important;
   }
   .edit-toggle-btn.editing:hover { background: var(--accent-strong) !important; }
+  .luck-badge-top {
+    background: #FBF6E4; border: 1px solid #E7D9A8; color: #7A5E1E;
+    border-radius: 999px; padding: 6px 11px; font-weight: 700; font-size: 12px;
+    white-space: nowrap;
+  }
 
   /* ===== Ansichtsmodus (nicht editierbar) ===== */
   .sheet input:disabled, .sheet textarea:disabled, .sheet select:disabled {
@@ -1280,6 +1287,7 @@
   <div id="appRoot" class="app-root">
 
   <div class="user-bar" id="userBar">
+    <span class="luck-badge-top" id="luckBadgeTop" title="Verfügbare / Gesamt Glückspunkte">🍀 0/0</span>
     <button type="button" id="editToggleBtn" class="edit-toggle-btn">✎ Bearbeiten</button>
     <span class="save-indicator" id="saveIndicator"></span>
     <div class="online-wrap">
@@ -1353,6 +1361,7 @@
           <li><strong>Bonus:</strong> Normalerweise 0. Nur wenn dein Charakter z. B. ein Werwolf oder Vampir ist, gibt es hier automatisch feste Boni auf bestimmte Attribute.</li>
           <li><strong>Gesamtwert:</strong> Basiswert + Bonus. Das ist der Wert, der beim Würfeln wirklich zählt.</li>
         </ul>
+        <p><strong>Ausnahme: Glück (GL).</strong> Glück hat nur einen Basiswert (1–19) – keinen Bonus und keinen Gesamtwert. Der Basiswert wird stattdessen direkt in Glückspunkte umgerechnet (siehe Abschnitt 5).</p>
         <p>Was jedes Attribut genau bedeutet, steht im Reiter „Attribute erklärt".</p>
       </div>
 
@@ -1379,11 +1388,14 @@
 
       <div class="help-section" id="help-sec-gluecksfeld">
         <h3>5. Glückspunkte: Nochmal würfeln bei Pech</h3>
-        <p>Aus deinem Attribut „Glück" (GL) ergeben sich automatisch <strong>Glückspunkte</strong>: Glück-Gesamtwert ÷ 5, aufgerundet.</p>
+        <p>Glück (GL) ist eine <strong>aktive Fähigkeit</strong>, kein normales Attribut zum Würfeln. Aus dem Glück-Basiswert ergeben sich automatisch Glückspunkte, nach dieser festen Tabelle:</p>
         <div class="help-example">
-          <strong>Beispiel:</strong> Glück-Gesamtwert 13 → 13 ÷ 5 = 2,6 → aufgerundet sind das 3 Glückspunkte.
+          <strong>Glück-Basiswert 1–4</strong> → 1 Glückspunkt<br>
+          <strong>Glück-Basiswert 5–9</strong> → 2 Glückspunkte<br>
+          <strong>Glück-Basiswert 10–14</strong> → 3 Glückspunkte<br>
+          <strong>Glück-Basiswert 15–19</strong> → 4 Glückspunkte
         </div>
-        <p>Glückspunkte werden auf der Seite „Attributwerte" angezeigt. Verwendet werden sie im Würfel-Fenster:</p>
+        <p>Deine aktuellen Glückspunkte (verfügbar/gesamt) siehst du klein und dauerhaft oben in der Kopfleiste (🍀), egal auf welcher Seite du gerade bist. Verwendet werden sie im Würfel-Fenster:</p>
         <ul>
           <li>Wenn du bei einer Probe „Ohne SG" (W20, also gegen ein Attribut oder Talent) danebenwürfelst, kannst du einen Glückspunkt einsetzen, um den Würfel <strong>einmal neu zu werfen</strong>.</li>
           <li>Das geht nur bei fehlgeschlagenen W20-Würfen gegen ein Attribut/Talent – nicht bei freien Würfen und nicht bei anderen Würfeln (W2, W6, W10).</li>
@@ -1502,7 +1514,8 @@
         </div>
       </div>
       <div class="note-box" id="budgetNote">90 Punkte zu verteilen (Basiswert je Attribut: 1 – 19)</div>
-      <div class="note-box luck-note" id="luckNote">🍀 0 Glückspunkte (GL ÷ 5, aufgerundet)</div>
+      <div class="note-box luck-note" id="luckNote">🍀 0 Glückspunkte (aus deinem Glück-Basiswert)</div>
+      <p class="hint">Glück 1–4 → 1 Punkt · 5–9 → 2 · 10–14 → 3 · 15–19 → 4 (kein Bonus, kein Gesamtwert für Glück)</p>
 
       <h3 class="sub-h">Schwierigkeitsgrade</h3>
       <div class="diff-table">
@@ -1731,7 +1744,7 @@
   ];
 
   /* Jedes Talent wird aus dem gerundeten Durchschnitt zweier Attribute berechnet.
-     GL fließt bewusst in kein Talent ein – siehe LUCK_DIVISOR/Glückspunkte unten. */
+     GL fließt bewusst in kein Talent ein – siehe getLuckPointsTotal()/Glückspunkte unten. */
   var TALENT_ATTR_MAP = {
     "Körperbeherrschung": ["GE", "SB"],
     "Manipulation/Überzeugen": ["CH", "IG"],
@@ -2121,14 +2134,18 @@
   /* ===================== Attributwerte rendern ===================== */
   var attrWrap = document.getElementById("attrRows");
   ATTR_TABLE.forEach(function(a){
+    var isLuck = a.code === "GL";
     var row = document.createElement("div");
-    row.className = "attr-row";
+    row.className = "attr-row" + (isLuck ? " attr-row-gl" : "");
     row.style.background = a.color;
     row.innerHTML =
       '<div class="attr-name"><span class="code">'+a.code+'</span><span class="name">'+a.name+'</span></div>' +
       '<div class="attr-cell tooltip-anchor"><input type="number" id="'+a.code+'_basis" inputmode="numeric" min="1" max="19" step="1"><div class="attr-tooltip" id="'+a.code+'_basis_tt"></div></div>' +
-      '<div class="attr-cell tooltip-anchor"><input type="number" id="'+a.code+'_bonus" inputmode="numeric" min="-19" max="19" step="1"><div class="attr-tooltip" id="'+a.code+'_bonus_tt"></div></div>' +
-      '<div class="attr-cell"><input type="text" id="'+a.code+'_gesamt" readonly tabindex="-1"></div>';
+      (isLuck
+        ? '<div class="attr-cell attr-cell-na tooltip-anchor"><input type="text" id="GL_bonus" value="" disabled placeholder="–" tabindex="-1"><div class="attr-tooltip" id="GL_bonus_tt"></div></div>' +
+          '<div class="attr-cell attr-cell-na tooltip-anchor"><input type="text" id="GL_gesamt" readonly disabled placeholder="–" tabindex="-1"><div class="info-tooltip">Glück hat keinen Bonus und keinen Gesamtwert – der Basiswert ergibt direkt deine Glückspunkte (siehe unten).</div></div>'
+        : '<div class="attr-cell tooltip-anchor"><input type="number" id="'+a.code+'_bonus" inputmode="numeric" min="-19" max="19" step="1"><div class="attr-tooltip" id="'+a.code+'_bonus_tt"></div></div>' +
+          '<div class="attr-cell"><input type="text" id="'+a.code+'_gesamt" readonly tabindex="-1"></div>');
     attrWrap.appendChild(row);
   });
 
@@ -2253,12 +2270,15 @@
     }
   }
 
-  var LUCK_DIVISOR = 5;
   var luckPointsUsed = 0;
 
+  /* Glückspunkte ergeben sich direkt aus dem GL-Basiswert (kein Bonus, kein
+     Gesamtwert für Glück) über eine feste Stufentabelle:
+     1–4 -> 1, 5–9 -> 2, 10–14 -> 3, 15–19 -> 4. */
   function getLuckPointsTotal(){
-    var glGesamt = parseFloat(val("GL_gesamt"));
-    return isNaN(glGesamt) ? 0 : Math.ceil(glGesamt / LUCK_DIVISOR);
+    var glBasis = parseFloat(val("GL_basis"));
+    if (isNaN(glBasis) || glBasis < 1) return 0;
+    return Math.floor(glBasis / 5) + 1;
   }
   function getLuckPointsAvailable(){
     return Math.max(0, getLuckPointsTotal() - luckPointsUsed);
@@ -2267,7 +2287,7 @@
   function updateLuckPoints(){
     var luckPoints = getLuckPointsTotal();
     var note = document.getElementById("luckNote");
-    note.textContent = "🍀 " + luckPoints + " Glückspunkt" + (luckPoints === 1 ? "" : "e") + " (GL ÷ " + LUCK_DIVISOR + ", aufgerundet)";
+    note.textContent = "🍀 " + luckPoints + " Glückspunkt" + (luckPoints === 1 ? "" : "e") + " (aus deinem Glück-Basiswert)";
     updateLuckDisplay();
   }
 
@@ -2306,6 +2326,7 @@
     var anyFieldError = false;
 
     ATTR_TABLE.forEach(function(a){
+      var isLuck = a.code === "GL";
       var bEl = document.getElementById(a.code + "_basis");
       var boEl = document.getElementById(a.code + "_bonus");
       var gEl = document.getElementById(a.code + "_gesamt");
@@ -2314,25 +2335,29 @@
 
       var bRaw = bEl.value.trim(), boRaw = boEl.value.trim();
       var bErr = validateAttrValue(bRaw, BASIS_MIN, BASIS_MAX);
-      var boErr = validateAttrValue(boRaw, BONUS_MIN, BONUS_MAX);
+      var boErr = isLuck ? null : validateAttrValue(boRaw, BONUS_MIN, BONUS_MAX);
       setFieldError(bEl, bTt, bErr);
       setFieldError(boEl, boTt, boErr);
       if (bErr) anyFieldError = true;
       if (boErr) anyFieldError = true;
 
       var bOk = bRaw !== "" && !bErr;
-      var boOk = boRaw !== "" && !boErr;
+      var boOk = !isLuck && boRaw !== "" && !boErr;
       var bNum = bOk ? parseInt(bRaw, 10) : NaN;
       var boNum = boOk ? parseInt(boRaw, 10) : NaN;
 
-      if (!bOk && !boOk) {
+      /* Glück hat bewusst keinen Bonus und keinen Gesamtwert – der Basiswert
+         fließt stattdessen direkt in die Glückspunkte (siehe getLuckPointsTotal()). */
+      if (isLuck) {
+        gEl.value = "";
+      } else if (!bOk && !boOk) {
         gEl.value = "";
       } else {
         gEl.value = String((bOk ? bNum : 0) + (boOk ? boNum : 0));
       }
       basisVals.push(bOk ? String(bNum) : "");
       bonusVals.push(boOk ? String(boNum) : "");
-      gesamtVals.push(gEl.value);
+      gesamtVals.push(isLuck ? "" : gEl.value);
     });
 
     document.getElementById("summe_basis").value = sumField(basisVals);
@@ -3372,7 +3397,7 @@
     var attrBasis = {}, attrBonus = {};
     ATTR_TABLE.forEach(function(a){
       attrBasis[a.code] = val(a.code + "_basis");
-      attrBonus[a.code] = val(a.code + "_bonus");
+      attrBonus[a.code] = (a.code === "GL") ? "" : val(a.code + "_bonus");
     });
     var talentBasis = {}, talentBonus = {};
     TALENT_LIST.forEach(function(name){
@@ -3431,7 +3456,8 @@
 
     ATTR_TABLE.forEach(function(a){
       document.getElementById(a.code + "_basis").value = (data.attrBasis && data.attrBasis[a.code]) || "";
-      document.getElementById(a.code + "_bonus").value = (data.attrBonus && data.attrBonus[a.code]) || "";
+      /* Glück hat keinen Bonus (mehr) – alte gespeicherte Werte werden bewusst ignoriert. */
+      document.getElementById(a.code + "_bonus").value = (a.code === "GL") ? "" : ((data.attrBonus && data.attrBonus[a.code]) || "");
     });
     recalc();
 
@@ -3914,6 +3940,8 @@
   var rollHistoryList = [];
 
   function updateLuckDisplay(){
+    var badge = document.getElementById("luckBadgeTop");
+    if (badge) badge.textContent = "🍀 " + getLuckPointsAvailable() + "/" + getLuckPointsTotal();
     if (!luckAvailableDisplay) return;
     luckTotalDisplay.textContent = getLuckPointsTotal();
     luckAvailableDisplay.textContent = getLuckPointsAvailable();
@@ -4582,6 +4610,8 @@
     var scope = document.querySelectorAll(".sheet .paper:not(#page-wuerfelverlauf):not(#page-kommentare)");
     scope.forEach(function(paper){
       paper.querySelectorAll("input, textarea, select, button").forEach(function(el){
+        /* Glück hat keinen Bonus/Gesamtwert – diese Felder bleiben immer gesperrt. */
+        if (el.id === "GL_bonus" || el.id === "GL_gesamt") { el.disabled = true; return; }
         el.disabled = !editable;
       });
       paper.querySelectorAll(".rte-editor").forEach(function(el){
@@ -4590,6 +4620,7 @@
     });
     if (!editable){
       document.querySelectorAll('.attr-row input[id$="_bonus"]').forEach(function(el){
+        if (el.id === "GL_bonus") return;
         if (el.value.trim() === "") el.value = "0";
       });
     }
