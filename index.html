@@ -13,24 +13,24 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <style>
   :root {
-    --bg: oklch(97% 0.018 45);
-    --bg2: oklch(94% 0.03 45);
+    --bg: #E9E6F1;
+    --bg2: #DED8EC;
     --paper: #FFFFFF;
-    --paper-edge: oklch(91% 0.02 45);
-    --title-bg: oklch(93% 0.06 35);
-    --title-border: oklch(88% 0.02 45);
-    --row-light: oklch(94% 0.03 45);
-    --row-alt: oklch(98% 0.012 45);
-    --border: oklch(91% 0.02 45);
-    --border-strong: oklch(88% 0.02 45);
-    --text: oklch(24% 0.02 45);
-    --muted: oklch(52% 0.02 45);
-    --accent: oklch(72% 0.14 35);
-    --accent-strong: oklch(45% 0.14 35);
-    --accent-ink: oklch(20% 0.05 35);
+    --paper-edge: #D8D3E4;
+    --title-bg: #EDE3F7;
+    --title-border: #2A2430;
+    --row-light: #F7F7F7;
+    --row-alt: #FBFAFD;
+    --border: #C9C4D6;
+    --border-strong: #B9B2CB;
+    --text: #211D28;
+    --muted: #6E687A;
+    --accent: #7A5AA6;
+    --accent-strong: #5E3E8C;
+    --accent-ink: #FFFFFF;
     --field-bg: #FFFFFF;
-    --field-border: oklch(88% 0.02 45);
-    --field-focus: oklch(72% 0.14 35);
+    --field-border: #A79CC0;
+    --field-focus: #7A5AA6;
     --shadow: none;
     --ok-bg: oklch(90% 0.07 150);
     --ok-text: oklch(35% 0.1 150);
@@ -42,21 +42,21 @@
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: oklch(30% 0.03 45);
-      --bg2: oklch(24% 0.03 45);
-      --paper: oklch(97% 0.012 45);
-      --paper-edge: oklch(91% 0.02 45);
-      --text: oklch(24% 0.02 45);
-      --muted: oklch(52% 0.02 45);
+      --bg: #2E2740;
+      --bg2: #3A3150;
+      --paper: #f4f1f9;
+      --paper-edge: #d8d3e4;
+      --text: #211D28;
+      --muted: #6E687A;
     }
   }
   :root[data-theme="dark"] {
-    --bg: oklch(30% 0.03 45);
-    --bg2: oklch(24% 0.03 45);
-    --paper: oklch(97% 0.012 45);
-    --paper-edge: oklch(91% 0.02 45);
-    --text: oklch(24% 0.02 45);
-    --muted: oklch(52% 0.02 45);
+    --bg: #2E2740;
+    --bg2: #3A3150;
+    --paper: #f4f1f9;
+    --paper-edge: #d8d3e4;
+    --text: #211D28;
+    --muted: #6E687A;
   }
 
   * { box-sizing: border-box; }
@@ -64,7 +64,7 @@
   body {
     margin: 0;
     min-height: 100vh;
-    background: var(--bg);
+    background: radial-gradient(ellipse at top, var(--bg2), var(--bg));
     font-family: 'Karla', system-ui, -apple-system, sans-serif;
     color: var(--text);
     padding-bottom: 90px;
@@ -334,7 +334,7 @@
     padding: 0;
     font-weight: 700;
     font-size: 12.5px;
-    color: oklch(38% 0.02 45);
+    color: var(--muted);
     margin-bottom: 6px;
     border-right: none;
   }
@@ -349,7 +349,7 @@
     border-radius: 10px;
     margin: 0;
   }
-  .field-row input:focus { outline: none; border-color: var(--field-focus); box-shadow: 0 0 0 2px oklch(72% 0.14 35 / 0.18); }
+  .field-row input:focus { outline: none; border-color: var(--field-focus); box-shadow: 0 0 0 2px rgba(122,90,166,0.18); }
 
   .custom-field-row {
     display: grid;
@@ -367,13 +367,13 @@
     background: transparent;
     font-weight: 700;
     font-size: 12.5px;
-    color: oklch(38% 0.02 45);
+    color: var(--muted);
     padding: 11px 4px 11px 13px;
     font-family: inherit;
     width: 100%;
     min-width: 0;
   }
-  .custom-field-row input.custom-label-input:focus { outline: none; background: oklch(93% 0.05 35); border-radius: 8px; }
+  .custom-field-row input.custom-label-input:focus { outline: none; background: #F1EAFB; border-radius: 8px; }
   .custom-field-row input.custom-value-input {
     border: 1px solid var(--field-border);
     background: #fff;
@@ -386,7 +386,7 @@
     border-radius: 8px;
     margin: 0;
   }
-  .custom-field-row input.custom-value-input:focus { outline: none; border-color: var(--field-focus); box-shadow: 0 0 0 2px oklch(72% 0.14 35 / 0.18); }
+  .custom-field-row input.custom-value-input:focus { outline: none; border-color: var(--field-focus); box-shadow: 0 0 0 2px rgba(122,90,166,0.18); }
   .custom-field-row .custom-remove-btn {
     border: none;
     background: transparent;
@@ -418,7 +418,7 @@
     cursor: pointer;
     transition: background 0.15s ease, border-color 0.15s ease;
   }
-  .add-field-btn:hover { background: oklch(93% 0.05 35); border-color: var(--accent); }
+  .add-field-btn:hover { background: #F1EAFB; border-color: var(--accent); }
   .add-field-btn svg { width: 16px; height: 16px; }
 
   .hint {
@@ -446,7 +446,7 @@
     overflow: hidden;
     transition: border-color 0.15s ease, background 0.15s ease;
   }
-  .dropzone.drag-over { border-color: var(--accent); background: oklch(93% 0.05 35); }
+  .dropzone.drag-over { border-color: var(--accent); background: #F1EAFB; }
   .dropzone svg { width: 44px; height: 44px; color: var(--border-strong); }
   .dropzone .dz-text { color: var(--muted); font-size: 14px; }
   .dropzone .dz-sub { color: var(--muted); font-size: 12px; }
@@ -486,12 +486,12 @@
     grid-template-columns: 1.5fr 1fr 1fr 1fr;
   }
   .attr-head {
-    background: oklch(94% 0.03 45);
+    background: #E9F1FB;
     font-weight: 700;
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    color: oklch(42% 0.02 45);
+    color: var(--muted);
     text-align: center;
   }
   .attr-head > div { padding: 10px 4px; border-right: 1px solid var(--border); }
@@ -522,7 +522,7 @@
     color: var(--text);
     background: #fff;
   }
-  .attr-row input:focus { outline: none; border-color: var(--field-focus); box-shadow: 0 0 0 2px oklch(72% 0.14 35 / 0.18); }
+  .attr-row input:focus { outline: none; border-color: var(--field-focus); box-shadow: 0 0 0 2px rgba(122,90,166,0.18); }
   .attr-row input::-webkit-outer-spin-button, .attr-row input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   .attr-row input[type="number"] { -moz-appearance: textfield; }
   .attr-row input[readonly] { background: var(--row-light); cursor: default; }
@@ -552,8 +552,8 @@
     padding: 9px 12px;
   }
   .attr-row.talent-row .attr-name .code { font-size: 13.5px; font-weight: 600; }
-  .attr-row.talent-row.row-alt { background: transparent; }
-  .attr-sum { border-top: 1px solid var(--border); background: oklch(94% 0.03 45); font-weight: 700; }
+  .attr-row.talent-row.row-alt { background: var(--row-light); }
+  .attr-sum { border-top: 1px solid var(--border); background: #EFEFEF; font-weight: 700; }
   .attr-sum .attr-name { display:flex; align-items:center; justify-content:center; padding: 10px; border-right: 1px solid var(--border); font-size:14px; }
   .attr-sum .attr-cell { display:flex; align-items:center; justify-content:center; padding:8px; border-right:1px solid var(--border); }
   .attr-sum .attr-cell:last-child{ border-right:none; }
@@ -577,7 +577,7 @@
 
   .note-box {
     margin-top: 16px;
-    background: var(--row-light);
+    background: #EAF3FC;
     border: 1px solid var(--border);
     border-radius: 10px;
     text-align: center;
@@ -650,14 +650,14 @@
 
   .diff-table { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; max-width: 420px; }
   .diff-head, .diff-row { display: grid; grid-template-columns: 1fr 1fr; }
-  .diff-head { background: oklch(94% 0.03 45); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; color: oklch(42% 0.02 45); }
+  .diff-head { background: #EFEFEF; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted); }
   .diff-head > div, .diff-row > div { padding: 8px 12px; border-right: 1px solid var(--border); }
   .diff-head > div:last-child, .diff-row > div:last-child { border-right: none; }
   .diff-row { border-top: 1px solid var(--border); font-size: 13.5px; }
 
   /* Legend page */
   .legend-table { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-  .legend-head { display: grid; grid-template-columns: 130px 1fr; background: oklch(94% 0.03 45); font-weight: 700; text-align: center; font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; color: oklch(42% 0.02 45); }
+  .legend-head { display: grid; grid-template-columns: 130px 1fr; background: #EFEFEF; font-weight: 700; text-align: center; font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted); }
   .legend-head > div { padding: 9px; border-right: 1px solid var(--border); }
   .legend-head > div:last-child { border-right: none; }
   .legend-row { display: grid; grid-template-columns: 130px 1fr; border-top: 1px solid var(--border); }
@@ -682,7 +682,7 @@
     resize: vertical;
     background: #fff;
   }
-  textarea.long-field:focus { outline: none; box-shadow: inset 0 0 0 2px oklch(72% 0.14 35 / 0.25); }
+  textarea.long-field:focus { outline: none; box-shadow: inset 0 0 0 2px rgba(122,90,166,0.25); }
 
   .text-block {
     border: 1px solid var(--border);
@@ -708,7 +708,7 @@
     color: var(--text);
     min-width: 0;
   }
-  .text-block-head input.text-block-label:focus { outline: none; background: oklch(93% 0.05 35); }
+  .text-block-head input.text-block-label:focus { outline: none; background: #F1EAFB; }
   .text-block-head .custom-remove-btn {
     border: none;
     background: transparent;
@@ -778,7 +778,7 @@
     background: transparent;
     display: block;
   }
-  .rte-editor:focus { outline: none; box-shadow: inset 0 0 0 2px oklch(72% 0.14 35 / 0.2); }
+  .rte-editor:focus { outline: none; box-shadow: inset 0 0 0 2px rgba(122,90,166,0.2); }
   .rte-editor.is-empty:before {
     content: attr(data-placeholder);
     color: var(--muted);
@@ -886,7 +886,7 @@
   .auth-gate {
     position: fixed; inset: 0; z-index: 200;
     display: flex; align-items: center; justify-content: center;
-    background: var(--bg);
+    background: radial-gradient(ellipse at top, var(--bg2), var(--bg));
     padding: 20px;
   }
   .auth-card {
@@ -941,15 +941,17 @@
   .books-icon { width: 17px; height: 17px; vertical-align: -4px; }
   #myCharsBtn .books-icon { margin-right: 2px; }
   #myCharsBtn, #newCharBtn {
+    border: none !important;
+    color: var(--accent-ink) !important;
     font-size: 13.5px !important;
     font-weight: 700 !important;
     padding: 10px 18px !important;
-    transition: transform 0.12s ease, background 0.15s ease, color 0.15s ease;
+    transition: transform 0.12s ease, background 0.15s ease;
   }
-  #myCharsBtn { border: 1px solid var(--border-strong) !important; background: #fff !important; color: var(--text) !important; }
-  #myCharsBtn:hover { background: var(--row-light) !important; transform: translateY(-1px); }
-  #newCharBtn { border: none !important; background: var(--accent) !important; color: var(--accent-ink) !important; }
-  #newCharBtn:hover { background: var(--accent-strong) !important; color: #fff !important; transform: translateY(-1px); }
+  #myCharsBtn { background: var(--accent) !important; }
+  #myCharsBtn:hover { background: var(--accent-strong) !important; transform: translateY(-1px); }
+  #newCharBtn { background: linear-gradient(135deg, var(--accent), var(--accent-strong)) !important; }
+  #newCharBtn:hover { transform: translateY(-1px); filter: brightness(1.08); }
   .edit-toggle-btn {
     border: 1px solid var(--border-strong) !important;
     background: rgba(255,255,255,0.5) !important;
@@ -1017,7 +1019,7 @@
     display: flex; align-items: center; gap: 12px; border: 1px solid var(--border);
     border-radius: 10px; padding: 10px 12px; background: var(--row-light);
   }
-  .lib-card.active { border-color: var(--accent); background: oklch(93% 0.05 35); }
+  .lib-card.active { border-color: var(--accent); background: #F1EAFB; }
   .lib-thumb {
     width: 44px; height: 44px; border-radius: 10px; object-fit: cover;
     background: #fff; border: 1px solid var(--border); flex-shrink: 0;
@@ -1103,7 +1105,7 @@
   .roll-stage { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 18px 0 14px; }
   .roll-die {
     width: 76px; height: 76px;
-    background: var(--accent);
+    background: linear-gradient(155deg, var(--accent), var(--accent-strong));
     border-radius: 16px; transform: rotate(45deg);
     display: flex; align-items: center; justify-content: center;
     transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
@@ -1231,7 +1233,7 @@
   }
   .help-example strong { color: var(--accent-strong); }
   .help-talent-table { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; font-size: 12.5px; margin-top: 4px; }
-  .help-talent-table .htt-head { display: grid; grid-template-columns: 1fr 1.2fr; background: oklch(94% 0.03 45); font-weight: 700; text-align: center; font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; color: oklch(42% 0.02 45); }
+  .help-talent-table .htt-head { display: grid; grid-template-columns: 1fr 1.2fr; background: #EFEFEF; font-weight: 700; text-align: center; font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted); }
   .help-talent-table .htt-head > div { padding: 7px; border-right: 1px solid var(--border); }
   .help-talent-table .htt-head > div:last-child { border-right: none; }
   .help-talent-table .htt-row { display: grid; grid-template-columns: 1fr 1.2fr; border-top: 1px solid var(--border); }
@@ -1373,7 +1375,7 @@
     flex: 1; min-width: 0; border: 1px solid var(--field-border); border-radius: 999px;
     padding: 7px 12px; font-family: inherit; font-size: 12.5px; background: #fff; color: var(--text);
   }
-  .post-comment-input:focus { outline: none; box-shadow: inset 0 0 0 2px oklch(72% 0.14 35 / 0.25); }
+  .post-comment-input:focus { outline: none; box-shadow: inset 0 0 0 2px rgba(122,90,166,0.25); }
   .post-comment-send {
     border: none; background: var(--accent); color: var(--accent-ink); font-family: inherit;
     font-weight: 700; font-size: 12px; padding: 7px 14px; border-radius: 999px; cursor: pointer; flex-shrink: 0;
@@ -1830,40 +1832,40 @@
   var PERSONAL_DEFAULT_LABELS = ["Titel", "Vorname", "Nachname", "Spitzname", "Alter", "Wesen", "Rang"];
 
   var ATTR_TABLE = [
-    {code:"MU", name:"Mut", color:"transparent"},
-    {code:"IG", name:"Intelligenz", color:"transparent"},
-    {code:"GE", name:"Gewandtheit", color:"transparent"},
-    {code:"KO", name:"Konstitution", color:"transparent"},
-    {code:"IN", name:"Intuition", color:"transparent"},
-    {code:"KK", name:"Körperkraft", color:"transparent"},
-    {code:"FF", name:"Fingerfertigkeit", color:"transparent"},
-    {code:"CH", name:"Charisma", color:"transparent"},
-    {code:"SB", name:"Selbstbeherrschung", color:"transparent"},
-    {code:"GL", name:"Glück", color:"transparent"}
+    {code:"MU", name:"Mut", color:"#FBEFEF"},
+    {code:"IG", name:"Intelligenz", color:"#F3EEFB"},
+    {code:"GE", name:"Gewandtheit", color:"#FFF7EC"},
+    {code:"KO", name:"Konstitution", color:"#EDF6EE"},
+    {code:"IN", name:"Intuition", color:"#FBF0F4"},
+    {code:"KK", name:"Körperkraft", color:"#EAF1F7"},
+    {code:"FF", name:"Fingerfertigkeit", color:"#FDF3E2"},
+    {code:"CH", name:"Charisma", color:"#F3EEFB"},
+    {code:"SB", name:"Selbstbeherrschung", color:"#E9EEF0"},
+    {code:"GL", name:"Glück", color:"#EEF6EE"}
   ];
 
   var ATTR_NAME_BY_CODE = {};
   ATTR_TABLE.forEach(function(a){ ATTR_NAME_BY_CODE[a.code] = a.name; });
 
   var LEGEND = [
-    {code:"MU", name:"Mut", desc:"Willenskraft und Entschlossenheit", detail:"Mutprobe gegen Angst oder Einschüchterung, Durchhalten, etwas riskieren", color:"transparent"},
-    {code:"IG", name:"Intelligenz", desc:"Geistige Kapazität, logisches Denken und Wissen", detail:"Lösen von Rätseln, Finden von Hinweisen, Erkennen von Mustern", color:"transparent"},
-    {code:"IN", name:"Intuition", desc:"Erfassen von Situationen ohne bewusstes Nachdenken", detail:"Wahrnehmung von Gefahren, Einschätzen von Personen", color:"transparent"},
-    {code:"FF", name:"Fingerfertigkeit", desc:"Geschicklichkeit und Feinmotorik", detail:"Diebstahlversuche, Lock Picking, Handhabung von Geräten, Reparaturen", color:"transparent"},
-    {code:"GE", name:"Gewandtheit", desc:"Beweglichkeit", detail:"Ausweichen, Akrobatik, Beweglichkeit in gefährlichen Umgebungen", color:"transparent"},
-    {code:"KO", name:"Konstitution", desc:"Körperliche Ausdauer und Widerstandsfähigkeit", detail:"Widerstehen von Krankheiten, Durchhalten bei Erschöpfung", color:"transparent"},
-    {code:"KK", name:"Körperkraft", desc:"Physische Stärke und Muskelkraft", detail:"Heben oder Tragen schwerer Gegenstände, Nahkampfangriffe", color:"transparent"},
-    {code:"CH", name:"Charisma", desc:"Ausstrahlung und Überzeugungskraft", detail:"Überzeugen, Lügen, Anführen von Gruppen, Auftreten, Wirkung auf Andere", color:"transparent"},
-    {code:"GL", name:"Glück", desc:"Schicksal und Fügungen", detail:"Alles, was Glück erfordert", color:"transparent"},
-    {code:"SB", name:"Selbstbeherrschung", desc:"Emotionale / Geistige Widerstandsfähigkeit", detail:"Widerstehen von starken Reizen", color:"transparent"}
+    {code:"MU", name:"Mut", desc:"Willenskraft und Entschlossenheit", detail:"Mutprobe gegen Angst oder Einschüchterung, Durchhalten, etwas riskieren", color:"#FBEFEF"},
+    {code:"IG", name:"Intelligenz", desc:"Geistige Kapazität, logisches Denken und Wissen", detail:"Lösen von Rätseln, Finden von Hinweisen, Erkennen von Mustern", color:"#F3EEFB"},
+    {code:"IN", name:"Intuition", desc:"Erfassen von Situationen ohne bewusstes Nachdenken", detail:"Wahrnehmung von Gefahren, Einschätzen von Personen", color:"#FFF7EC"},
+    {code:"FF", name:"Fingerfertigkeit", desc:"Geschicklichkeit und Feinmotorik", detail:"Diebstahlversuche, Lock Picking, Handhabung von Geräten, Reparaturen", color:"#FDF3E2"},
+    {code:"GE", name:"Gewandtheit", desc:"Beweglichkeit", detail:"Ausweichen, Akrobatik, Beweglichkeit in gefährlichen Umgebungen", color:"#FBF7E3"},
+    {code:"KO", name:"Konstitution", desc:"Körperliche Ausdauer und Widerstandsfähigkeit", detail:"Widerstehen von Krankheiten, Durchhalten bei Erschöpfung", color:"#EDF6EE"},
+    {code:"KK", name:"Körperkraft", desc:"Physische Stärke und Muskelkraft", detail:"Heben oder Tragen schwerer Gegenstände, Nahkampfangriffe", color:"#EAF1F7"},
+    {code:"CH", name:"Charisma", desc:"Ausstrahlung und Überzeugungskraft", detail:"Überzeugen, Lügen, Anführen von Gruppen, Auftreten, Wirkung auf Andere", color:"#F3EEFB"},
+    {code:"GL", name:"Glück", desc:"Schicksal und Fügungen", detail:"Alles, was Glück erfordert", color:"#EEF6EE"},
+    {code:"SB", name:"Selbstbeherrschung", desc:"Emotionale / Geistige Widerstandsfähigkeit", detail:"Widerstehen von starken Reizen", color:"#E9EEF0"}
   ];
 
   var DIFFICULTY = [
-    {label:"Sehr leicht", val:"10", color:"transparent"},
-    {label:"Leicht", val:"15", color:"transparent"},
-    {label:"Normal", val:"20", color:"transparent"},
-    {label:"Schwierig", val:"25", color:"transparent"},
-    {label:"Sehr schwierig", val:"30", color:"transparent"}
+    {label:"Sehr leicht", val:"10", color:"#EAF3EA"},
+    {label:"Leicht", val:"15", color:"#E7F0F8"},
+    {label:"Normal", val:"20", color:"#FCF6E4"},
+    {label:"Schwierig", val:"25", color:"#FBEEE0"},
+    {label:"Sehr schwierig", val:"30", color:"#FBEAEA"}
   ];
 
   var TALENT_LIST = [
@@ -2755,8 +2757,10 @@
   var COL_FIELD_BORDER = [153, 153, 153];
 
   function hex2rgb(hex){
-    hex = hex.replace("#", "");
-    return [parseInt(hex.substr(0,2),16), parseInt(hex.substr(2,2),16), parseInt(hex.substr(4,2),16)];
+    hex = (hex || "").replace("#", "");
+    var rgb = [parseInt(hex.substr(0,2),16), parseInt(hex.substr(2,2),16), parseInt(hex.substr(4,2),16)];
+    if (rgb.some(function(n){ return isNaN(n); })) return [255,255,255];
+    return rgb;
   }
   function Y(yBL){ return PAGE_H - yBL; }
 
