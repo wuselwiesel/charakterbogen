@@ -1521,6 +1521,43 @@
   }
   .help-overlay.show { display: flex; animation: np-overlayFade .18s ease; }
   .help-overlay.show .help-panel { animation: np-modalPop .22s var(--np-ease); }
+
+  /* ===== Würfeln-Schnellzugriff (FAB-Popup) ===== */
+  .quick-roll-overlay {
+    position: fixed; inset: 0; z-index: 210; display: none;
+    align-items: center; justify-content: center;
+    background: rgba(20,15,30,0.6); padding: 20px; overflow-y: auto;
+  }
+  .quick-roll-overlay.show { display: flex; animation: np-overlayFade .18s ease; }
+  .quick-roll-overlay.show .quick-roll-panel { animation: np-modalPop .22s var(--np-ease); }
+  .quick-roll-panel { position: relative; width: 100%; max-width: 420px; max-height: 88vh; overflow-y: auto; }
+  .quick-roll-panel .paper { margin: 0; }
+  .quick-roll-close {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+    background: var(--np-surface); border: 1px solid var(--np-border); color: var(--np-ink-soft);
+    display: flex; align-items: center; justify-content: center; font-size: 14px;
+    box-shadow: var(--np-shadow-sm); transition: background .15s ease, color .15s ease;
+  }
+  .quick-roll-close:hover { background: var(--np-surface-2); color: var(--np-ink); }
+
+  /* ===== Kleiner An/Aus-Schalter (Profil-Einstellungen) ===== */
+  .profile-setting-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 2px 0 18px; }
+  .profile-setting-label { font-weight: 600; font-size: 13px; color: var(--text); display: block; }
+  .profile-setting-hint { font-size: 11.5px; color: var(--muted); margin: 2px 0 0; }
+  .np-switch {
+    width: 42px; height: 24px; border-radius: 999px; border: none; padding: 0;
+    background: var(--border-strong); position: relative; cursor: pointer; flex-shrink: 0;
+    transition: background .18s var(--np-ease);
+  }
+  .np-switch[aria-checked="true"] { background: var(--accent); }
+  .np-switch-knob {
+    position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%;
+    background: #fff; box-shadow: var(--shadow-sm); transition: transform .18s var(--np-ease);
+  }
+  .np-switch[aria-checked="true"] .np-switch-knob { transform: translateX(18px); }
+  .np-switch:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 2px; }
+
   .help-panel {
     width: 100%; max-width: 720px; background: var(--paper);
     border-radius: 20px; box-shadow: var(--shadow-lg); padding: 26px 28px 34px;
@@ -2025,7 +2062,12 @@
   .np-mini-table-row.np-hi { background: var(--np-primary-soft); }
   .np-budget-viz { display: flex; flex-direction: column; gap: 14px; }
   .np-budget-bar-track { height: 10px; border-radius: 999px; background: var(--np-surface-2); overflow: hidden; }
-  .np-budget-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg,var(--np-primary),var(--np-accent)); width: 64%; }
+  .np-budget-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg,var(--np-primary),var(--np-accent)); width: 64%; transition: width .25s var(--np-ease), background .2s var(--np-ease); }
+  .np-budget-bar-fill.over-budget { background: var(--bad-text); }
+  /* Die Budget-Leiste ist nur beim Bearbeiten relevant - im Ansichtsmodus kann man sie ohnehin
+     nicht mehr veraendern, da ist der reine Zahlen-Hinweis (.note-box) genug. */
+  body:not(.is-editing) .np-budget-viz { display: none; }
+  .np-budget-viz { margin: 4px 0 0; }
   .np-budget-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--np-ink-soft); }
   .np-talent-chip-grid { display: flex; flex-wrap: wrap; gap: 7px; }
   .np-worlds-strip { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px; }
@@ -2134,7 +2176,8 @@
   }
   .np-dash-mini-card:hover .np-bento-icon { transform: rotate(-8deg) scale(1.06); }
   .np-dash-mini-card:active { transform: translateY(-1px) scale(0.99); }
-  .np-dash-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+  .np-dash-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 16px; }
+  .np-dash-row:last-child { margin-bottom: 0; }
   @media (max-width: 900px) { .np-dash-grid { grid-template-columns: 1fr; } .np-dash-row { grid-template-columns: repeat(2,1fr); } }
   @media (max-width: 560px) { .np-dash-row { grid-template-columns: 1fr; } }
 
@@ -2150,6 +2193,10 @@
   body.feature-page-mode:not(.sheet-view-mode) #featurePageChrome { display: block; }
   /* Der Chrome liefert die Ueberschrift - die eigene Titelzeile der Seite ausblenden. */
   body.feature-page-mode .paper .page-title { display: none; }
+  /* Wuerfeln-Schnellzugriff: erzwingt feature-page-mode (fuer das dunkle np-Styling von
+     .paper/.roll-*), auch wenn man z.B. gerade auf dem Dashboard ist - dort darf aber nicht
+     zusaetzlich die eigentliche Feature-Chrome-Kopfzeile aufploppen. */
+  body.quick-roll-open #featurePageChrome { display: none !important; }
   .np-breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--np-ink-faint); margin-bottom: 18px; flex-wrap: wrap; }
   .np-breadcrumb button { border: none; background: none; color: var(--np-ink-faint); font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; padding: 0; }
   .np-breadcrumb button:hover { color: var(--np-primary-text); }
@@ -2376,12 +2423,8 @@
           <button type="button" class="np-bento-card np-c-chars" data-np-goto="auth">
             <div>
               <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/></svg></span>
-              <p class="np-bento-name">Charaktere</p>
-              <p class="np-bento-desc">Deine Bibliothek — nach Welt sortiert, mit Bild und Kurzinfo.</p>
-            </div>
-            <div class="np-bento-foot">
-              <span style="font-size:12px;color:var(--np-ink-faint);font-weight:700;">Nach Anmeldung</span>
-              <svg class="np-bento-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <p class="np-bento-name" style="margin-bottom:4px;">Charaktere<span class="np-bento-arrow" style="float:right;margin-top:3px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></p>
+              <p class="np-bento-desc">Deine Bibliothek — nach Welt sortiert.</p>
             </div>
           </button>
 
@@ -2674,6 +2717,13 @@
       <div class="roll-field">
         <label for="profileNickname">Spitzname (Anzeigename, optional)</label>
         <input type="text" id="profileNickname" maxlength="24" placeholder="optional">
+      </div>
+      <div class="profile-setting-row">
+        <div>
+          <span class="profile-setting-label">Würfel-Button anzeigen</span>
+          <p class="profile-setting-hint">Schnellzugriff unten rechts, auf jeder Seite.</p>
+        </div>
+        <button type="button" class="np-switch" id="diceFabToggle" role="switch" aria-checked="true"><span class="np-switch-knob"></span></button>
       </div>
       <div class="profile-error" id="profileError"></div>
       <button type="button" class="roll-btn" id="profileSaveBtn">Speichern</button>
@@ -3041,6 +3091,10 @@
         </div>
       </div>
       <div class="note-box" id="budgetNote">90 Punkte zu verteilen (Basiswert je Attribut: 1 – 19)</div>
+      <div class="np-budget-viz" id="attrBudgetViz">
+        <div class="np-budget-row"><span>Basiswert-Budget</span><b id="attrBudgetFraction">0 / 90</b></div>
+        <div class="np-budget-bar-track"><div class="np-budget-bar-fill" id="attrBudgetBarFill" style="width:0%"></div></div>
+      </div>
       <div class="note-box luck-note" id="luckNote">🍀 0 Glückspunkte</div>
 
       <h3 class="sub-h">Schwierigkeitsgrade</h3>
@@ -3078,6 +3132,11 @@
         </div>
       </div>
       <div class="note-box" id="talentBudgetNote">20 Punkte zu verteilen</div>
+      <div class="np-budget-viz" id="talentBudgetViz">
+        <div class="np-budget-row"><span>Talentbudget</span><b id="talentBudgetFraction">0 / 20</b></div>
+        <div class="np-budget-bar-track"><div class="np-budget-bar-fill" id="talentBudgetBarFill" style="width:0%"></div></div>
+        <div class="np-talent-chip-grid" id="talentBudgetChips"></div>
+      </div>
     </section>
 
     <!-- SEITE 6: NOTIZEN -->
@@ -3189,6 +3248,12 @@
   <div class="np-notif-panel" id="notifPanel"></div>
 
   <button type="button" class="dice-fab" id="diceFabBtn" title="Würfeln" aria-label="Würfeln">🎲</button>
+
+  <div class="quick-roll-overlay" id="quickRollOverlay">
+    <div class="quick-roll-panel" id="quickRollPanel">
+      <button type="button" class="quick-roll-close" id="quickRollCloseBtn" aria-label="Schließen">✕</button>
+    </div>
+  </div>
 
   <div class="uni-overlay" id="uniOverlay">
     <div class="uni-panel">
@@ -3887,6 +3952,15 @@
       tooltip.textContent = (-remaining) + " Punkt" + (-remaining === 1 ? "" : "e") + " zu viel verteilt \u2013 max. " + BASIS_BUDGET + " Basispunkte insgesamt";
       tooltip.classList.add("show");
     }
+
+    var used = BASIS_BUDGET - remaining;
+    var fill = document.getElementById("attrBudgetBarFill");
+    var fraction = document.getElementById("attrBudgetFraction");
+    if (fill && fraction){
+      fill.style.width = Math.max(0, Math.min(100, (used / BASIS_BUDGET) * 100)) + "%";
+      fill.classList.toggle("over-budget", remaining < 0);
+      fraction.textContent = used + " / " + BASIS_BUDGET;
+    }
   }
 
   function updateDownloadButtonState(){
@@ -3967,7 +4041,7 @@
   var lastEditedTalentBonusTid = null;
   var budgetCulpritTid = null;
 
-  function updateTalentBudgetNote(remaining){
+  function updateTalentBudgetNote(remaining, chipItems){
     var note = document.getElementById("talentBudgetNote");
     var summeBonusInput = document.getElementById("talent_summe_bonus");
     var tooltip = document.getElementById("talentBudgetTooltip");
@@ -3987,11 +4061,29 @@
       tooltip.textContent = (-remaining) + " Punkt" + (-remaining === 1 ? "" : "e") + " zu viel verteilt – max. " + TALENT_BONUS_BUDGET + " Talentpunkte insgesamt";
       tooltip.classList.add("show");
     }
+
+    var used = TALENT_BONUS_BUDGET - remaining;
+    var fill = document.getElementById("talentBudgetBarFill");
+    var fraction = document.getElementById("talentBudgetFraction");
+    if (fill && fraction){
+      fill.style.width = Math.max(0, Math.min(100, (used / TALENT_BONUS_BUDGET) * 100)) + "%";
+      fill.classList.toggle("over-budget", remaining < 0);
+      fraction.textContent = used + " / " + TALENT_BONUS_BUDGET;
+    }
+    var chipsWrap = document.getElementById("talentBudgetChips");
+    if (chipsWrap){
+      chipsWrap.innerHTML = (chipItems && chipItems.length)
+        ? chipItems.map(function(c){
+            return '<span class="np-char-talent-chip">' + escapeAttr(c.name) + ' ' + (c.bonus > 0 ? "+" : "") + c.bonus + '</span>';
+          }).join("")
+        : '<span class="np-char-talent-chip" style="opacity:.65;">Noch keine Boni vergeben</span>';
+    }
   }
 
   function recalcTalents(){
     var anyFieldError = false;
     var basisVals = [], bonusVals = [], gesamtVals = [];
+    var chipItems = [];
 
     /* Vorherige "Budget überschritten"-Markierung erst mal zurücksetzen - der Haupt-Durchlauf
        unten setzt field-warning ggf. ohnehin neu, falls das Feld weiterhin einen eigenen
@@ -4034,6 +4126,7 @@
 
       var boOk = boRaw !== "" && !boErr;
       var boNum = boOk ? parseInt(boRaw, 10) : NaN;
+      if (boOk && boNum !== 0) chipItems.push({ name: name, bonus: boNum });
 
       /* Bonus ist an sich gültig (0-19), aber Basiswert+Bonus wird bei 19 gedeckelt -
          das soll sichtbar sein, ohne als harter Validierungsfehler zu zählen. */
@@ -4064,7 +4157,7 @@
     var bonusSum = 0;
     bonusVals.forEach(function(v){ if (v !== "") bonusSum += parseFloat(v); });
     var remaining = TALENT_BONUS_BUDGET - bonusSum;
-    updateTalentBudgetNote(remaining);
+    updateTalentBudgetNote(remaining, chipItems);
 
     /* Hover-Hinweis auf jedem Bonus-Feld: wie viele Talentpunkte sind noch übrig?
        So sieht man es direkt beim Bearbeiten, ohne zur Summenzeile scrollen zu müssen. */
@@ -4236,7 +4329,7 @@
   }
 
   window.addEventListener("resize", closeNotifPanel);
-  document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeNotifPanel(); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape") { closeNotifPanel(); closeQuickRollPopup(); } });
 
   /* ===================== Status-Toast ===================== */
   var statusEl = document.getElementById("dlStatus");
@@ -6330,8 +6423,8 @@
     updateRollValueDisplay();
   });
 
-  /* Wuerfeln ist eine eigene Feature-Seite (kein Modal mehr) - openRollPanel()
-     bereitet nur noch den Zustand vor und navigiert dorthin. */
+  /* Wuerfeln als eigene Feature-Seite (Dashboard-Kachel "Würfeln" navigiert weiterhin
+     dorthin) - openRollPanel() bereitet nur den Zustand vor und navigiert. */
   function openRollPanel(){
     updateRollValueDisplay();
     updateLuckDisplay();
@@ -6339,7 +6432,43 @@
     enterFeaturePage("wuerfeln");
   }
 
-  diceFabBtn.addEventListener("click", openRollPanel);
+  /* Der FAB unten rechts navigiert NICHT mehr weg, sondern haengt #page-wuerfeln
+     voruebergehend in ein Popup um - so bleibt man auf der Seite, auf der man gerade ist. */
+  var quickRollOverlay = document.getElementById("quickRollOverlay");
+  var quickRollPanel = document.getElementById("quickRollPanel");
+  var quickRollCloseBtn = document.getElementById("quickRollCloseBtn");
+  var pageWuerfelnEl = document.getElementById("page-wuerfeln");
+  var wuerfelnHomeParent = pageWuerfelnEl.parentNode;
+  var wuerfelnHomeNext = pageWuerfelnEl.nextSibling;
+  var quickRollAddedFeatureMode = false;
+
+  function openQuickRollPopup(){
+    updateRollValueDisplay();
+    updateLuckDisplay();
+    luckRerollBtn.hidden = true;
+    /* .paper/.roll-* brauchen body.feature-page-mode fuer ihr dunkles np-Styling - falls man
+       z.B. gerade auf dem Dashboard ist, wird das hier voruebergehend erzwungen (und die
+       eigentliche Feature-Chrome-Kopfzeile per .quick-roll-open ausgeblendet). */
+    quickRollAddedFeatureMode = !document.body.classList.contains("feature-page-mode");
+    document.body.classList.add("feature-page-mode", "quick-roll-open");
+    quickRollPanel.appendChild(pageWuerfelnEl);
+    pageWuerfelnEl.classList.add("active");
+    quickRollOverlay.classList.add("show");
+  }
+
+  function closeQuickRollPopup(){
+    if (!quickRollOverlay.classList.contains("show")) return;
+    quickRollOverlay.classList.remove("show");
+    wuerfelnHomeParent.insertBefore(pageWuerfelnEl, wuerfelnHomeNext);
+    var routedTab = document.querySelector('.tab-btn[data-page="wuerfeln"]');
+    if (!routedTab || !routedTab.classList.contains("active")) pageWuerfelnEl.classList.remove("active");
+    document.body.classList.remove("quick-roll-open");
+    if (quickRollAddedFeatureMode) document.body.classList.remove("feature-page-mode");
+  }
+
+  diceFabBtn.addEventListener("click", openQuickRollPopup);
+  quickRollCloseBtn.addEventListener("click", closeQuickRollPopup);
+  quickRollOverlay.addEventListener("click", function(e){ if (e.target === quickRollOverlay) closeQuickRollPopup(); });
 
   function diceLabel(sides){ return sides === "2" ? "d2 (Ja / Nein)" : "d" + sides; }
   function rollDieValueFor(sides){ return Math.floor(Math.random() * Number(sides)) + 1; }
@@ -6524,6 +6653,7 @@
   var profileAvatarBtn = document.getElementById("profileAvatarBtn");
   var profileAvatarInput = document.getElementById("profileAvatarInput");
   var profileAvatarRemoveBtn = document.getElementById("profileAvatarRemoveBtn");
+  var diceFabToggle = document.getElementById("diceFabToggle");
   /* undefined = unveraendert (beim Speichern den bisherigen Wert behalten),
      null = aktiv entfernt, sonst die neu gewaehlte Daten-URL. */
   var pendingProfileAvatar;
@@ -6543,9 +6673,29 @@
     profileCloseBtn.hidden = !!isFirstSetup;
     pendingProfileAvatar = undefined;
     renderProfileAvatarPreview(myProfile && myProfile.avatar);
+    diceFabToggle.setAttribute("aria-checked", String(isDiceFabEnabled()));
     profileOverlay.classList.add("show");
   }
   function closeProfileModal(){ profileOverlay.classList.remove("show"); }
+
+  /* ===================== Würfeln-FAB: an/aus + Schnellzugriff-Popup =====================
+     Reine Geraete-/Browser-Einstellung (kein Charakterfeld) - deshalb localStorage statt
+     Firestore, analog zum bereits vorhandenen Theme-Schalter (THEME_KEY). */
+  var DICE_FAB_KEY = "charakterbogen:diceFabEnabled";
+  function isDiceFabEnabled(){
+    try { var v = localStorage.getItem(DICE_FAB_KEY); return v === null ? true : v === "1"; }
+    catch(e){ return true; }
+  }
+  function setDiceFabEnabled(enabled){
+    try { localStorage.setItem(DICE_FAB_KEY, enabled ? "1" : "0"); } catch(e){}
+    diceFabBtn.hidden = !enabled;
+  }
+  diceFabToggle.addEventListener("click", function(){
+    var next = diceFabToggle.getAttribute("aria-checked") !== "true";
+    diceFabToggle.setAttribute("aria-checked", String(next));
+    setDiceFabEnabled(next);
+  });
+  diceFabBtn.hidden = !isDiceFabEnabled();
 
   profileCloseBtn.addEventListener("click", closeProfileModal);
   profileEditBtn.addEventListener("click", function(){ openProfileModal(false); });
