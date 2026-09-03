@@ -1780,6 +1780,29 @@
     box-shadow: 0 0 0 2px var(--np-surface);
   }
 
+  /* ---- Benachrichtigungs-Dropdown (unter der Glocke) ---- */
+  .np-notif-panel {
+    position: fixed; z-index: 250; width: 300px; max-width: calc(100vw - 24px);
+    max-height: 70vh; overflow-y: auto;
+    background: var(--np-surface); border: 1px solid var(--np-border);
+    border-radius: var(--np-radius-md); box-shadow: var(--np-shadow-lg);
+    padding: 6px; display: none;
+  }
+  .np-notif-panel.show { display: block; }
+  .np-notif-panel-head {
+    font-size: 11.5px; font-weight: 700; color: var(--np-ink-faint);
+    text-transform: uppercase; letter-spacing: 0.03em; padding: 9px 10px 6px;
+  }
+  .np-notif-empty { padding: 20px 10px 24px; text-align: center; color: var(--np-ink-faint); font-size: 13px; }
+  .np-notif-item {
+    display: block; width: 100%; text-align: left; border: none; background: transparent;
+    padding: 9px 10px; border-radius: 10px; cursor: pointer; font-family: inherit;
+    transition: background .12s ease;
+  }
+  .np-notif-item:hover { background: var(--np-surface-2); }
+  .np-notif-item-title { font-size: 13px; color: var(--np-ink); font-weight: 700; margin-bottom: 2px; }
+  .np-notif-item-sub { font-size: 12px; color: var(--np-ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
   /* ---- Buttons ---- */
   .np-btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -2129,6 +2152,12 @@
   :is(body.feature-page-mode, body.sheet-view-mode) .attr-row .attr-cell,
   :is(body.feature-page-mode, body.sheet-view-mode) .attr-row { border-color: var(--np-border-soft); }
   :is(body.feature-page-mode, body.sheet-view-mode) .attr-sum { background: var(--np-surface-2); border-color: var(--np-border); }
+  /* Attributwerte-Zeilen bekommen ihre Pastellfarbe per Inline-Style (row.style.background =
+     a.color) - das schlaegt jede normale CSS-Regel, auch unsere np-Flaechen weiter oben. Nur
+     ein !important im migrierten Dark-Kontext kommt dagegen an; die Farbcodierung pro Attribut
+     bleibt dafuer dem hellen "Papier" vorbehalten. */
+  :is(body.feature-page-mode, body.sheet-view-mode) .attr-row { background: var(--np-surface-2) !important; }
+  :is(body.feature-page-mode, body.sheet-view-mode) .attr-row.row-alt { background: var(--np-surface) !important; }
   /* :not(:disabled):not([readonly]) - schreibgeschuetzte/Ansichtsmodus-Felder sollen weiterhin
      ohne Rahmen/Kasten aussehen (siehe die allgemeine Ansichtsmodus-Regel weiter oben); diese
      np-Kastenoptik gilt nur fuer wirklich editierbare Felder. */
@@ -3111,6 +3140,7 @@
   </div>
 
   <div class="dl-status" id="dlStatus"></div>
+  <div class="np-notif-panel" id="notifPanel"></div>
 
   <button type="button" class="dice-fab" id="diceFabBtn" title="Würfeln" aria-label="Würfeln">🎲</button>
 
@@ -4099,6 +4129,68 @@
       scheduleAutosave();
     });
   }
+
+  /* ===================== Benachrichtigungs-Dropdown ===================== */
+  var notifPanelEl = document.getElementById("notifPanel");
+
+  function blocksToPlainText(blocks, maxLen){
+    var text = (blocks || []).map(function(b){
+      if (b.type === "paragraph" || b.type === "heading" || b.type === "listitem"){
+        return (b.runs || []).map(function(r){ return r.text || ""; }).join("");
+      }
+      return "";
+    }).join(" ").replace(/\s+/g, " ").trim();
+    maxLen = maxLen || 60;
+    return text.length > maxLen ? text.slice(0, maxLen).trim() + "…" : text;
+  }
+
+  function closeNotifPanel(){ notifPanelEl.classList.remove("show"); }
+
+  function positionNotifPanel(anchorEl){
+    var r = anchorEl.getBoundingClientRect();
+    var w = 300;
+    var left = Math.min(r.left, window.innerWidth - w - 12);
+    left = Math.max(12, left);
+    notifPanelEl.style.left = left + "px";
+    notifPanelEl.style.top = (r.bottom + 8) + "px";
+  }
+
+  function renderNotifPanel(){
+    var items = [];
+    postsList.forEach(function(post){
+      if (!currentUser || post.uid !== currentUser.uid) return;
+      var total = otherLikesCount(post);
+      var seen = getSeenLikeCount(post.id);
+      if (total > seen) items.push({ post: post, delta: total - seen });
+    });
+    if (!items.length){
+      notifPanelEl.innerHTML =
+        '<div class="np-notif-panel-head">Benachrichtigungen</div>' +
+        '<div class="np-notif-empty">Keine neuen Benachrichtigungen.</div>';
+      return;
+    }
+    notifPanelEl.innerHTML =
+      '<div class="np-notif-panel-head">Benachrichtigungen</div>' +
+      items.map(function(it){
+        var label = it.delta === 1 ? "1 neuer Like" : (it.delta + " neue Likes");
+        var preview = blocksToPlainText(it.post.blocks) || "(kein Text)";
+        return '<button type="button" class="np-notif-item" data-notif-post="' + escapeAttr(it.post.id) + '">' +
+          '<div class="np-notif-item-title">' + escapeAttr(label) + ' auf deinen Beitrag</div>' +
+          '<div class="np-notif-item-sub">' + escapeAttr(preview) + '</div>' +
+          '</button>';
+      }).join("");
+  }
+
+  function toggleNotifPanel(anchorEl){
+    if (notifPanelEl.classList.contains("show")){ closeNotifPanel(); return; }
+    renderNotifPanel();
+    positionNotifPanel(anchorEl);
+    notifPanelEl.classList.add("show");
+    markLikeNotificationsSeen();
+  }
+
+  window.addEventListener("resize", closeNotifPanel);
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeNotifPanel(); });
 
   /* ===================== Status-Toast ===================== */
   var statusEl = document.getElementById("dlStatus");
@@ -5974,6 +6066,15 @@
   /* Die App-Navigation (Logo/Links/Theme/PDF/Profil/Abmelden) kommt jetzt an drei Stellen vor
      (Startseite, Dashboard, jede Feature-Seite) - einmal delegiert verdrahten statt pro Instanz. */
   document.addEventListener("click", function(e){
+    if (notifPanelEl.classList.contains("show") && !e.target.closest(".np-notif-panel") && !e.target.closest("[data-np-notif-bell]")){
+      closeNotifPanel();
+    }
+    var notifItem = e.target.closest(".np-notif-item");
+    if (notifItem){
+      closeNotifPanel();
+      enterFeaturePage("kommentare");
+      return;
+    }
     var openEl = e.target.closest("[data-np-open]");
     if (openEl){
       var target = openEl.dataset.npOpen;
@@ -5991,14 +6092,8 @@
     }
     if (e.target.closest("[data-np-theme-toggle]")) { document.getElementById("themeToggleBtn").click(); return; }
     if (e.target.closest("[data-np-pdf]")) { dlBtn.click(); return; }
-    if (e.target.closest("[data-np-notif-bell]")) {
-      var badge = document.querySelector(".np-notif-badge");
-      var hadUnseen = !!(badge && !badge.hidden);
-      markLikeNotificationsSeen();
-      if (!hadUnseen) showStatus("Keine neuen Benachrichtigungen.");
-      enterFeaturePage("kommentare");
-      return;
-    }
+    var notifBell = e.target.closest("[data-np-notif-bell]");
+    if (notifBell) { toggleNotifPanel(notifBell); return; }
     if (e.target.closest("[data-np-profile]")) { openProfileModal(false); return; }
     if (e.target.closest("[data-np-logout]")) { logoutBtn.click(); return; }
     var navToggle = e.target.closest("[data-np-nav-toggle]");
