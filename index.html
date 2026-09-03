@@ -1933,7 +1933,7 @@
   .np-char-card { background: var(--np-surface); border: 1px solid var(--np-border); border-radius: var(--np-radius-lg); box-shadow: var(--np-shadow-md); padding: 26px; max-width: 400px; }
   .np-char-card-top { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
   .np-avatar {
-    width: 58px; height: 58px; border-radius: 16px; flex-shrink: 0;
+    width: 58px; height: 58px; border-radius: 16px; flex-shrink: 0; overflow: hidden;
     background: linear-gradient(155deg,var(--np-accent),var(--np-accent-strong));
     display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 20px;
   }
@@ -2130,6 +2130,15 @@
   :is(body.feature-page-mode, body.sheet-view-mode) .attr-row input:not(:disabled):not([readonly]),
   :is(body.feature-page-mode, body.sheet-view-mode) .attr-sum input:not(:disabled):not([readonly]) {
     border-color: var(--np-border); color: var(--np-ink);
+  }
+  /* Disabled/readonly Felder (Basiswert, Gesamtwert, Bonus im Ansichtsmodus) nutzten sonst
+     var(--text) - immer dunkle Tinte fuer's helle "Papier". Auf der migrierten Seite sitzen sie
+     im Dunkelmodus aber auf einer dunklen np-Flaeche, wodurch der Text unsichtbar wurde. */
+  :is(body.feature-page-mode, body.sheet-view-mode) .attr-row input:disabled,
+  :is(body.feature-page-mode, body.sheet-view-mode) .attr-row input[readonly],
+  :is(body.feature-page-mode, body.sheet-view-mode) .attr-sum input:disabled,
+  :is(body.feature-page-mode, body.sheet-view-mode) .attr-sum input[readonly] {
+    color: var(--np-ink); -webkit-text-fill-color: var(--np-ink);
   }
   :is(body.feature-page-mode, body.sheet-view-mode) .note-box { background: var(--np-primary-soft); color: var(--np-primary-text); border: none; border-radius: 12px; }
   :is(body.feature-page-mode, body.sheet-view-mode) .race-row select:not(:disabled) { border-color: var(--np-border); }
@@ -5892,7 +5901,7 @@
      gemeinsam genutzt vom Profil-Dialog und jeder Instanz des Nutzer-Chips in der Nav. */
   function renderAvatarInto(el, avatarUrl, initials){
     if (avatarUrl){
-      el.innerHTML = '<img src="' + avatarUrl + '" alt="">';
+      el.innerHTML = '<img src="' + avatarUrl + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">';
     } else {
       el.textContent = initials;
     }
