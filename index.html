@@ -1611,11 +1611,30 @@
   .post-body table { border-collapse: collapse; width: 100%; margin: 8px 0; }
   .post-body table td { border: 1px solid var(--border); padding: 5px 7px; }
   .post-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; }
+  .post-actions { display: flex; align-items: center; gap: 4px; min-width: 0; flex-wrap: wrap; }
   .post-comment-toggle {
     border: none; background: transparent; color: var(--accent-strong);
-    font-family: inherit; font-weight: 600; font-size: 12px; cursor: pointer; padding: 4px 0;
+    font-family: inherit; font-weight: 600; font-size: 12px; cursor: pointer;
+    padding: 5px 9px; border-radius: 999px;
+    transition: background 0.15s ease;
   }
-  .post-comment-toggle:hover { text-decoration: underline; }
+  .post-comment-toggle:hover { background: #F1EAFB; }
+  .post-like {
+    display: inline-flex; align-items: center; gap: 5px;
+    border: none; background: transparent; color: var(--muted);
+    font-family: inherit; font-weight: 700; font-size: 12px; cursor: pointer;
+    padding: 5px 9px; border-radius: 999px;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .post-like:hover { background: #F1EAFB; color: var(--accent-strong); }
+  .post-like-icon {
+    width: 15px; height: 15px; flex-shrink: 0;
+    fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linejoin: round;
+    transition: fill 0.15s ease, transform 0.12s ease;
+  }
+  .post-like.liked { color: var(--accent-strong); }
+  .post-like.liked .post-like-icon { fill: currentColor; transform: scale(1.08); }
+  .post-like-count:empty { display: none; }
   .post-delete {
     border: none; background: transparent; color: var(--muted);
     cursor: pointer; font-size: 13px; padding: 3px 6px; border-radius: 8px;
@@ -5294,7 +5313,10 @@
           uid: d.uid,
           author: d.nickname || d.username || "Unbekannt",
           blocks: blocks,
-          createdAt: d.createdAt
+          createdAt: d.createdAt,
+          likes: Array.isArray(d.likes) ? d.likes : [],
+          /* null = noch unbekannt (aeltere Beitraege ohne Zaehlerfeld) */
+          commentCount: typeof d.commentCount === "number" ? d.commentCount : null
         });
       });
       renderPosts();
@@ -5314,6 +5336,7 @@
           var d = docSnap.data();
           items.push({ id: docSnap.id, uid: d.uid, author: d.nickname || d.username || "Unbekannt", text: d.text || "", createdAt: d.createdAt });
         });
+        setCommentCount(postId, items.length);
         var listEl = document.getElementById("postCommentsList_" + postId);
         if (!listEl) return;
         listEl.innerHTML = "";
@@ -5333,12 +5356,73 @@
             delHtml;
           if (delHtml){
             row.querySelector(".comment-delete").addEventListener("click", function(){
-              db.collection("posts").doc(postId).collection("comments").doc(entry.id).delete().catch(function(){});
+              db.collection("posts").doc(postId).collection("comments").doc(entry.id).delete()
+                .then(function(){ bumpCommentCount(postId, -1); })
+                .catch(function(){});
             });
           }
           listEl.appendChild(row);
         });
       }, function(){ /* ignore transient errors */ });
+  }
+
+  /* Kommentarzahl: das Feld am Beitrag ist ein Cache. Wer die Kommentare
+     tatsaechlich geladen hat, kennt die Wahrheit und korrigiert ihn. */
+  var commentCountCache = {};   // postId -> Anzahl
+  var commentCountBackfilled = {};
+  var postCommentDrafts = {};   // postId -> angefangener Kommentartext
+
+  function knownCommentCount(post){
+    if (typeof commentCountCache[post.id] === "number") return commentCountCache[post.id];
+    return typeof post.commentCount === "number" ? post.commentCount : null;
+  }
+
+  function commentToggleLabel(count, expanded){
+    if (expanded) return "💬 Kommentare verbergen";
+    if (count === null) return "💬 Kommentare";
+    if (count === 0) return "💬 Kommentieren";
+    return "💬 " + count + (count === 1 ? " Kommentar" : " Kommentare");
+  }
+
+  function refreshCommentToggle(postId){
+    var box = document.getElementById("postComments_" + postId);
+    if (!box) return;
+    var card = box.closest(".post-card");
+    var btn = card && card.querySelector(".post-comment-toggle");
+    if (!btn) return;
+    btn.textContent = commentToggleLabel(commentCountCache[postId], !box.hidden);
+  }
+
+  function setCommentCount(postId, count){
+    var previous = commentCountCache[postId];
+    commentCountCache[postId] = count;
+    refreshCommentToggle(postId);
+    /* Gespeicherten Zaehler nur korrigieren, wenn er wirklich abweicht. */
+    var post = postsList.filter(function(p){ return p.id === postId; })[0];
+    if (post && post.commentCount !== count && previous !== count){
+      db.collection("posts").doc(postId).update({ commentCount: count }).catch(function(){});
+    }
+  }
+
+  function bumpCommentCount(postId, delta){
+    var fv = firebase.firestore.FieldValue;
+    var update = (fv && typeof fv.increment === "function")
+      ? { commentCount: fv.increment(delta) }
+      : null;
+    if (!update) return;
+    db.collection("posts").doc(postId).update(update).catch(function(){});
+  }
+
+  /* Aeltere Beitraege haben noch kein Zaehlerfeld - einmalig nachtragen. */
+  function backfillCommentCount(post){
+    if (post.commentCount !== null) return;
+    if (typeof commentCountCache[post.id] === "number") return;
+    if (commentCountBackfilled[post.id]) return;
+    commentCountBackfilled[post.id] = true;
+    db.collection("posts").doc(post.id).collection("comments").get().then(function(snap){
+      var n = snap.docs ? snap.docs.length : 0;
+      setCommentCount(post.id, n);
+    }).catch(function(){});
   }
 
   function renderPosts(){
@@ -5358,11 +5442,22 @@
         ? '<button type="button" class="post-delete" title="Löschen">✕</button>'
         : "";
       var isExpanded = !!expandedPostIds[post.id];
+      var likes = post.likes || [];
+      var iLike = !!(currentUser && likes.indexOf(currentUser.uid) !== -1);
+      var likeCount = likes.length;
+      var knownCount = knownCommentCount(post);
       card.innerHTML =
         '<div class="post-header"><span class="post-author">' + escapeAttr(post.author) + '</span><span class="post-time">' + escapeAttr(whenStr) + '</span></div>' +
         '<div class="post-body">' + renderBlocksToSafeHtml(post.blocks) + '</div>' +
         '<div class="post-footer">' +
-          '<button type="button" class="post-comment-toggle">💬 Kommentare ' + (isExpanded ? "verbergen" : "anzeigen") + '</button>' +
+          '<div class="post-actions">' +
+            '<button type="button" class="post-like' + (iLike ? ' liked' : '') + '"' +
+              ' aria-pressed="' + (iLike ? 'true' : 'false') + '" title="Gefällt mir">' +
+              '<svg class="post-like-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>' +
+              '<span class="post-like-count">' + (likeCount || "") + '</span>' +
+            '</button>' +
+            '<button type="button" class="post-comment-toggle">' + commentToggleLabel(knownCount, isExpanded) + '</button>' +
+          '</div>' +
           deleteHtml +
         '</div>' +
         '<div class="post-comments" id="postComments_' + post.id + '"' + (isExpanded ? "" : " hidden") + '>' +
@@ -5384,16 +5479,44 @@
 
       var toggleBtn = card.querySelector(".post-comment-toggle");
       var commentsBox = card.querySelector(".post-comments");
-      if (isExpanded) subscribePostComments(post.id);
       toggleBtn.addEventListener("click", function(){
         var willShow = commentsBox.hidden;
         commentsBox.hidden = !willShow;
-        toggleBtn.textContent = "💬 Kommentare " + (willShow ? "verbergen" : "anzeigen");
+        toggleBtn.textContent = commentToggleLabel(knownCommentCount(post), willShow);
         if (willShow){ expandedPostIds[post.id] = true; subscribePostComments(post.id); }
         else { delete expandedPostIds[post.id]; unsubscribePostComments(post.id); }
       });
 
+      var likeBtn = card.querySelector(".post-like");
+      likeBtn.addEventListener("click", function(){
+        if (!currentUser) return;
+        var nowLiked = !likeBtn.classList.contains("liked");
+        /* Sofort umschalten: der Firestore-Snapshot baut den Feed gleich neu auf,
+           bis dahin soll der Klick nicht ins Leere laufen. */
+        likeBtn.classList.toggle("liked", nowLiked);
+        likeBtn.setAttribute("aria-pressed", nowLiked ? "true" : "false");
+        var countEl = likeBtn.querySelector(".post-like-count");
+        var shown = (parseInt(countEl.textContent, 10) || 0) + (nowLiked ? 1 : -1);
+        countEl.textContent = shown > 0 ? String(shown) : "";
+        var fv = firebase.firestore.FieldValue;
+        db.collection("posts").doc(post.id).update({
+          likes: nowLiked ? fv.arrayUnion(currentUser.uid) : fv.arrayRemove(currentUser.uid)
+        }).catch(function(err){
+          likeBtn.classList.toggle("liked", !nowLiked);
+          likeBtn.setAttribute("aria-pressed", !nowLiked ? "true" : "false");
+          countEl.textContent = likeCount > 0 ? String(likeCount) : "";
+          showStatus("Like konnte nicht gespeichert werden: " + (err && err.message ? err.message : err));
+        });
+      });
+
       var commentInputEl = card.querySelector(".post-comment-input");
+      /* Der Feed wird bei jedem Snapshot komplett neu gebaut - einen angefangenen
+         Kommentar dabei nicht verlieren. */
+      if (postCommentDrafts[post.id]) commentInputEl.value = postCommentDrafts[post.id];
+      commentInputEl.addEventListener("input", function(){
+        if (commentInputEl.value) postCommentDrafts[post.id] = commentInputEl.value;
+        else delete postCommentDrafts[post.id];
+      });
       function sendPostComment(){
         var text = commentInputEl.value.trim();
         if (!text || !currentUser || !myProfile) return;
@@ -5405,6 +5528,8 @@
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         }).then(function(){
           commentInputEl.value = "";
+          delete postCommentDrafts[post.id];
+          bumpCommentCount(post.id, 1);
         }).catch(function(err){
           showStatus("Kommentar konnte nicht gesendet werden: " + (err && err.message ? err.message : err));
         });
@@ -5415,6 +5540,8 @@
       });
 
       postFeed.appendChild(card);
+      if (isExpanded) subscribePostComments(post.id);
+      backfillCommentCount(post);
     });
   }
 
@@ -5428,6 +5555,8 @@
     if (!hasContent) return;
     postSendBtn.disabled = true;
     db.collection("posts").add({
+      likes: [],
+      commentCount: 0,
       uid: currentUser.uid,
       nickname: myProfile.nickname || null,
       username: myProfile.username || null,
