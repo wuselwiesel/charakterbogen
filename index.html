@@ -2051,14 +2051,17 @@
   @media (max-width: 900px) { .np-dash-grid { grid-template-columns: 1fr; } .np-dash-row { grid-template-columns: repeat(2,1fr); } }
   @media (max-width: 560px) { .np-dash-row { grid-template-columns: 1fr; } }
 
-  /* ---- Migrierte Feature-Seite (Beispiel: Attributwerte) ---- */
-  body.attr-page-mode .sidebar,
-  body.attr-page-mode .sidebar-toggle,
-  body.attr-page-mode .sidebar-backdrop,
-  body.attr-page-mode .user-bar { display: none !important; }
-  #attrPageChrome { display: none; }
-  body.attr-page-mode #attrPageChrome { display: block; }
-  body.attr-page-mode #page-werte .page-title { display: none; }
+  /* ---- Migrierte Feature-Seiten (Attributwerte, Talente, Notizen, ...) ----
+     Ein gemeinsames Chrome fuer alle migrierten Seiten statt einer Kopie je Seite. */
+  body.feature-page-mode .sidebar,
+  body.feature-page-mode .sidebar-toggle,
+  body.feature-page-mode .sidebar-backdrop,
+  body.feature-page-mode .user-bar { display: none !important; }
+  #featurePageChrome { display: none; }
+  body.feature-page-mode #featurePageChrome { display: block; }
+  body.feature-page-mode #page-werte .page-title,
+  body.feature-page-mode #page-talente .page-title,
+  body.feature-page-mode #page-notizen .page-title { display: none; }
   .np-breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--np-ink-faint); margin-bottom: 18px; flex-wrap: wrap; }
   .np-breadcrumb button { border: none; background: none; color: var(--np-ink-faint); font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; padding: 0; }
   .np-breadcrumb button:hover { color: var(--np-primary-strong); }
@@ -2066,22 +2069,39 @@
   .np-breadcrumb .np-current { color: var(--np-ink); font-weight: 700; }
   .np-page-head-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; flex-wrap: wrap; }
   .np-page-head-row .save-indicator { font-size: 12.5px; }
-  /* Attributtabelle im neuen Design, nur aktiv wenn ueber das Dashboard erreicht */
-  body.attr-page-mode #page-werte {
+
+  /* Attribut-/Talenttabelle im neuen Design, nur aktiv wenn ueber das Dashboard erreicht */
+  body.feature-page-mode #page-werte,
+  body.feature-page-mode #page-talente,
+  body.feature-page-mode #page-notizen {
     background: var(--np-surface); border-color: var(--np-border);
     border-radius: var(--np-radius-lg); box-shadow: var(--np-shadow-sm);
   }
-  body.attr-page-mode #page-werte .attr-table { border-color: var(--np-border); box-shadow: none; border-radius: var(--np-radius-md); }
-  body.attr-page-mode #page-werte .attr-head { background: var(--np-surface-2); color: var(--np-ink-faint); border-color: var(--np-border); }
-  body.attr-page-mode #page-werte .attr-head > div,
-  body.attr-page-mode #page-werte .attr-row .attr-name,
-  body.attr-page-mode #page-werte .attr-row .attr-cell { border-color: var(--np-border-soft); }
-  body.attr-page-mode #page-werte .attr-row { border-color: var(--np-border-soft); }
-  body.attr-page-mode #page-werte .attr-sum { background: var(--np-surface-2); border-color: var(--np-border); }
-  body.attr-page-mode #page-werte .attr-row input,
-  body.attr-page-mode #page-werte .attr-sum input { border-color: var(--np-border); color: var(--np-ink); font-family: 'Plus Jakarta Sans', inherit; }
-  body.attr-page-mode #page-werte .note-box { background: var(--np-primary-soft); color: var(--np-primary-strong); border: none; border-radius: 12px; }
-  body.attr-page-mode #page-werte .race-row select { border-color: var(--np-border); font-family: 'Plus Jakarta Sans', inherit; }
+  body.feature-page-mode #page-werte .attr-table,
+  body.feature-page-mode #page-talente .attr-table { border-color: var(--np-border); box-shadow: none; border-radius: var(--np-radius-md); }
+  body.feature-page-mode #page-werte .attr-head,
+  body.feature-page-mode #page-talente .attr-head { background: var(--np-surface-2); color: var(--np-ink-faint); border-color: var(--np-border); }
+  body.feature-page-mode #page-werte .attr-head > div, body.feature-page-mode #page-werte .attr-row .attr-name, body.feature-page-mode #page-werte .attr-row .attr-cell,
+  body.feature-page-mode #page-talente .attr-head > div, body.feature-page-mode #page-talente .attr-row .attr-name, body.feature-page-mode #page-talente .attr-row .attr-cell { border-color: var(--np-border-soft); }
+  body.feature-page-mode #page-werte .attr-row,
+  body.feature-page-mode #page-talente .attr-row { border-color: var(--np-border-soft); }
+  body.feature-page-mode #page-werte .attr-sum,
+  body.feature-page-mode #page-talente .attr-sum { background: var(--np-surface-2); border-color: var(--np-border); }
+  body.feature-page-mode #page-werte .attr-row input, body.feature-page-mode #page-werte .attr-sum input,
+  body.feature-page-mode #page-talente .attr-row input, body.feature-page-mode #page-talente .attr-sum input { border-color: var(--np-border); color: var(--np-ink); font-family: 'Plus Jakarta Sans', inherit; }
+  body.feature-page-mode #page-werte .note-box,
+  body.feature-page-mode #page-talente .note-box { background: var(--np-primary-soft); color: var(--np-primary-strong); border: none; border-radius: 12px; }
+  body.feature-page-mode #page-werte .race-row select { border-color: var(--np-border); font-family: 'Plus Jakarta Sans', inherit; }
+  body.feature-page-mode #page-talente .talent-row .attr-name .code { color: var(--np-ink); }
+
+  /* Notizen im neuen Design */
+  body.feature-page-mode #page-notizen .text-block { background: var(--np-surface-2); box-shadow: none; }
+  body.feature-page-mode #page-notizen .text-block-head { background: var(--np-surface-2); border-color: var(--np-border-soft); }
+  body.feature-page-mode #page-notizen .text-block-head input.text-block-label { color: var(--np-ink); font-family: 'Plus Jakarta Sans', inherit; }
+  body.feature-page-mode #page-notizen .rte-toolbar { background: var(--np-surface-2); border-color: var(--np-border-soft); }
+  body.feature-page-mode #page-notizen .rte-toolbar button { color: var(--np-ink-soft); }
+  body.feature-page-mode #page-notizen .rte-editor { background: var(--np-surface); color: var(--np-ink); font-family: 'Plus Jakarta Sans', inherit; }
+  body.feature-page-mode #page-notizen .add-field-btn { border-color: var(--np-border); color: var(--np-primary); font-family: 'Plus Jakarta Sans', inherit; }
 </style>
 </head>
 <body>
@@ -2615,9 +2635,14 @@
             </div>
           </div>
           <div class="np-char-attrs" id="dashCharAttrs" style="margin-bottom:0;"></div>
-          <button type="button" class="np-btn np-btn-primary" id="dashOpenAttrBtn" style="align-self:flex-start;">Attributwerte öffnen
-            <svg class="np-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button type="button" class="np-btn np-btn-primary" id="dashOpenAttrBtn">Attributwerte öffnen
+              <svg class="np-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+            <button type="button" class="np-btn np-btn-ghost" id="dashOpenTalenteBtn">Talente öffnen
+              <svg class="np-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
         </div>
         <div class="np-dash-side">
           <button type="button" class="np-dash-mini-card" id="dashOpenAttrTile">
@@ -2626,7 +2651,7 @@
           </button>
           <button type="button" class="np-dash-mini-card" data-np-open="talente">
             <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2.6 2.6 6.2 6.7.6-5.1 4.4 1.5 6.6L12 16.9l-5.7 3.5 1.5-6.6-5.1-4.4 6.7-.6z"/></svg></span>
-            <div><p class="np-bento-name" style="margin-bottom:2px;">Talente</p><p class="np-tag-soon">Öffnet im bisherigen Design</p></div>
+            <div><p class="np-bento-name" style="margin-bottom:2px;">Talente</p><p class="np-bento-desc">22 Talente, ein Budget im Blick.</p></div>
           </button>
         </div>
       </div>
@@ -2638,7 +2663,7 @@
         </button>
         <button type="button" class="np-dash-mini-card" data-np-open="notizen">
           <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.4 2.6a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></span>
-          <div><p class="np-bento-name" style="margin-bottom:2px;">Notizen</p><p class="np-tag-soon">Öffnet im bisherigen Design</p></div>
+          <div><p class="np-bento-name" style="margin-bottom:2px;">Notizen</p><p class="np-bento-desc">Freitext mit Formatierung.</p></div>
         </button>
         <button type="button" class="np-dash-mini-card" data-np-open="feed">
           <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
@@ -2685,19 +2710,19 @@
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
     <div class="main-content">
-    <div id="attrPageChrome" class="np-scope np-wrap">
+    <div id="featurePageChrome" class="np-scope np-wrap">
       <div class="np-breadcrumb">
-        <button type="button" id="attrCrumbDashboard">Dashboard</button>
+        <button type="button" id="featureCrumbDashboard">Dashboard</button>
         <span class="np-sep">/</span>
-        <span id="attrCrumbChar">–</span>
+        <span id="featureCrumbChar">–</span>
         <span class="np-sep">/</span>
-        <span class="np-current">Attributwerte</span>
+        <span class="np-current" id="featureCrumbCurrent">Attributwerte</span>
       </div>
       <div class="np-page-head-row">
-        <h1 class="np-dash-title" style="margin-bottom:0;">Attributwerte</h1>
-        <div style="display:flex;align-items:center;gap:14px;">
-          <span class="save-indicator" id="attrPageSaveIndicator"></span>
-          <button type="button" class="np-btn np-btn-ghost" id="attrPageEditBtn">✎ Bearbeiten</button>
+        <h1 class="np-dash-title" style="margin-bottom:0;" id="featurePageTitle">Attributwerte</h1>
+        <div style="display:flex;align-items:center;gap:14px;" id="featurePageEditWrap">
+          <span class="save-indicator" id="featurePageSaveIndicator"></span>
+          <button type="button" class="np-btn np-btn-ghost" id="featurePageEditBtn">✎ Bearbeiten</button>
         </div>
       </div>
     </div>
@@ -4972,7 +4997,7 @@
   var saveIndicatorFadeTimer = null;
   function setSaveIndicator(text, variant){
     clearTimeout(saveIndicatorFadeTimer);
-    var mirror = document.getElementById("attrPageSaveIndicator");
+    var mirror = document.getElementById("featurePageSaveIndicator");
     [saveIndicator, mirror].forEach(function(el){
       if (!el) return;
       el.classList.remove("success", "fading");
@@ -5631,21 +5656,36 @@
   }
 
   function showDashboard(){
-    document.body.classList.remove("attr-page-mode");
+    document.body.classList.remove("feature-page-mode");
     document.body.classList.add("view-dashboard");
     renderDashboard();
     renderDashboardUser();
   }
   function showSheet(pageName){
     document.body.classList.remove("view-dashboard");
-    document.body.classList.remove("attr-page-mode");
+    document.body.classList.remove("feature-page-mode");
     if (pageName) openTab(pageName);
   }
-  function enterAttrPage(){
+
+  /* Migrierte Feature-Seiten teilen sich ein Chrome (Breadcrumb + Seitenkopf).
+     "editable:false" (z.B. Notizen) blendet den Bearbeiten-/Speicher-Spiegel aus,
+     weil dort ohnehin alles jederzeit direkt editierbar ist. */
+  var FEATURE_PAGES = {
+    werte:   { title: "Attributwerte", editable: true },
+    talente: { title: "Talente",       editable: true },
+    notizen: { title: "Notizen",       editable: false }
+  };
+
+  function enterFeaturePage(pageKey){
+    var config = FEATURE_PAGES[pageKey];
+    if (!config) return;
     document.body.classList.remove("view-dashboard");
-    openTab("werte");
-    document.body.classList.add("attr-page-mode");
-    var crumb = document.getElementById("attrCrumbChar");
+    openTab(pageKey);
+    document.body.classList.add("feature-page-mode");
+    document.getElementById("featurePageTitle").textContent = config.title;
+    document.getElementById("featureCrumbCurrent").textContent = config.title;
+    document.getElementById("featurePageEditWrap").style.display = config.editable ? "flex" : "none";
+    var crumb = document.getElementById("featureCrumbChar");
     if (crumb) crumb.textContent = activeCharacterName || "–";
     window.scrollTo({ top: 0 });
   }
@@ -5691,11 +5731,12 @@
 
   document.getElementById("sidebarDashboardBtn").addEventListener("click", showDashboard);
   document.getElementById("dashBrandBtn").addEventListener("click", showDashboard);
-  document.getElementById("attrCrumbDashboard").addEventListener("click", showDashboard);
+  document.getElementById("featureCrumbDashboard").addEventListener("click", showDashboard);
   document.getElementById("dashLogoutBtn").addEventListener("click", function(){ logoutBtn.click(); });
-  document.getElementById("dashOpenAttrBtn").addEventListener("click", enterAttrPage);
-  document.getElementById("dashOpenAttrTile").addEventListener("click", enterAttrPage);
-  document.getElementById("attrPageEditBtn").addEventListener("click", function(){ editToggleBtn.click(); });
+  document.getElementById("dashOpenAttrBtn").addEventListener("click", function(){ enterFeaturePage("werte"); });
+  document.getElementById("dashOpenAttrTile").addEventListener("click", function(){ enterFeaturePage("werte"); });
+  document.getElementById("dashOpenTalenteBtn").addEventListener("click", function(){ enterFeaturePage("talente"); });
+  document.getElementById("featurePageEditBtn").addEventListener("click", function(){ editToggleBtn.click(); });
   document.getElementById("dashThemeToggle").addEventListener("click", function(){ document.getElementById("themeToggleBtn").click(); });
   document.getElementById("dashPdfBtn").addEventListener("click", function(){ dlBtn.click(); });
   document.getElementById("dashProfileBtn").addEventListener("click", function(){ openProfileModal(false); });
@@ -5709,8 +5750,8 @@
       if (target === "help") { openHelpModal(); return; }
       if (target === "chars") { clearUniverseFilter(); openLibrary(); return; }
       if (target === "feed") { showSheet("kommentare"); return; }
-      if (target === "talente") { showSheet("talente"); return; }
-      if (target === "notizen") { showSheet("notizen"); return; }
+      if (target === "talente") { enterFeaturePage("talente"); return; }
+      if (target === "notizen") { enterFeaturePage("notizen"); return; }
     });
   });
 
@@ -6652,7 +6693,7 @@
     isEditMode = editing;
     editToggleBtn.textContent = editing ? "✓ Fertig" : "✎ Bearbeiten";
     editToggleBtn.classList.toggle("editing", editing);
-    var mirrorBtn = document.getElementById("attrPageEditBtn");
+    var mirrorBtn = document.getElementById("featurePageEditBtn");
     if (mirrorBtn){
       mirrorBtn.textContent = editing ? "✓ Fertig" : "✎ Bearbeiten";
       mirrorBtn.classList.toggle("np-btn-primary", editing);
