@@ -356,6 +356,8 @@
      Tabellenkoepfe (sie wuerden zudem unter die fixe Kopfleiste rutschen). */
   body.sheet-view-mode .attr-head { position: static; }
   body.sheet-view-mode .sheet .paper { display: none; }
+  /* #page-wuerfeln bewusst NICHT ausgenommen: der Wuerfler soll auch beim
+     Vorschauen eines Charakters nutzbar bleiben (siehe smoke_test_previewdice.js). */
   body.sheet-view-mode .sheet .paper:not(#page-wuerfelverlauf):not(#page-kommentare) {
     display: block !important;
     margin-bottom: 30px;
@@ -1171,7 +1173,7 @@
     color: var(--text);
     -webkit-text-fill-color: var(--text);
   }
-  .sheet .paper:not(#page-wuerfelverlauf):not(#page-kommentare) button:disabled { display: none; }
+  .sheet .paper:not(#page-wuerfelverlauf):not(#page-kommentare):not(#page-wuerfeln) button:disabled { display: none; }
   .sheet .rte-toolbar:has(button:disabled) { display: none; }
   .text-block-label:disabled {
     border-bottom-color: transparent;
@@ -1345,21 +1347,11 @@
   .dice-fab:hover { background: var(--accent); color: var(--accent-ink); transform: scale(1.05); }
   .dice-fab:active { transform: scale(0.95); }
 
-  .roll-overlay {
-    position: fixed; inset: 0; z-index: 160; display: none;
-    align-items: flex-start; justify-content: center;
-    background: rgba(20,15,30,0.55); padding: 6vh 20px;
-    overflow-y: auto;
-  }
-  .roll-overlay.show { display: flex; }
-  .roll-panel {
-    width: 100%; max-width: 380px; background: var(--paper);
-    border-radius: 20px; box-shadow: var(--shadow-lg); padding: 22px 22px 26px;
-  }
-  .roll-panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-  .roll-panel-head h2 { margin: 0; font-family: 'Poppins', system-ui, sans-serif; font-size: 22px; color: var(--accent-strong); }
-  .roll-close { border: none; background: transparent; font-size: 18px; cursor: pointer; color: var(--muted); }
-
+  /* Wuerfeln ist eine eigene Seite (#page-wuerfeln), kein Modal mehr - hier bleiben
+     nur noch die Stile fuer den Inhalt selbst (Felder, Tabs, Wuerfel, Verlauf).
+     .roll-page-body haelt die kompakten, modalartigen Proportionen auch auf der
+     vollbreiten Seite (sonst wirkt ein 420px-Formular auf 800px+ Breite verloren). */
+  .roll-page-body { max-width: 420px; margin: 0 auto; }
   .roll-field { margin-bottom: 12px; }
   .roll-field label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
   .roll-field select, .roll-field input {
@@ -1462,6 +1454,15 @@
   }
   .profile-card h2 { margin: 0 0 4px; font-family: 'Poppins', system-ui, sans-serif; font-size: 24px; color: var(--accent-strong); text-align: center; }
   .profile-sub { text-align: center; color: var(--muted); font-size: 12.5px; margin: 0 0 18px; }
+  .profile-avatar-row { display: flex; align-items: center; gap: 12px; justify-content: center; margin-bottom: 18px; }
+  .profile-avatar-preview { flex-shrink: 0; overflow: hidden; }
+  .profile-avatar-preview img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+  .profile-avatar-actions { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+  .profile-avatar-remove {
+    border: none; background: none; color: var(--muted); font-family: inherit;
+    font-size: 11.5px; cursor: pointer; text-decoration: underline; padding: 0;
+  }
+  .profile-avatar-remove:hover { color: var(--bad-text); }
   .profile-error { color: var(--bad-text); font-size: 12px; text-align: center; min-height: 1em; margin-bottom: 8px; }
   .profile-skip { display: block; margin: 10px auto 0; border: none; background: none; color: var(--muted); font-size: 12px; cursor: pointer; text-decoration: underline; }
 
@@ -1765,6 +1766,14 @@
   }
   .np-theme-toggle:hover { background: var(--np-surface-2); color: var(--np-ink); }
   .np-theme-toggle svg { width: 17px; height: 17px; }
+  .np-notif-bell { position: relative; }
+  .np-notif-badge {
+    position: absolute; top: -4px; right: -4px;
+    min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px;
+    background: var(--np-accent); color: #fff;
+    font-size: 10px; font-weight: 800; line-height: 16px; text-align: center;
+    box-shadow: 0 0 0 2px var(--np-surface);
+  }
 
   /* ---- Buttons ---- */
   .np-btn {
@@ -2168,6 +2177,23 @@
   :is(body.feature-page-mode, body.sheet-view-mode) .post-comment-send:hover { background: var(--np-primary-strong); }
   :is(body.feature-page-mode, body.sheet-view-mode) .post-like.liked,
   :is(body.feature-page-mode, body.sheet-view-mode) .post-comment-toggle { color: var(--np-primary-text); }
+
+  /* Würfeln im neuen Design */
+  :is(body.feature-page-mode, body.sheet-view-mode) .roll-field label { color: var(--np-ink-soft); }
+  :is(body.feature-page-mode, body.sheet-view-mode) .roll-field select,
+  :is(body.feature-page-mode, body.sheet-view-mode) .roll-field input { border-color: var(--np-border); background: var(--np-surface); color: var(--np-ink); }
+  :is(body.feature-page-mode, body.sheet-view-mode) .roll-value-row { background: var(--np-surface-2); border-color: var(--np-border); color: var(--np-ink-soft); }
+  :is(body.feature-page-mode, body.sheet-view-mode) .roll-value-row strong { color: var(--np-ink); }
+  :is(body.feature-page-mode, body.sheet-view-mode) .roll-tabs { background: var(--np-surface-2); }
+  :is(body.feature-page-mode, body.sheet-view-mode) .roll-tab { color: var(--np-ink-soft); }
+  :is(body.feature-page-mode, body.sheet-view-mode) .roll-tab.active { background: var(--np-surface); color: var(--np-primary-text); border-color: var(--np-border); }
+  :is(body.feature-page-mode, body.sheet-view-mode) .roll-diff-presets button { background: var(--np-surface); border-color: var(--np-border); color: var(--np-ink); }
+  :is(body.feature-page-mode, body.sheet-view-mode) .roll-diff-presets button:hover { background: var(--np-surface-2); border-color: var(--np-primary); }
+  :is(body.feature-page-mode, body.sheet-view-mode) .roll-hint,
+  :is(body.feature-page-mode, body.sheet-view-mode) .roll-die-caption { color: var(--np-ink-faint); }
+  :is(body.feature-page-mode, body.sheet-view-mode) .roll-panel-history { border-color: var(--np-border); }
+  :is(body.feature-page-mode, body.sheet-view-mode) .roll-panel-history-head { color: var(--np-ink-faint); }
+  :is(body.feature-page-mode, body.sheet-view-mode) .roll-panel-history-list .rollpage-entry { background: var(--np-surface-2); border-color: var(--np-border-soft); }
 </style>
 </head>
 <body>
@@ -2536,6 +2562,14 @@
     <div class="profile-card">
       <h2>Profil einrichten</h2>
       <p class="profile-sub">Damit andere dich in der Online-Liste und im Würfelverlauf erkennen.</p>
+      <div class="profile-avatar-row">
+        <span class="np-avatar profile-avatar-preview" id="profileAvatarPreview" style="width:56px;height:56px;font-size:20px;">–</span>
+        <div class="profile-avatar-actions">
+          <button type="button" class="np-btn np-btn-ghost" id="profileAvatarBtn">Bild wählen</button>
+          <button type="button" class="profile-avatar-remove" id="profileAvatarRemoveBtn" hidden>Entfernen</button>
+        </div>
+        <input type="file" id="profileAvatarInput" accept="image/png,image/jpeg,image/webp" hidden>
+      </div>
       <div class="roll-field">
         <label for="profileUsername">Benutzername</label>
         <input type="text" id="profileUsername" maxlength="24">
@@ -2671,6 +2705,7 @@
           <button type="button" data-np-open="help">Hilfe</button>
         </div>
         <div class="np-nav-cta">
+          <button type="button" class="np-theme-toggle np-notif-bell" data-np-notif-bell title="Benachrichtigungen" aria-label="Benachrichtigungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="np-notif-badge" hidden>0</span></button>
           <button type="button" class="np-theme-toggle" data-np-pdf title="Als PDF herunterladen" aria-label="Als PDF herunterladen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
           <button type="button" class="np-theme-toggle" data-np-theme-toggle title="Dunkles Design" aria-label="Design umschalten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
           <div class="np-user-chip">
@@ -2724,7 +2759,7 @@
       <div class="np-dash-row">
         <button type="button" class="np-dash-mini-card" data-np-open="dice">
           <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 7l9 5 9-5-9-5z"/><path d="M3 7v10l9 5 9-5V7"/></svg></span>
-          <div><p class="np-bento-name" style="margin-bottom:2px;">Würfeln</p><p class="np-bento-desc">Direkt aus dem Dashboard würfeln.</p></div>
+          <div><p class="np-bento-name" style="margin-bottom:2px;">Würfeln</p><p class="np-bento-desc">Attribut, Talent oder freier Wurf.</p></div>
         </button>
         <button type="button" class="np-dash-mini-card" data-np-open="notizen">
           <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.4 2.6a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></span>
@@ -2777,6 +2812,7 @@
         <button class="tab-btn" data-page="notizen"><svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.4 2.6a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>Notizen</button>
         <button class="tab-btn" data-page="wuerfelverlauf"><svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.1" fill="currentColor" stroke="none"/></svg>Würfelverlauf</button>
         <button class="tab-btn" data-page="kommentare"><svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Feed</button>
+        <button class="tab-btn" data-page="wuerfeln"><svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 7l9 5 9-5-9-5z"/><path d="M3 7v10l9 5 9-5V7"/></svg>Würfeln</button>
         <button class="tab-btn" id="helpTabBtn" type="button"><svg class="help-icon" viewBox="0 0 512 512" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM169.8 165.3c7.9-22.3 29.1-37.3 52.8-37.3l58.3 0c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24l0-13.4c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1l-58.3 0c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"/></svg> Hilfe</button>
       </div>
 
@@ -2809,7 +2845,8 @@
             <button type="button" data-np-open="help">Hilfe</button>
           </div>
           <div class="np-nav-cta">
-            <button type="button" class="np-theme-toggle" data-np-pdf title="Als PDF herunterladen" aria-label="Als PDF herunterladen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+            <button type="button" class="np-theme-toggle np-notif-bell" data-np-notif-bell title="Benachrichtigungen" aria-label="Benachrichtigungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="np-notif-badge" hidden>0</span></button>
+          <button type="button" class="np-theme-toggle" data-np-pdf title="Als PDF herunterladen" aria-label="Als PDF herunterladen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
             <button type="button" class="np-theme-toggle" data-np-theme-toggle title="Dunkles Design" aria-label="Design umschalten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
             <div class="np-user-chip">
               <button type="button" data-np-profile style="display:flex;align-items:center;gap:8px;border:none;background:none;cursor:pointer;font-family:inherit;padding:0;">
@@ -2981,20 +3018,10 @@
       <div class="post-feed" id="postFeed"></div>
     </section>
 
-  </div>
-    </div>
-  </div>
-
-  <div class="dl-status" id="dlStatus"></div>
-
-  <button type="button" class="dice-fab" id="diceFabBtn" title="Würfeln" aria-label="Würfeln">🎲</button>
-
-  <div class="roll-overlay" id="rollOverlay">
-    <div class="roll-panel">
-      <div class="roll-panel-head">
-        <h2>Würfeln</h2>
-        <button type="button" class="roll-close" id="rollCloseBtn" aria-label="Schließen">✕</button>
-      </div>
+    <!-- SEITE 9: WUERFELN -->
+    <section class="paper" id="page-wuerfeln">
+      <div class="page-title"><h2>Würfeln</h2></div>
+      <div class="roll-page-body">
 
       <div class="roll-luck-row" id="rollLuckRow">
         <span>🍀 <strong id="luckAvailableDisplay">0</strong> von <span id="luckTotalDisplay">0</span> Glückspunkten verfügbar</span>
@@ -3054,8 +3081,16 @@
         <div class="roll-panel-history-head">Verlauf</div>
         <div class="rollpage-list roll-panel-history-list" id="rollPanelHistoryList"></div>
       </div>
+      </div>
+    </section>
+
+  </div>
     </div>
   </div>
+
+  <div class="dl-status" id="dlStatus"></div>
+
+  <button type="button" class="dice-fab" id="diceFabBtn" title="Würfeln" aria-label="Würfeln">🎲</button>
 
   <div class="uni-overlay" id="uniOverlay">
     <div class="uni-panel">
@@ -5237,7 +5272,6 @@
   var sheetViewReturnTo = "dashboard"; // "dashboard" oder "library" - bestimmt Beschriftung/Rueckweg
 
   function openCharacterPreview(name, data, returnTo){
-    closeRollPanel();
     closeLibrary();
     sheetViewSnapshot = {
       id: activeCharacterId,
@@ -5798,7 +5832,8 @@
     personal:       { title: "Persönliche Infos", editable: true },
     legende:        { title: "Attribute erklärt", editable: false },
     wuerfelverlauf: { title: "Würfelverlauf",     editable: false },
-    kommentare:     { title: "Feed",              editable: false }
+    kommentare:     { title: "Feed",              editable: false },
+    wuerfeln:       { title: "Würfeln",           editable: false }
   };
 
   function enterFeaturePage(pageKey){
@@ -5817,12 +5852,23 @@
 
   var RACE_TAG_LABELS = { werwolf: "Werwolf", vampir: "Vampir" };
 
+  /* Zeigt ein Profilbild (falls vorhanden) oder Initialen in einem Avatar-Element -
+     gemeinsam genutzt vom Profil-Dialog und jeder Instanz des Nutzer-Chips in der Nav. */
+  function renderAvatarInto(el, avatarUrl, initials){
+    if (avatarUrl){
+      el.innerHTML = '<img src="' + avatarUrl + '" alt="">';
+    } else {
+      el.textContent = initials;
+    }
+  }
+
   function renderDashboardUser(){
     /* Der Nutzer-Chip existiert mehrfach (Dashboard- und Feature-Seiten-Nav) - alle synchron halten. */
     var label = myProfile ? (myProfile.nickname || myProfile.username) : "–";
     var initials = label && label !== "–" ? label.slice(0, 2).toUpperCase() : "–";
+    var avatarUrl = myProfile && myProfile.avatar;
     document.querySelectorAll(".np-user-name").forEach(function(el){ el.textContent = label; });
-    document.querySelectorAll(".np-user-avatar").forEach(function(el){ el.textContent = initials; });
+    document.querySelectorAll(".np-user-avatar").forEach(function(el){ renderAvatarInto(el, avatarUrl, initials); });
     var greetEl = document.getElementById("dashGreeting");
     if (greetEl) greetEl.textContent = "Hallo, " + (label === "–" ? "du" : label) + " 👋";
   }
@@ -5891,6 +5937,7 @@
     }
     if (e.target.closest("[data-np-theme-toggle]")) { document.getElementById("themeToggleBtn").click(); return; }
     if (e.target.closest("[data-np-pdf]")) { dlBtn.click(); return; }
+    if (e.target.closest("[data-np-notif-bell]")) { markLikeNotificationsSeen(); enterFeaturePage("kommentare"); return; }
     if (e.target.closest("[data-np-profile]")) { openProfileModal(false); return; }
     if (e.target.closest("[data-np-logout]")) { logoutBtn.click(); return; }
     var navToggle = e.target.closest("[data-np-nav-toggle]");
@@ -5961,8 +6008,6 @@
 
   /* ===================== Würfeln ===================== */
   var diceFabBtn = document.getElementById("diceFabBtn");
-  var rollOverlay = document.getElementById("rollOverlay");
-  var rollCloseBtn = document.getElementById("rollCloseBtn");
   var rollTargetSel = document.getElementById("rollTarget");
   var rollTargetAttrGroup = document.getElementById("rollTargetAttrGroup");
   var rollTargetTalentGroup = document.getElementById("rollTargetTalentGroup");
@@ -6083,17 +6128,16 @@
     updateRollValueDisplay();
   });
 
+  /* Wuerfeln ist eine eigene Feature-Seite (kein Modal mehr) - openRollPanel()
+     bereitet nur noch den Zustand vor und navigiert dorthin. */
   function openRollPanel(){
     updateRollValueDisplay();
     updateLuckDisplay();
     luckRerollBtn.hidden = true;
-    rollOverlay.classList.add("show");
+    enterFeaturePage("wuerfeln");
   }
-  function closeRollPanel(){ rollOverlay.classList.remove("show"); }
 
   diceFabBtn.addEventListener("click", openRollPanel);
-  rollCloseBtn.addEventListener("click", closeRollPanel);
-  rollOverlay.addEventListener("click", function(e){ if (e.target === rollOverlay) closeRollPanel(); });
 
   function diceLabel(sides){ return sides === "2" ? "d2 (Ja / Nein)" : "d" + sides; }
   function rollDieValueFor(sides){ return Math.floor(Math.random() * Number(sides)) + 1; }
@@ -6262,18 +6306,50 @@
   var profileSaveBtn = document.getElementById("profileSaveBtn");
   var profileCloseBtn = document.getElementById("profileCloseBtn");
   var profileEditBtn = document.getElementById("profileEditBtn");
+  var profileAvatarPreview = document.getElementById("profileAvatarPreview");
+  var profileAvatarBtn = document.getElementById("profileAvatarBtn");
+  var profileAvatarInput = document.getElementById("profileAvatarInput");
+  var profileAvatarRemoveBtn = document.getElementById("profileAvatarRemoveBtn");
+  /* undefined = unveraendert (beim Speichern den bisherigen Wert behalten),
+     null = aktiv entfernt, sonst die neu gewaehlte Daten-URL. */
+  var pendingProfileAvatar;
+  var PROFILE_AVATAR_MAX_BYTES = 45000;
+
+  function renderProfileAvatarPreview(avatarUrl){
+    var label = profileNicknameInput.value.trim() || profileUsernameInput.value.trim();
+    var initials = label ? label.slice(0, 2).toUpperCase() : "–";
+    renderAvatarInto(profileAvatarPreview, avatarUrl, initials);
+    profileAvatarRemoveBtn.hidden = !avatarUrl;
+  }
 
   function openProfileModal(isFirstSetup){
     profileUsernameInput.value = (myProfile && myProfile.username) || "";
     profileNicknameInput.value = (myProfile && myProfile.nickname) || "";
     profileError.textContent = "";
     profileCloseBtn.hidden = !!isFirstSetup;
+    pendingProfileAvatar = undefined;
+    renderProfileAvatarPreview(myProfile && myProfile.avatar);
     profileOverlay.classList.add("show");
   }
   function closeProfileModal(){ profileOverlay.classList.remove("show"); }
 
   profileCloseBtn.addEventListener("click", closeProfileModal);
   profileEditBtn.addEventListener("click", function(){ openProfileModal(false); });
+
+  profileAvatarBtn.addEventListener("click", function(){ profileAvatarInput.click(); });
+  profileAvatarInput.addEventListener("change", function(){
+    var file = profileAvatarInput.files && profileAvatarInput.files[0];
+    profileAvatarInput.value = "";
+    if (!file) return;
+    resizeImageFile(file, 160, 0.82, function(dataUrl){
+      pendingProfileAvatar = dataUrl;
+      renderProfileAvatarPreview(dataUrl);
+    }, PROFILE_AVATAR_MAX_BYTES);
+  });
+  profileAvatarRemoveBtn.addEventListener("click", function(){
+    pendingProfileAvatar = null;
+    renderProfileAvatarPreview(null);
+  });
 
   document.getElementById("themeToggleBtn").addEventListener("click", function(){
     var next = currentEffectiveDark() ? "light" : "dark";
@@ -6310,9 +6386,13 @@
       profileError.textContent = "Bitte einen Benutzernamen angeben.";
       return;
     }
+    /* undefined -> bisherigen Wert behalten, sonst (dataURL oder null) uebernehmen. */
+    var avatar = pendingProfileAvatar === undefined
+      ? ((myProfile && myProfile.avatar) || null)
+      : pendingProfileAvatar;
     profileSaveBtn.disabled = true;
-    userDocRef().set({ profile: { username: username, nickname: nickname || null } }, { merge: true }).then(function(){
-      myProfile = { username: username, nickname: nickname || null };
+    userDocRef().set({ profile: { username: username, nickname: nickname || null, avatar: avatar } }, { merge: true }).then(function(){
+      myProfile = { username: username, nickname: nickname || null, avatar: avatar };
       sidebarUsernameLabel.textContent = myProfile.username;
       profileSaveBtn.disabled = false;
       closeProfileModal();
@@ -6616,7 +6696,50 @@
     }).catch(function(){});
   }
 
+  /* ===================== Like-Benachrichtigungen =====================
+     Rein clientseitig: postsList ist bereits per onSnapshot abonniert und enthaelt
+     fuer jeden Post likes:[uid,...]. Pro eigenem Post wird in localStorage gemerkt,
+     wie viele Likes zuletzt "gesehen" wurden; steigt die Zahl darueber, gilt der
+     Post als neu geliked. Kein neues Firestore-Dokument, keine weitere Regel noetig -
+     die Like-Berechtigung reicht bereits. Bewusst pro Browser/Geraet, kein Push. */
+  var LIKE_SEEN_PREFIX = "charakterbogen:seenLikes:";
+
+  function getSeenLikeCount(postId){
+    try { return parseInt(localStorage.getItem(LIKE_SEEN_PREFIX + postId), 10) || 0; }
+    catch(e){ return 0; }
+  }
+  function setSeenLikeCount(postId, count){
+    try { localStorage.setItem(LIKE_SEEN_PREFIX + postId, String(count)); } catch(e){}
+  }
+
+  /* Eigene Likes auf den eigenen Beitrag zaehlen nicht mit - sonst wuerde ein
+     Klick auf den eigenen Like-Button faelschlich eine Benachrichtigung ausloesen. */
+  function otherLikesCount(post){
+    return (post.likes || []).filter(function(uid){ return uid !== currentUser.uid; }).length;
+  }
+
+  function updateLikeNotifications(){
+    var unseenPosts = 0;
+    postsList.forEach(function(post){
+      if (!currentUser || post.uid !== currentUser.uid) return;
+      if (otherLikesCount(post) > getSeenLikeCount(post.id)) unseenPosts++;
+    });
+    document.querySelectorAll(".np-notif-badge").forEach(function(el){
+      el.hidden = unseenPosts === 0;
+      el.textContent = String(unseenPosts);
+    });
+  }
+
+  function markLikeNotificationsSeen(){
+    postsList.forEach(function(post){
+      if (!currentUser || post.uid !== currentUser.uid) return;
+      setSeenLikeCount(post.id, otherLikesCount(post));
+    });
+    updateLikeNotifications();
+  }
+
   function renderPosts(){
+    updateLikeNotifications();
     Object.keys(postCommentUnsubs).forEach(function(pid){ postCommentUnsubs[pid](); });
     postCommentUnsubs = {};
 
@@ -6796,7 +6919,7 @@
 
   function applyEditModeToDom(){
     var editable = isEditMode;
-    var scope = document.querySelectorAll(".sheet .paper:not(#page-wuerfelverlauf):not(#page-kommentare)");
+    var scope = document.querySelectorAll(".sheet .paper:not(#page-wuerfelverlauf):not(#page-kommentare):not(#page-wuerfeln)");
     scope.forEach(function(paper){
       paper.querySelectorAll("input, textarea, select, button").forEach(function(el){
         /* Glück hat keinen Bonus/Gesamtwert – diese Felder bleiben immer gesperrt. */
