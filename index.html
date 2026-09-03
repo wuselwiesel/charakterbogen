@@ -5991,7 +5991,14 @@
     }
     if (e.target.closest("[data-np-theme-toggle]")) { document.getElementById("themeToggleBtn").click(); return; }
     if (e.target.closest("[data-np-pdf]")) { dlBtn.click(); return; }
-    if (e.target.closest("[data-np-notif-bell]")) { markLikeNotificationsSeen(); enterFeaturePage("kommentare"); return; }
+    if (e.target.closest("[data-np-notif-bell]")) {
+      var badge = document.querySelector(".np-notif-badge");
+      var hadUnseen = !!(badge && !badge.hidden);
+      markLikeNotificationsSeen();
+      if (!hadUnseen) showStatus("Keine neuen Benachrichtigungen.");
+      enterFeaturePage("kommentare");
+      return;
+    }
     if (e.target.closest("[data-np-profile]")) { openProfileModal(false); return; }
     if (e.target.closest("[data-np-logout]")) { logoutBtn.click(); return; }
     var navToggle = e.target.closest("[data-np-nav-toggle]");
