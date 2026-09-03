@@ -2059,9 +2059,8 @@
   body.feature-page-mode .user-bar { display: none !important; }
   #featurePageChrome { display: none; }
   body.feature-page-mode #featurePageChrome { display: block; }
-  body.feature-page-mode #page-werte .page-title,
-  body.feature-page-mode #page-talente .page-title,
-  body.feature-page-mode #page-notizen .page-title { display: none; }
+  /* Der Chrome liefert die Ueberschrift - die eigene Titelzeile der Seite ausblenden. */
+  body.feature-page-mode .paper .page-title { display: none; }
   .np-breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--np-ink-faint); margin-bottom: 18px; flex-wrap: wrap; }
   .np-breadcrumb button { border: none; background: none; color: var(--np-ink-faint); font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; padding: 0; }
   .np-breadcrumb button:hover { color: var(--np-primary-strong); }
@@ -2070,10 +2069,15 @@
   .np-page-head-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; flex-wrap: wrap; }
   .np-page-head-row .save-indicator { font-size: 12.5px; }
 
-  /* Attribut-/Talenttabelle im neuen Design, nur aktiv wenn ueber das Dashboard erreicht */
+  /* Grundkarte aller migrierten Seiten, nur aktiv wenn ueber das Dashboard erreicht */
   body.feature-page-mode #page-werte,
   body.feature-page-mode #page-talente,
-  body.feature-page-mode #page-notizen {
+  body.feature-page-mode #page-notizen,
+  body.feature-page-mode #page-deckblatt,
+  body.feature-page-mode #page-personal,
+  body.feature-page-mode #page-legende,
+  body.feature-page-mode #page-wuerfelverlauf,
+  body.feature-page-mode #page-kommentare {
     background: var(--np-surface); border-color: var(--np-border);
     border-radius: var(--np-radius-lg); box-shadow: var(--np-shadow-sm);
   }
@@ -2102,6 +2106,48 @@
   body.feature-page-mode #page-notizen .rte-toolbar button { color: var(--np-ink-soft); }
   body.feature-page-mode #page-notizen .rte-editor { background: var(--np-surface); color: var(--np-ink); font-family: 'Plus Jakarta Sans', inherit; }
   body.feature-page-mode #page-notizen .add-field-btn { border-color: var(--np-border); color: var(--np-primary); font-family: 'Plus Jakarta Sans', inherit; }
+
+  /* Deckblatt im neuen Design */
+  body.feature-page-mode #page-deckblatt .field-row label { color: var(--np-ink-soft); font-family: 'Plus Jakarta Sans', inherit; }
+  body.feature-page-mode #page-deckblatt .field-row input { border-color: var(--np-border); background: var(--np-surface); color: var(--np-ink); font-family: 'Plus Jakarta Sans', inherit; }
+  body.feature-page-mode #page-deckblatt .dropzone { border-color: var(--np-border); background: var(--np-surface-2); }
+  body.feature-page-mode #page-deckblatt .dz-text, body.feature-page-mode #page-deckblatt .dz-sub { color: var(--np-ink-soft); font-family: 'Plus Jakarta Sans', inherit; }
+
+  /* Persoenliche Infos im neuen Design */
+  body.feature-page-mode #page-personal .custom-field-row { background: var(--np-surface-2); box-shadow: none; }
+  body.feature-page-mode #page-personal .custom-field-row input.custom-value-input { border-color: var(--np-border); background: var(--np-surface); color: var(--np-ink); font-family: 'Plus Jakarta Sans', inherit; }
+  body.feature-page-mode #page-personal .custom-field-row input.custom-label-input { color: var(--np-ink-faint); font-family: 'Plus Jakarta Sans', inherit; }
+  body.feature-page-mode #page-personal .add-field-btn { border-color: var(--np-border); color: var(--np-primary); font-family: 'Plus Jakarta Sans', inherit; }
+
+  /* Attribute erklaert im neuen Design */
+  body.feature-page-mode #page-legende .legend-table { border-color: var(--np-border); box-shadow: none; border-radius: var(--np-radius-md); }
+  body.feature-page-mode #page-legende .legend-head { background: var(--np-surface-2); color: var(--np-ink-faint); border-color: var(--np-border); }
+  body.feature-page-mode #page-legende .legend-row { border-color: var(--np-border-soft); }
+  body.feature-page-mode #page-legende .legend-row .code-cell { border-color: var(--np-border-soft); color: var(--np-ink); }
+  body.feature-page-mode #page-legende .legend-row .desc-cell .d1 { color: var(--np-ink); }
+  body.feature-page-mode #page-legende .legend-row .desc-cell .d2 { color: var(--np-ink-soft); }
+
+  /* Wuerfelverlauf im neuen Design */
+  body.feature-page-mode #page-wuerfelverlauf .rollpage-entry { background: var(--np-surface-2); border-color: var(--np-border-soft); box-shadow: none; }
+  body.feature-page-mode #page-wuerfelverlauf .rollpage-clear-btn { border-color: var(--np-border); color: var(--bad-text); font-family: 'Plus Jakarta Sans', inherit; }
+  body.feature-page-mode #page-wuerfelverlauf .hint { color: var(--np-ink-faint); }
+
+  /* Feed im neuen Design */
+  body.feature-page-mode #page-kommentare .hint { color: var(--np-ink-faint); }
+  body.feature-page-mode #page-kommentare .post-compose { background: var(--np-surface-2); box-shadow: none; }
+  body.feature-page-mode #page-kommentare .post-compose-label { color: var(--np-ink); font-family: 'Plus Jakarta Sans', inherit; }
+  body.feature-page-mode #page-kommentare .rte-editor { background: var(--np-surface); color: var(--np-ink); font-family: 'Plus Jakarta Sans', inherit; }
+  body.feature-page-mode #page-kommentare .post-send-btn { background: var(--np-primary); color: #fff; font-family: 'Plus Jakarta Sans', inherit; }
+  body.feature-page-mode #page-kommentare .post-send-btn:hover { background: var(--np-primary-strong); }
+  body.feature-page-mode #page-kommentare .post-card { background: var(--np-surface-2); border-color: var(--np-border-soft); box-shadow: none; }
+  body.feature-page-mode #page-kommentare .post-author { color: var(--np-ink); font-family: 'Plus Jakarta Sans', inherit; }
+  body.feature-page-mode #page-kommentare .post-time,
+  body.feature-page-mode #page-kommentare .post-body { color: var(--np-ink-soft); }
+  body.feature-page-mode #page-kommentare .post-comment-input { border-color: var(--np-border); background: var(--np-surface); color: var(--np-ink); font-family: 'Plus Jakarta Sans', inherit; }
+  body.feature-page-mode #page-kommentare .post-comment-send { background: var(--np-primary); color: #fff; font-family: 'Plus Jakarta Sans', inherit; }
+  body.feature-page-mode #page-kommentare .post-comment-send:hover { background: var(--np-primary-strong); }
+  body.feature-page-mode #page-kommentare .post-like.liked,
+  body.feature-page-mode #page-kommentare .post-comment-toggle { color: var(--np-primary-strong); }
 </style>
 </head>
 <body>
@@ -2667,11 +2713,30 @@
         </button>
         <button type="button" class="np-dash-mini-card" data-np-open="feed">
           <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
-          <div><p class="np-bento-name" style="margin-bottom:2px;">Feed</p><p class="np-tag-soon">Öffnet im bisherigen Design</p></div>
+          <div><p class="np-bento-name" style="margin-bottom:2px;">Feed</p><p class="np-bento-desc">Beiträge, Kommentare, Likes.</p></div>
         </button>
         <button type="button" class="np-dash-mini-card" data-np-open="worlds">
           <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8M12 3a14 14 0 0 0 0 18a14 14 0 0 0 0-18z"/></svg></span>
           <div><p class="np-bento-name" style="margin-bottom:2px;">Welten</p><p class="np-tag-soon">Öffnet als Übersicht</p></div>
+        </button>
+      </div>
+
+      <div class="np-dash-row">
+        <button type="button" class="np-dash-mini-card" data-np-open="deckblatt">
+          <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M15 2v5h5"/></svg></span>
+          <div><p class="np-bento-name" style="margin-bottom:2px;">Charakterbogen</p><p class="np-bento-desc">Deckblatt, Porträt, Welt.</p></div>
+        </button>
+        <button type="button" class="np-dash-mini-card" data-np-open="personal">
+          <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+          <div><p class="np-bento-name" style="margin-bottom:2px;">Persönliche Infos</p><p class="np-bento-desc">Eigene Felder.</p></div>
+        </button>
+        <button type="button" class="np-dash-mini-card" data-np-open="legende">
+          <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span>
+          <div><p class="np-bento-name" style="margin-bottom:2px;">Attribute erklärt</p><p class="np-bento-desc">Was jedes Attribut bedeutet.</p></div>
+        </button>
+        <button type="button" class="np-dash-mini-card" data-np-open="wuerfelverlauf">
+          <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.1" fill="currentColor" stroke="none"/></svg></span>
+          <div><p class="np-bento-name" style="margin-bottom:2px;">Würfelverlauf</p><p class="np-bento-desc">Alle Würfe der Runde.</p></div>
         </button>
       </div>
     </div>
@@ -5661,19 +5726,18 @@
     renderDashboard();
     renderDashboardUser();
   }
-  function showSheet(pageName){
-    document.body.classList.remove("view-dashboard");
-    document.body.classList.remove("feature-page-mode");
-    if (pageName) openTab(pageName);
-  }
-
   /* Migrierte Feature-Seiten teilen sich ein Chrome (Breadcrumb + Seitenkopf).
      "editable:false" (z.B. Notizen) blendet den Bearbeiten-/Speicher-Spiegel aus,
      weil dort ohnehin alles jederzeit direkt editierbar ist. */
   var FEATURE_PAGES = {
-    werte:   { title: "Attributwerte", editable: true },
-    talente: { title: "Talente",       editable: true },
-    notizen: { title: "Notizen",       editable: false }
+    werte:          { title: "Attributwerte",     editable: true },
+    talente:        { title: "Talente",           editable: true },
+    notizen:        { title: "Notizen",           editable: false },
+    deckblatt:      { title: "Charakterbogen",    editable: true },
+    personal:       { title: "Persönliche Infos", editable: true },
+    legende:        { title: "Attribute erklärt", editable: false },
+    wuerfelverlauf: { title: "Würfelverlauf",     editable: false },
+    kommentare:     { title: "Feed",              editable: false }
   };
 
   function enterFeaturePage(pageKey){
@@ -5749,9 +5813,9 @@
       if (target === "worlds") { openUniverses(); return; }
       if (target === "help") { openHelpModal(); return; }
       if (target === "chars") { clearUniverseFilter(); openLibrary(); return; }
-      if (target === "feed") { showSheet("kommentare"); return; }
-      if (target === "talente") { enterFeaturePage("talente"); return; }
-      if (target === "notizen") { enterFeaturePage("notizen"); return; }
+      /* "feed" ist der Kachel-Name, die Seite selbst heisst intern "kommentare" (Reitername). */
+      if (target === "feed") { enterFeaturePage("kommentare"); return; }
+      if (FEATURE_PAGES[target]) { enterFeaturePage(target); return; }
     });
   });
 
