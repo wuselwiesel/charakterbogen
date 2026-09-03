@@ -2276,6 +2276,21 @@
   :is(body.feature-page-mode, body.sheet-view-mode) .roll-panel-history { border-color: var(--np-border); }
   :is(body.feature-page-mode, body.sheet-view-mode) .roll-panel-history-head { color: var(--np-ink-faint); }
   :is(body.feature-page-mode, body.sheet-view-mode) .roll-panel-history-list .rollpage-entry { background: var(--np-surface-2); border-color: var(--np-border-soft); }
+  /* .rollpage-title hatte gar keine Farbe (erbte var(--text), immer dunkle Tinte) -
+     im Verlauf war der Name pro Wurf dadurch auf dunkler Flaeche quasi unsichtbar. */
+  :is(body.feature-page-mode, body.sheet-view-mode) .rollpage-title { color: var(--np-ink); }
+  :is(body.feature-page-mode, body.sheet-view-mode) .rollpage-detail,
+  :is(body.feature-page-mode, body.sheet-view-mode) .rollpage-time { color: var(--np-ink-faint); }
+  /* Unterueberschriften wie "Schwierigkeitsgrade" nutzen sonst var(--text) (immer dunkel). */
+  :is(body.feature-page-mode, body.sheet-view-mode) h3.sub-h { color: var(--np-ink); }
+  /* .diff-row/.legend-row bekommen ihre Pastellfarbe genauso wie .attr-row per Inline-Style
+     (row.style.background = d.color / l.color) - schlaegt jede normale Regel, siehe die
+     Attributwerte-Tabelle weiter oben. Gleiche !important-Loesung. */
+  :is(body.feature-page-mode, body.sheet-view-mode) .diff-head { background: var(--np-surface-2); color: var(--np-ink-faint); border-color: var(--np-border); }
+  :is(body.feature-page-mode, body.sheet-view-mode) .diff-row {
+    background: var(--np-surface-2) !important; border-color: var(--np-border-soft); color: var(--np-ink);
+  }
+  :is(body.feature-page-mode, body.sheet-view-mode) .legend-row { background: var(--np-surface) !important; }
 </style>
 </head>
 <body>
