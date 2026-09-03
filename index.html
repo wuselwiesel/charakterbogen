@@ -1354,6 +1354,9 @@
   }
   .dice-fab:hover { background: var(--accent); color: var(--accent-ink); transform: scale(1.05); }
   .dice-fab:active { transform: scale(0.95); }
+  /* .dice-fab erzwingt display:flex - das browsereigene [hidden]{display:none} (User-Agent-
+     Stylesheet) verliert dagegen, das .hidden-Attribut blieb bisher wirkungslos. */
+  .dice-fab[hidden] { display: none; }
 
   /* Wuerfeln ist eine eigene Seite (#page-wuerfeln), kein Modal mehr - hier bleiben
      nur noch die Stile fuer den Inhalt selbst (Felder, Tabs, Wuerfel, Verlauf).
