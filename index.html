@@ -2134,6 +2134,10 @@
   :is(body.feature-page-mode, body.sheet-view-mode) .note-box { background: var(--np-primary-soft); color: var(--np-primary-text); border: none; border-radius: 12px; }
   :is(body.feature-page-mode, body.sheet-view-mode) .race-row select:not(:disabled) { border-color: var(--np-border); }
   :is(body.feature-page-mode, body.sheet-view-mode) .talent-row .attr-name .code { color: var(--np-ink); }
+  /* .row-alt nutzt sonst --row-light (immer hell, nicht themenfaehig) - im Dunkelmodus
+     landete damit heller Text auf hellem Grund. Auf der migrierten Seite stattdessen
+     eine np-Flaeche verwenden, die mit dem Text mitwechselt. */
+  :is(body.feature-page-mode, body.sheet-view-mode) .attr-row.row-alt { background: var(--np-surface-2); }
 
   :is(body.feature-page-mode, body.sheet-view-mode) .text-block { background: var(--np-surface-2); box-shadow: var(--np-shadow-sm); }
   :is(body.feature-page-mode, body.sheet-view-mode) .text-block-head { background: var(--np-surface-2); border-color: var(--np-border-soft); }
@@ -5806,8 +5810,38 @@
     landingRoot.style.display = (name === "landing") ? "block" : "none";
     authGate.style.display = (name === "auth") ? "flex" : "none";
     appRoot.style.display = (name === "app") ? "block" : "none";
+    if (name === "landing") pushRoute("landing");
+    else if (name === "auth") pushRoute("auth");
   }
   showTopView("landing");
+
+  /* ===================== Browser-Zurück innerhalb der App =====================
+     Ohne dies wirft der Zurück-Knopf aus der Seite, weil wir nie einen History-
+     Eintrag anlegen. pushRoute() haengt bei jedem Ansichtswechsel einen Eintrag an;
+     popstate stellt die passende Ansicht wieder her, ohne selbst erneut zu pushen. */
+  var suppressHistoryPush = false;
+  function pushRoute(route){
+    if (suppressHistoryPush) return;
+    if (history.state && history.state.route === route) return;
+    /* Vor der allerersten Ansicht gibt es noch keinen eigenen History-Eintrag -
+       den frischen Seitenaufruf ersetzen statt einen zusaetzlichen Eintrag
+       anzuhaengen, sonst braeuchte "Zurueck" einen Klick mehr als erwartet. */
+    if (history.state) history.pushState({ route: route }, "", location.href);
+    else history.replaceState({ route: route }, "", location.href);
+  }
+  window.addEventListener("popstate", function(e){
+    var route = e.state && e.state.route;
+    suppressHistoryPush = true;
+    try {
+      if (!route || route === "landing") showTopView("landing");
+      else if (route === "auth") showTopView("auth");
+      else if (route === "dashboard") { showTopView("app"); showDashboard(); }
+      else if (route.indexOf("feature:") === 0 && currentUser) { showTopView("app"); enterFeaturePage(route.slice(8)); }
+      else showTopView("landing");
+    } finally {
+      suppressHistoryPush = false;
+    }
+  });
 
   function openTab(pageName){
     var btn = document.querySelector('.tab-btn[data-page="' + pageName + '"]');
@@ -5819,6 +5853,7 @@
     document.body.classList.add("view-dashboard");
     renderDashboard();
     renderDashboardUser();
+    pushRoute("dashboard");
   }
   /* Migrierte Feature-Seiten teilen sich ein Chrome (Breadcrumb + Seitenkopf).
      "editable:false" (z.B. Notizen) blendet den Bearbeiten-/Speicher-Spiegel aus,
@@ -5848,6 +5883,7 @@
     var crumb = document.getElementById("featureCrumbChar");
     if (crumb) crumb.textContent = activeCharacterName || "–";
     window.scrollTo({ top: 0 });
+    pushRoute("feature:" + pageKey);
   }
 
   var RACE_TAG_LABELS = { werwolf: "Werwolf", vampir: "Vampir" };
