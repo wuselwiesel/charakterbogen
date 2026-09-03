@@ -2031,6 +2031,10 @@
   body.view-dashboard:not(.sheet-view-mode) #dashboardRoot { display: block; }
   body.view-dashboard:not(.sheet-view-mode) .app-shell { display: none; }
   body.view-dashboard:not(.sheet-view-mode) .sidebar-toggle { display: none; }
+  /* Die alte Kopfzeile (u.a. der Bearbeiten-Button - auf dem Dashboard gibt es
+     nichts zu bearbeiten) blieb bisher ueber der neuen Dashboard-Nav sichtbar,
+     da sie ausserhalb von .app-shell liegt und dessen display:none sie nicht mit abdeckte. */
+  body.view-dashboard:not(.sheet-view-mode) .user-bar { display: none !important; }
   .np-app-page { padding: 44px 0 80px; }
   .np-dash-hello { font-size: 13px; color: var(--np-ink-faint); font-weight: 700; margin: 0 0 4px; }
   .np-dash-title { font-size: clamp(24px,3vw,32px); font-weight: 800; letter-spacing: -0.015em; margin: 0 0 32px; color: var(--np-ink); }
