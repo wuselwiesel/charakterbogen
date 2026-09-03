@@ -1463,6 +1463,11 @@
     font-size: 11.5px; cursor: pointer; text-decoration: underline; padding: 0;
   }
   .profile-avatar-remove:hover { color: var(--bad-text); }
+  /* .profile-card bleibt bewusst immer helles "Papier" (var(--paper)), unabhaengig vom Theme.
+     .np-btn-ghost faerbt sich sonst per var(--np-ink) im Dunkelmodus fast weiss - hier auf die
+     paper-eigenen (nicht themenabhaengigen) Farben zurueckstellen, sonst unlesbar. */
+  .profile-card .np-btn-ghost { color: var(--text); border-color: var(--border); }
+  .profile-card .np-btn-ghost:hover { background: var(--row-light); border-color: var(--border-strong); }
   .profile-error { color: var(--bad-text); font-size: 12px; text-align: center; min-height: 1em; margin-bottom: 8px; }
   .profile-skip { display: block; margin: 10px auto 0; border: none; background: none; color: var(--muted); font-size: 12px; cursor: pointer; text-decoration: underline; }
 
@@ -1614,7 +1619,7 @@
     box-shadow: var(--shadow-sm);
     transition: box-shadow 0.15s ease;
   }
-  .rollpage-entry:hover { box-shadow: var(--shadow-md); }
+  .rollpage-entry:hover { box-shadow: var(--shadow-md), inset 0 0 0 999px rgba(122,90,166,0.05); }
   .rollpage-avatar {
     width: 40px; height: 40px; border-radius: 50%;
     object-fit: cover; flex-shrink: 0;
