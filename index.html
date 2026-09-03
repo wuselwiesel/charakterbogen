@@ -6,7 +6,7 @@
 <title>Charakterbogen</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Karla:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -44,6 +44,22 @@
     --hint-bg: oklch(93% 0.05 95);
     --hint-border: oklch(85% 0.06 95);
     --hint-text: oklch(42% 0.08 95);
+
+    /* ===== "Neue Seiten" (Startseite, Login, Dashboard, migrierte Feature-Seiten) =====
+       Eigener Namensraum, damit die alten Bogen-Seiten unangetastet bleiben, solange sie
+       noch nicht umgestellt sind. Reagiert auf denselben Hell/Dunkel-Schalter wie der Rest. */
+    --np-bg: #FBFAFE; --np-surface: #FFFFFF; --np-surface-2: #F4F1FB;
+    --np-border: #E6E2F0; --np-border-soft: #EFEBF7;
+    --np-ink: #15131F; --np-ink-soft: #5C5670; --np-ink-faint: #8B84A0;
+    --np-primary: #6C4FD6; --np-primary-strong: #4E35A8; --np-primary-soft: #EFE9FC;
+    --np-accent: #E0952B; --np-accent-soft: #FBEBD2; --np-accent-strong: #B9761A;
+    --np-ok: #3E8F5C; --np-ok-soft: #E4F5EA;
+    --np-shadow-sm: 0 1px 2px rgba(35,20,70,0.06), 0 2px 6px rgba(35,20,70,0.05);
+    --np-shadow-md: 0 8px 24px -10px rgba(48,30,100,0.28);
+    --np-shadow-lg: 0 24px 56px -20px rgba(48,30,100,0.38);
+    --np-radius-sm: 10px; --np-radius-md: 16px; --np-radius-lg: 24px;
+    --np-ease: cubic-bezier(.22,1,.36,1);
+    --np-container: 1240px;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -56,6 +72,15 @@
       --shadow-sm: 0 2px 4px rgba(0,0,0,0.35);
       --shadow-md: 0 6px 18px rgba(0,0,0,0.4), 0 20px 44px -14px rgba(0,0,0,0.6);
       --shadow-lg: 0 16px 34px -6px rgba(0,0,0,0.6), 0 38px 76px -20px rgba(0,0,0,0.65);
+      --np-bg: #121020; --np-surface: #1B1830; --np-surface-2: #211C3A;
+      --np-border: #332B54; --np-border-soft: #2A2444;
+      --np-ink: #F4F2FB; --np-ink-soft: #B4ACD1; --np-ink-faint: #7E769C;
+      --np-primary: #A78CF2; --np-primary-strong: #C7B4FA; --np-primary-soft: #2C2350;
+      --np-accent: #F0B958; --np-accent-soft: #3A2C14; --np-accent-strong: #F6CC82;
+      --np-ok: #6FCB93; --np-ok-soft: #173424;
+      --np-shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+      --np-shadow-md: 0 10px 28px -10px rgba(0,0,0,0.55);
+      --np-shadow-lg: 0 28px 64px -20px rgba(0,0,0,0.65);
     }
   }
   :root[data-theme="dark"] {
@@ -68,6 +93,15 @@
     --shadow-sm: 0 2px 4px rgba(0,0,0,0.35);
     --shadow-md: 0 6px 18px rgba(0,0,0,0.4), 0 20px 44px -14px rgba(0,0,0,0.6);
     --shadow-lg: 0 16px 34px -6px rgba(0,0,0,0.6), 0 38px 76px -20px rgba(0,0,0,0.65);
+    --np-bg: #121020; --np-surface: #1B1830; --np-surface-2: #211C3A;
+    --np-border: #332B54; --np-border-soft: #2A2444;
+    --np-ink: #F4F2FB; --np-ink-soft: #B4ACD1; --np-ink-faint: #7E769C;
+    --np-primary: #A78CF2; --np-primary-strong: #C7B4FA; --np-primary-soft: #2C2350;
+    --np-accent: #F0B958; --np-accent-soft: #3A2C14; --np-accent-strong: #F6CC82;
+    --np-ok: #6FCB93; --np-ok-soft: #173424;
+    --np-shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+    --np-shadow-md: 0 10px 28px -10px rgba(0,0,0,0.55);
+    --np-shadow-lg: 0 28px 64px -20px rgba(0,0,0,0.65);
   }
 
   * { box-sizing: border-box; }
@@ -1666,11 +1700,713 @@
     transition: background 0.15s ease, box-shadow 0.15s ease;
   }
   .post-comment-send:hover { background: var(--accent-strong); color: #fff; box-shadow: var(--shadow-md); }
+
+  /* =====================================================================
+     NEUE SEITEN: Startseite, Login, Dashboard, migrierte Feature-Seiten.
+     Eigenes Namenspräfix "np-" und eigene Tokens (--np-*), damit die noch
+     nicht umgestellten Bogen-Seiten unverändert bleiben.
+     ===================================================================== */
+  .np-scope, .np-scope button, .np-scope input {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+  .np-serif { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; }
+  .np-wrap { max-width: var(--np-container); margin: 0 auto; padding: 0 28px; }
+
+  /* ---- Nav (Startseite / Dashboard / neue Feature-Seiten) ---- */
+  .np-nav {
+    position: sticky; top: 0; z-index: 40;
+    background: color-mix(in oklab, var(--np-bg) 82%, transparent);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--np-border-soft);
+  }
+  .np-nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 16px 28px; max-width: var(--np-container); margin: 0 auto; gap: 16px; }
+  .np-brand { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 16.5px; letter-spacing: -0.01em; color: var(--np-ink); cursor: pointer; border: none; background: none; padding: 0; font-family: inherit; }
+  .np-brand-mark {
+    width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0;
+    background: linear-gradient(155deg, var(--np-primary), var(--np-primary-strong));
+    display: flex; align-items: center; justify-content: center; color: #fff;
+    box-shadow: var(--np-shadow-sm);
+  }
+  .np-nav-links { display: flex; align-items: center; gap: 4px; }
+  .np-nav-links a, .np-nav-links button {
+    text-decoration: none; color: var(--np-ink-soft); font-weight: 600; font-size: 14px; font-family: inherit;
+    padding: 9px 14px; border-radius: 999px; border: none; background: none; cursor: pointer;
+    transition: background .15s var(--np-ease), color .15s var(--np-ease);
+  }
+  .np-nav-links a:hover, .np-nav-links button:hover { background: var(--np-surface-2); color: var(--np-ink); }
+  .np-nav-links a.active { color: var(--np-primary-strong); }
+  .np-nav-cta { display: flex; align-items: center; gap: 10px; }
+  .np-nav-toggle { display: none; }
+  .np-user-chip { display: flex; align-items: center; gap: 8px; padding: 6px 8px 6px 6px; border-radius: 999px; background: var(--np-surface-2); }
+  .np-user-chip .np-avatar { width: 26px; height: 26px; font-size: 11px; border-radius: 8px; }
+  .np-user-chip span { font-size: 12.5px; font-weight: 700; color: var(--np-ink); }
+  .np-user-chip button { border: none; background: none; color: var(--np-ink-faint); font-family: inherit; font-size: 11.5px; font-weight: 700; cursor: pointer; padding: 2px 4px; }
+  .np-user-chip button:hover { color: var(--np-ink); }
+  .np-theme-toggle {
+    width: 40px; height: 40px; border-radius: 11px; border: 1px solid var(--np-border); background: var(--np-surface);
+    display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--np-ink-soft);
+    transition: background .15s var(--np-ease), color .15s var(--np-ease); flex-shrink: 0;
+  }
+  .np-theme-toggle:hover { background: var(--np-surface-2); color: var(--np-ink); }
+  .np-theme-toggle svg { width: 17px; height: 17px; }
+
+  /* ---- Buttons ---- */
+  .np-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: 'Plus Jakarta Sans', inherit; font-weight: 700; font-size: 14.5px; text-decoration: none;
+    padding: 13px 22px; border-radius: 999px; border: 1px solid transparent; cursor: pointer;
+    transition: transform .15s var(--np-ease), box-shadow .15s var(--np-ease), background .15s var(--np-ease), border-color .15s var(--np-ease);
+    min-height: 44px;
+  }
+  .np-btn:active { transform: translateY(1px) scale(0.99); }
+  .np-btn-primary { background: var(--np-primary); color: #fff; box-shadow: var(--np-shadow-sm); }
+  .np-btn-primary:hover { background: var(--np-primary-strong); box-shadow: var(--np-shadow-md); transform: translateY(-1px); }
+  .np-btn-ghost { background: transparent; color: var(--np-ink); border-color: var(--np-border); }
+  .np-btn-ghost:hover { background: var(--np-surface-2); border-color: var(--np-ink-faint); transform: translateY(-1px); }
+  .np-btn:focus-visible { outline: 2px solid var(--np-primary); outline-offset: 2px; }
+  .np-btn svg { width: 16px; height: 16px; transition: transform .18s var(--np-ease); }
+  .np-btn:hover svg.np-arrow { transform: translateX(3px); }
+  .np-btn:disabled { opacity: .55; cursor: default; }
+
+  /* ---- Hero (Startseite) ---- */
+  .np-hero { position: relative; overflow: hidden; padding: 88px 0 64px; background: var(--np-bg); }
+  .np-hero-bg {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background-image: radial-gradient(var(--np-border) 1.4px, transparent 1.4px);
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(ellipse 62% 90% at 68% 30%, #000 40%, transparent 78%);
+            mask-image: radial-gradient(ellipse 62% 90% at 68% 30%, #000 40%, transparent 78%);
+    opacity: .9;
+  }
+  .np-hero-die { position: absolute; z-index: 0; right: 6%; top: 14%; width: 230px; height: 230px; opacity: .9; animation: np-float 7s ease-in-out infinite; }
+  @keyframes np-float { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-16px) rotate(6deg); } }
+  .np-hero-inner { position: relative; z-index: 1; max-width: 640px; }
+  .np-eyebrow {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 12.5px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase;
+    color: var(--np-primary-strong); background: var(--np-primary-soft);
+    padding: 7px 14px; border-radius: 999px; margin-bottom: 22px;
+  }
+  .np-eyebrow .np-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--np-accent); }
+  .np-headline {
+    font-size: clamp(38px,6vw,64px); line-height: 1.04; letter-spacing: -0.02em;
+    font-weight: 800; margin: 0 0 20px; text-wrap: balance; color: var(--np-ink);
+  }
+  .np-headline span { display: block; }
+  .np-headline .np-accent-line { font-family: 'Instrument Serif',Georgia,serif; font-style: italic; font-weight: 400; color: var(--np-primary-strong); }
+  .np-hero-sub { font-size: 17.5px; line-height: 1.6; color: var(--np-ink-soft); margin: 0 0 32px; max-width: 490px; }
+  .np-hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .np-hero-stats { display: flex; gap: 28px; margin-top: 52px; flex-wrap: wrap; }
+  .np-hero-stat b { display: block; font-size: 22px; font-weight: 800; color: var(--np-ink); }
+  .np-hero-stat span { font-size: 12.5px; color: var(--np-ink-faint); }
+
+  /* ---- Section shell ---- */
+  .np-section { padding: 64px 0; }
+  .np-section-head { max-width: 560px; margin: 0 0 40px; }
+  .np-section-eyebrow { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--np-primary-strong); margin: 0 0 10px; }
+  .np-section-title { font-size: clamp(26px,3.4vw,36px); font-weight: 800; letter-spacing: -0.015em; margin: 0 0 12px; text-wrap: balance; color: var(--np-ink); }
+  .np-section-desc { font-size: 15.5px; color: var(--np-ink-soft); line-height: 1.6; margin: 0; }
+  .np-section-title .np-serif { color: var(--np-primary-strong); }
+
+  /* ---- Bento grid (Startseite) ---- */
+  .np-bento { display: grid; gap: 16px; grid-template-columns: repeat(4,1fr); grid-auto-rows: 128px; }
+  .np-bento-card {
+    position: relative; overflow: hidden;
+    background: var(--np-surface); border: 1px solid var(--np-border);
+    border-radius: var(--np-radius-md); padding: 22px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    text-decoration: none; color: inherit; cursor: pointer;
+    transition: transform .2s var(--np-ease), box-shadow .2s var(--np-ease), border-color .2s var(--np-ease);
+  }
+  .np-bento-card:hover { transform: translateY(-4px); box-shadow: var(--np-shadow-md); border-color: var(--np-border); }
+  .np-bento-icon {
+    width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--np-primary-soft); color: var(--np-primary-strong);
+    transition: transform .25s var(--np-ease), background .2s var(--np-ease);
+  }
+  .np-bento-card:hover .np-bento-icon { transform: rotate(-8deg) scale(1.06); }
+  .np-bento-card.np-tone-accent .np-bento-icon { background: var(--np-accent-soft); color: var(--np-accent-strong); }
+  .np-bento-icon svg { width: 19px; height: 19px; }
+  .np-bento-name { font-weight: 700; font-size: 15.5px; margin: 0 0 3px; color: var(--np-ink); }
+  .np-bento-desc { font-size: 12.5px; color: var(--np-ink-faint); margin: 0; line-height: 1.45; }
+  .np-bento-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 14px; }
+  .np-bento-arrow { width: 15px; height: 15px; color: var(--np-ink-faint); transition: transform .18s var(--np-ease), color .18s var(--np-ease); flex-shrink: 0; }
+  .np-bento-card:hover .np-bento-arrow { transform: translateX(3px); color: var(--np-primary-strong); }
+  .np-bento .np-c-dice { grid-column: span 2; grid-row: span 2; }
+  .np-bento .np-c-chars { grid-column: span 2; grid-row: span 1; }
+  .np-bento .np-c-notes { grid-column: span 1; grid-row: span 1; }
+  .np-bento .np-c-talent { grid-column: span 1; grid-row: span 1; }
+  .np-bento .np-c-attr { grid-column: span 2; grid-row: span 2; }
+  .np-bento .np-c-system { grid-column: span 1; grid-row: span 2; }
+  .np-bento .np-c-adv { grid-column: span 1; grid-row: span 2; }
+  .np-dice-card-face { align-self: flex-start; display: flex; align-items: center; gap: 14px; margin: 6px 0 4px; }
+  .np-dice-card-face .np-die-mini {
+    width: 64px; height: 64px; border-radius: 16px; transform: rotate(45deg);
+    background: linear-gradient(155deg,var(--np-primary),var(--np-primary-strong));
+    display: flex; align-items: center; justify-content: center; box-shadow: var(--np-shadow-sm); flex-shrink: 0;
+  }
+  .np-dice-card-face .np-die-mini span { transform: rotate(-45deg); color: #fff; font-weight: 800; font-size: 19px; }
+  .np-dice-chip-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
+  .np-dice-chip { font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 999px; background: var(--np-surface-2); color: var(--np-ink-soft); }
+  .np-attr-mini-bars { display: flex; align-items: flex-end; gap: 5px; height: 52px; margin: 4px 0; }
+  .np-attr-mini-bars i { flex: 1; background: var(--np-primary-soft); border-radius: 4px 4px 0 0; display: block; }
+  .np-attr-mini-bars i.np-hi { background: var(--np-primary); }
+  .np-system-list { list-style: none; margin: 4px 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .np-system-list li { font-size: 12px; color: var(--np-ink-soft); display: flex; align-items: center; gap: 7px; }
+  .np-system-list li::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--np-ok); flex-shrink: 0; }
+  @media (max-width: 900px) {
+    .np-bento { grid-template-columns: repeat(2,1fr); grid-auto-rows: 150px; }
+    .np-bento .np-c-dice, .np-bento .np-c-chars { grid-column: span 2; grid-row: span 2; }
+    .np-bento .np-c-notes, .np-bento .np-c-talent, .np-bento .np-c-attr, .np-bento .np-c-system, .np-bento .np-c-adv { grid-column: span 1; grid-row: span 2; }
+  }
+  @media (max-width: 560px) {
+    .np-bento { grid-template-columns: 1fr; grid-auto-rows: auto; }
+    .np-bento-card { grid-column: 1 !important; grid-row: auto !important; min-height: 150px; }
+  }
+
+  /* ---- Quick Dice (Startseite, ohne Login nutzbar) ---- */
+  .np-dice-panel {
+    display: grid; grid-template-columns: 1fr 1.15fr; gap: 0;
+    background: var(--np-surface); border: 1px solid var(--np-border); border-radius: var(--np-radius-lg);
+    box-shadow: var(--np-shadow-md); overflow: hidden;
+  }
+  .np-dice-left { padding: 36px 34px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; border-right: 1px solid var(--np-border-soft); }
+  .np-die-types { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .np-die-type-btn {
+    font-family: inherit; font-weight: 700; font-size: 13px; color: var(--np-ink-soft);
+    background: var(--np-surface-2); border: 1px solid transparent; border-radius: 10px;
+    padding: 9px 13px; cursor: pointer; min-width: 44px; min-height: 44px;
+    transition: background .15s var(--np-ease), color .15s var(--np-ease);
+  }
+  .np-die-type-btn:hover { background: var(--np-primary-soft); color: var(--np-primary-strong); }
+  .np-die-type-btn.active { background: var(--np-primary); color: #fff; box-shadow: var(--np-shadow-sm); }
+  .np-die-stage { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .np-die-big {
+    width: 150px; height: 150px; border-radius: 34px; transform: rotate(45deg);
+    background: linear-gradient(155deg,var(--np-primary),var(--np-primary-strong));
+    display: flex; align-items: center; justify-content: center; box-shadow: var(--np-shadow-lg);
+    transition: transform .5s cubic-bezier(.34,1.56,.64,1);
+  }
+  .np-die-big.rolling { transform: rotate(45deg) scale(.86); }
+  .np-die-big span { transform: rotate(-45deg); color: #fff; font-weight: 800; font-size: 42px; }
+  .np-die-label { font-size: 12.5px; color: var(--np-ink-faint); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+  .np-dice-right { padding: 36px 34px; display: flex; flex-direction: column; }
+  .np-dice-right h3 { margin: 0 0 4px; font-size: 17px; font-weight: 800; color: var(--np-ink); }
+  .np-dice-right p.np-hint { margin: 0 0 18px; font-size: 13px; color: var(--np-ink-faint); }
+  .np-roll-log { display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+  .np-roll-log-row { display: flex; align-items: center; gap: 11px; padding: 10px 12px; background: var(--np-surface-2); border-radius: 12px; font-size: 13px; animation: np-slideIn .3s var(--np-ease); }
+  @keyframes np-slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .np-roll-log-die { font-weight: 800; color: var(--np-primary-strong); width: 34px; flex-shrink: 0; }
+  .np-roll-log-val { font-weight: 800; font-size: 15px; margin-left: auto; color: var(--np-ink); }
+  .np-roll-log-val.np-crit { color: var(--np-ok); }
+  .np-roll-log-empty { font-size: 13px; color: var(--np-ink-faint); padding: 14px 0; }
+  @media (max-width: 760px) { .np-dice-panel { grid-template-columns: 1fr; } .np-dice-left { border-right: none; border-bottom: 1px solid var(--np-border-soft); } }
+
+  /* ---- Charaktervorschau (Startseite) ---- */
+  .np-char-preview { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 36px; align-items: center; }
+  .np-char-card { background: var(--np-surface); border: 1px solid var(--np-border); border-radius: var(--np-radius-lg); box-shadow: var(--np-shadow-md); padding: 26px; max-width: 400px; }
+  .np-char-card-top { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+  .np-avatar {
+    width: 58px; height: 58px; border-radius: 16px; flex-shrink: 0;
+    background: linear-gradient(155deg,var(--np-accent),var(--np-accent-strong));
+    display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 20px;
+  }
+  .np-char-name { font-weight: 800; font-size: 17px; margin: 0; color: var(--np-ink); }
+  .np-char-tags { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
+  .np-char-tag { font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--np-surface-2); color: var(--np-ink-soft); }
+  .np-char-attrs { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; margin-bottom: 18px; }
+  .np-char-attr { text-align: center; padding: 9px 4px; border-radius: 10px; background: var(--np-surface-2); transition: background .15s var(--np-ease), transform .15s var(--np-ease); }
+  .np-char-attr:hover { background: var(--np-primary-soft); transform: translateY(-2px); }
+  .np-char-attr b { display: block; font-size: 15px; font-weight: 800; color: var(--np-ink); }
+  .np-char-attr span { font-size: 9.5px; color: var(--np-ink-faint); font-weight: 700; letter-spacing: .02em; }
+  .np-char-talents { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+  .np-char-talent-chip { font-size: 11.5px; font-weight: 600; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--np-border); color: var(--np-ink-soft); }
+  .np-feature-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+  .np-feature-list li { display: flex; gap: 12px; font-size: 14.5px; color: var(--np-ink-soft); line-height: 1.5; }
+  .np-feature-list .np-tick {
+    width: 22px; height: 22px; border-radius: 7px; background: var(--np-ok-soft); color: var(--np-ok);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+  }
+  .np-feature-list .np-tick svg { width: 13px; height: 13px; }
+  @media (max-width: 820px) { .np-char-preview { grid-template-columns: 1fr; } .np-char-card { max-width: none; } }
+
+  /* ---- Feature-Sections (Startseite) ---- */
+  .np-feature-row { display: flex; align-items: center; gap: 56px; }
+  .np-feature-row.np-reverse { flex-direction: row-reverse; }
+  .np-feature-row > * { flex: 1; min-width: 0; }
+  .np-feature-visual { background: var(--np-surface); border: 1px solid var(--np-border); border-radius: var(--np-radius-lg); box-shadow: var(--np-shadow-sm); padding: 26px; }
+  @media (max-width: 820px) { .np-feature-row, .np-feature-row.np-reverse { flex-direction: column; } }
+  .np-mini-table { border: 1px solid var(--np-border); border-radius: 12px; overflow: hidden; }
+  .np-mini-table-head { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; background: var(--np-surface-2); font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .03em; color: var(--np-ink-faint); }
+  .np-mini-table-head > div { padding: 9px 8px; }
+  .np-mini-table-row { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; border-top: 1px solid var(--np-border-soft); font-size: 13px; color: var(--np-ink); }
+  .np-mini-table-row > div { padding: 9px 8px; }
+  .np-mini-table-row > div:first-child { font-weight: 700; }
+  .np-mini-table-row.np-hi { background: var(--np-primary-soft); }
+  .np-budget-viz { display: flex; flex-direction: column; gap: 14px; }
+  .np-budget-bar-track { height: 10px; border-radius: 999px; background: var(--np-surface-2); overflow: hidden; }
+  .np-budget-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg,var(--np-primary),var(--np-accent)); width: 64%; }
+  .np-budget-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--np-ink-soft); }
+  .np-talent-chip-grid { display: flex; flex-wrap: wrap; gap: 7px; }
+  .np-worlds-strip { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px; }
+  .np-world-card { flex: 0 0 150px; border: 1px solid var(--np-border); border-radius: 14px; overflow: hidden; background: var(--np-surface-2); }
+  .np-world-cover { height: 74px; background: linear-gradient(135deg,var(--np-primary-soft),var(--np-surface-2)); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  .np-world-card p { margin: 0; padding: 9px 11px; font-size: 12.5px; font-weight: 700; color: var(--np-ink); }
+
+  /* ---- Feed-Showcase ---- */
+  .np-feed-band { background: var(--np-surface); border: 1px solid var(--np-border); border-radius: var(--np-radius-lg); box-shadow: var(--np-shadow-sm); padding: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+  .np-feed-post { background: var(--np-surface-2); border-radius: 14px; padding: 16px 18px; }
+  .np-feed-post-head { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
+  .np-feed-post-author { font-weight: 700; font-size: 13.5px; color: var(--np-ink); }
+  .np-feed-post-time { font-size: 11.5px; color: var(--np-ink-faint); margin-left: auto; }
+  .np-feed-post-text { font-size: 13.5px; color: var(--np-ink-soft); line-height: 1.55; margin: 0 0 12px; }
+  .np-feed-post-foot { display: flex; align-items: center; gap: 14px; }
+  .np-feed-stat { display: flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 700; color: var(--np-ink-soft); }
+  .np-feed-stat svg { width: 15px; height: 15px; }
+  .np-feed-stat.np-liked { color: var(--np-primary-strong); }
+  .np-feed-stat.np-liked svg { fill: var(--np-primary-strong); }
+  .np-presence-row { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+  .np-presence-stack { display: flex; }
+  .np-presence-stack .np-avatar { margin-left: -8px; border: 2px solid var(--np-surface-2); }
+  .np-presence-stack .np-avatar:first-child { margin-left: 0; }
+  .np-presence-label { font-size: 12px; color: var(--np-ink-faint); display: flex; align-items: center; gap: 6px; }
+  .np-presence-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--np-ok); flex-shrink: 0; }
+  @media (max-width: 820px) { .np-feed-band { grid-template-columns: 1fr; } }
+
+  .np-cta-band {
+    background: linear-gradient(155deg,var(--np-primary),var(--np-primary-strong));
+    border-radius: var(--np-radius-lg); padding: 56px 44px; text-align: center; color: #fff;
+    display: flex; flex-direction: column; align-items: center; gap: 18px;
+  }
+  .np-cta-band h2 { margin: 0; font-size: clamp(24px,3vw,32px); font-weight: 800; letter-spacing: -0.01em; }
+  .np-cta-band p { margin: 0; opacity: .85; font-size: 15px; max-width: 420px; }
+  .np-cta-band .np-btn-primary { background: #fff; color: var(--np-primary-strong); }
+  .np-cta-band .np-btn-primary:hover { background: #fff; filter: brightness(0.96); }
+
+  .np-footer { border-top: 1px solid var(--np-border-soft); padding: 32px 0; background: var(--np-bg); }
+  .np-footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 12.5px; color: var(--np-ink-faint); }
+
+  @media (max-width: 760px) {
+    .np-nav-links { display: none; }
+    .np-nav-toggle {
+      display: flex; align-items: center; justify-content: center;
+      width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--np-border);
+      background: var(--np-surface); cursor: pointer; flex-shrink: 0;
+    }
+    .np-nav-cta .np-btn-ghost { display: none; }
+  }
+
+  /* ---- Login/Registrieren im neuen Stil (Restyle des bestehenden #authGate) ---- */
+  #authGate {
+    background: var(--np-bg);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+  #authGate .auth-card {
+    background: var(--np-surface); border-color: var(--np-border);
+    border-radius: var(--np-radius-lg); box-shadow: var(--np-shadow-md);
+  }
+  #authGate .auth-card h1 { font-family: inherit; font-weight: 800; color: var(--np-ink); }
+  #authGate .auth-sub { color: var(--np-ink-soft); }
+  #authGate .auth-tabs { background: var(--np-surface-2); }
+  #authGate .auth-tab { color: var(--np-ink-soft); font-family: inherit; }
+  #authGate .auth-tab.active { background: var(--np-surface); color: var(--np-ink); border-color: var(--np-border); box-shadow: var(--np-shadow-sm); }
+  #authGate #authForm input {
+    border-color: var(--np-border); background: var(--np-bg); color: var(--np-ink); border-radius: 12px; font-family: inherit;
+  }
+  #authGate #authForm input:focus { border-color: var(--np-primary); box-shadow: 0 0 0 3px var(--np-primary-soft); }
+  #authGate .auth-submit { background: var(--np-primary); color: #fff; font-family: inherit; border-radius: 12px; }
+  #authGate .auth-submit:hover { background: var(--np-primary-strong); }
+  #authGate .auth-forgot, #authGate .auth-back-link { color: var(--np-primary-strong); }
+  #authGate .auth-error { color: var(--bad-text); }
+  .auth-back-link {
+    display: block; text-align: center; margin: 16px auto 0; border: none; background: none;
+    font-family: inherit; font-size: 12.5px; color: var(--np-primary-strong); cursor: pointer; text-decoration: underline;
+  }
+
+  /* ---- Dashboard (nach dem Login) ---- */
+  #dashboardRoot { display: none; background: var(--np-bg); min-height: 100vh; }
+  /* :not(.sheet-view-mode), damit die PDF-artige Vollansicht (aus der Bibliothek heraus
+     geoeffnet) Vorrang hat, auch wenn sie zufaellig vom Dashboard aus gestartet wurde. */
+  body.view-dashboard:not(.sheet-view-mode) #dashboardRoot { display: block; }
+  body.view-dashboard:not(.sheet-view-mode) .app-shell { display: none; }
+  body.view-dashboard:not(.sheet-view-mode) .sidebar-toggle { display: none; }
+  .np-app-page { padding: 44px 0 80px; }
+  .np-dash-hello { font-size: 13px; color: var(--np-ink-faint); font-weight: 700; margin: 0 0 4px; }
+  .np-dash-title { font-size: clamp(24px,3vw,32px); font-weight: 800; letter-spacing: -0.015em; margin: 0 0 32px; color: var(--np-ink); }
+  .np-dash-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .np-dash-char-card { background: var(--np-surface); border: 1px solid var(--np-border); border-radius: var(--np-radius-lg); box-shadow: var(--np-shadow-sm); padding: 28px; display: flex; flex-direction: column; gap: 18px; }
+  .np-dash-char-top { display: flex; align-items: center; gap: 14px; }
+  .np-dash-char-top .np-avatar { width: 56px; height: 56px; }
+  .np-dash-side { display: flex; flex-direction: column; gap: 16px; }
+  .np-dash-mini-card {
+    flex: 1; background: var(--np-surface); border: 1px solid var(--np-border); border-radius: var(--np-radius-md);
+    box-shadow: var(--np-shadow-sm); padding: 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;
+    text-decoration: none; color: inherit; transition: transform .18s var(--np-ease), box-shadow .18s var(--np-ease);
+    cursor: pointer; border-width: 1px; border-style: solid; font-family: inherit; text-align: left;
+  }
+  .np-dash-mini-card:hover { transform: translateY(-3px); box-shadow: var(--np-shadow-md); }
+  .np-dash-mini-card .np-tag-soon { font-size: 10.5px; font-weight: 700; color: var(--np-ink-faint); }
+  .np-dash-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+  @media (max-width: 900px) { .np-dash-grid { grid-template-columns: 1fr; } .np-dash-row { grid-template-columns: repeat(2,1fr); } }
+  @media (max-width: 560px) { .np-dash-row { grid-template-columns: 1fr; } }
+
+  /* ---- Migrierte Feature-Seite (Beispiel: Attributwerte) ---- */
+  body.attr-page-mode .sidebar,
+  body.attr-page-mode .sidebar-toggle,
+  body.attr-page-mode .sidebar-backdrop,
+  body.attr-page-mode .user-bar { display: none !important; }
+  #attrPageChrome { display: none; }
+  body.attr-page-mode #attrPageChrome { display: block; }
+  body.attr-page-mode #page-werte .page-title { display: none; }
+  .np-breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--np-ink-faint); margin-bottom: 18px; flex-wrap: wrap; }
+  .np-breadcrumb button { border: none; background: none; color: var(--np-ink-faint); font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; padding: 0; }
+  .np-breadcrumb button:hover { color: var(--np-primary-strong); }
+  .np-breadcrumb .np-sep { opacity: .5; }
+  .np-breadcrumb .np-current { color: var(--np-ink); font-weight: 700; }
+  .np-page-head-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; flex-wrap: wrap; }
+  .np-page-head-row .save-indicator { font-size: 12.5px; }
+  /* Attributtabelle im neuen Design, nur aktiv wenn ueber das Dashboard erreicht */
+  body.attr-page-mode #page-werte {
+    background: var(--np-surface); border-color: var(--np-border);
+    border-radius: var(--np-radius-lg); box-shadow: var(--np-shadow-sm);
+  }
+  body.attr-page-mode #page-werte .attr-table { border-color: var(--np-border); box-shadow: none; border-radius: var(--np-radius-md); }
+  body.attr-page-mode #page-werte .attr-head { background: var(--np-surface-2); color: var(--np-ink-faint); border-color: var(--np-border); }
+  body.attr-page-mode #page-werte .attr-head > div,
+  body.attr-page-mode #page-werte .attr-row .attr-name,
+  body.attr-page-mode #page-werte .attr-row .attr-cell { border-color: var(--np-border-soft); }
+  body.attr-page-mode #page-werte .attr-row { border-color: var(--np-border-soft); }
+  body.attr-page-mode #page-werte .attr-sum { background: var(--np-surface-2); border-color: var(--np-border); }
+  body.attr-page-mode #page-werte .attr-row input,
+  body.attr-page-mode #page-werte .attr-sum input { border-color: var(--np-border); color: var(--np-ink); font-family: 'Plus Jakarta Sans', inherit; }
+  body.attr-page-mode #page-werte .note-box { background: var(--np-primary-soft); color: var(--np-primary-strong); border: none; border-radius: 12px; }
+  body.attr-page-mode #page-werte .race-row select { border-color: var(--np-border); font-family: 'Plus Jakarta Sans', inherit; }
 </style>
 </head>
 <body>
 
-  <div class="auth-gate" id="authGate">
+  <div id="landingRoot" class="np-scope">
+    <nav class="np-nav">
+      <div class="np-nav-inner">
+        <button type="button" class="np-brand" id="landingBrandBtn">
+          <span class="np-brand-mark"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 7l9 5 9-5-9-5z"/><path d="M3 7v10l9 5 9-5V7"/><path d="M12 12v10"/></svg></span>
+          Charakterbogen
+        </button>
+        <div class="np-nav-links">
+          <a href="#np-top" class="active">Start</a>
+          <a href="#np-dice">Würfeln</a>
+          <a href="#np-overview">Charaktere</a>
+          <a href="#np-features">Talente</a>
+          <a href="#np-worlds">Welten</a>
+          <a href="#np-feed">Feed</a>
+        </div>
+        <div class="np-nav-cta">
+          <button type="button" class="np-theme-toggle" id="landingThemeToggle" title="Dunkles Design" aria-label="Design umschalten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+          <button type="button" class="np-btn np-btn-ghost" data-np-goto="auth">Anmelden</button>
+          <button type="button" class="np-btn np-btn-primary" data-np-goto="auth">Charakter erstellen</button>
+        </div>
+        <button class="np-nav-toggle" aria-label="Menü" id="landingNavToggle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </nav>
+
+    <header class="np-hero" id="np-top">
+      <div class="np-hero-bg"></div>
+      <svg class="np-hero-die" viewBox="0 0 200 200" fill="none">
+        <polygon points="100,10 190,60 190,140 100,190 10,140 10,60" stroke="var(--np-border)" stroke-width="2"/>
+        <polygon points="100,10 190,60 100,110" fill="var(--np-primary-soft)" opacity=".6"/>
+        <polygon points="190,60 190,140 100,110" fill="var(--np-primary-soft)" opacity=".35"/>
+        <line x1="100" y1="10" x2="100" y2="110" stroke="var(--np-border)" stroke-width="1.5"/>
+        <line x1="10" y1="60" x2="100" y2="110" stroke="var(--np-border)" stroke-width="1.5"/>
+        <line x1="10" y1="140" x2="100" y2="110" stroke="var(--np-border)" stroke-width="1.5"/>
+        <line x1="190" y1="140" x2="100" y2="110" stroke="var(--np-border)" stroke-width="1.5"/>
+      </svg>
+      <div class="np-wrap np-hero-inner">
+        <div class="np-eyebrow"><span class="np-dot"></span>Dein Abenteuer</div>
+        <h1 class="np-headline"><span>Beginnt mit</span><span class="np-accent-line">einem Wurf.</span></h1>
+        <p class="np-hero-sub">Erstelle Charaktere, verwalte deine Werte und würfle direkt im Browser — allein oder mit deiner Runde, in Echtzeit.</p>
+        <div class="np-hero-ctas">
+          <button type="button" class="np-btn np-btn-primary" data-np-goto="auth">Charakter erstellen
+            <svg class="np-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <a href="#np-dice" class="np-btn np-btn-ghost">Würfel öffnen</a>
+        </div>
+        <div class="np-hero-stats">
+          <div class="np-hero-stat"><b>10</b><span>Attribute</span></div>
+          <div class="np-hero-stat"><b>22</b><span>Talente</span></div>
+          <div class="np-hero-stat"><b>7</b><span>Würfelarten</span></div>
+        </div>
+      </div>
+    </header>
+
+    <div class="np-wrap">
+      <section class="np-section" id="np-overview">
+        <div class="np-section-head">
+          <p class="np-section-eyebrow">Alles an einem Ort</p>
+          <h2 class="np-section-title">Der ganze Bogen, <span class="np-serif">neu geordnet.</span></h2>
+          <p class="np-section-desc">Statt Reitern und Tabellen: die wichtigsten Bereiche als eigene Kacheln — direkt anklickbar, direkt verständlich.</p>
+        </div>
+        <div class="np-bento">
+          <button type="button" class="np-bento-card np-c-dice" data-np-scroll="#np-dice">
+            <div>
+              <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 7l9 5 9-5-9-5z"/><path d="M3 7v10l9 5 9-5V7"/><path d="M12 12v10"/></svg></span>
+              <div class="np-dice-card-face">
+                <span class="np-die-mini"><span>18</span></span>
+                <div><p class="np-bento-name" style="margin-top:0">Würfeln</p><p class="np-bento-desc">Ein Klick, ein Ergebnis — mit Verlauf.</p></div>
+              </div>
+              <div class="np-dice-chip-row"><span class="np-dice-chip">W20</span><span class="np-dice-chip">W10</span><span class="np-dice-chip">W100</span></div>
+            </div>
+            <div class="np-bento-foot">
+              <span style="font-size:12px;color:var(--np-ink-faint);font-weight:700;">Jederzeit griffbereit</span>
+              <svg class="np-bento-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </div>
+          </button>
+
+          <button type="button" class="np-bento-card np-c-chars" data-np-goto="auth">
+            <div>
+              <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/></svg></span>
+              <p class="np-bento-name">Charaktere</p>
+              <p class="np-bento-desc">Deine Bibliothek — nach Welt sortiert, mit Bild und Kurzinfo.</p>
+            </div>
+            <div class="np-bento-foot">
+              <span style="font-size:12px;color:var(--np-ink-faint);font-weight:700;">Nach Anmeldung</span>
+              <svg class="np-bento-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </div>
+          </button>
+
+          <button type="button" class="np-bento-card np-c-notes np-tone-accent" data-np-goto="auth">
+            <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.4 2.6a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></span>
+            <div><p class="np-bento-name" style="margin-bottom:0;">Notizen</p><span class="np-bento-arrow" style="float:right;margin-top:-18px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          </button>
+
+          <button type="button" class="np-bento-card np-c-talent" data-np-scroll="#np-features">
+            <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2.6 2.6 6.2 6.7.6-5.1 4.4 1.5 6.6L12 16.9l-5.7 3.5 1.5-6.6-5.1-4.4 6.7-.6z"/></svg></span>
+            <div><p class="np-bento-name" style="margin-bottom:0;">Talente</p><span class="np-bento-arrow" style="float:right;margin-top:-18px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          </button>
+
+          <button type="button" class="np-bento-card np-c-attr" data-np-goto="auth">
+            <div>
+              <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20v-5M12 20V8M18 20V4"/></svg></span>
+              <p class="np-bento-name">Attribute</p>
+              <div class="np-attr-mini-bars"><i style="height:55%"></i><i class="np-hi" style="height:88%"></i><i style="height:40%"></i><i style="height:70%"></i><i style="height:60%"></i><i class="np-hi" style="height:92%"></i></div>
+            </div>
+            <span class="np-bento-arrow" style="align-self:flex-end;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </button>
+
+          <button type="button" class="np-bento-card np-c-system" data-np-scroll="#np-features">
+            <div>
+              <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+              <p class="np-bento-name">System</p>
+              <ul class="np-system-list"><li>W20 ≤ Wert</li><li>W10 + Wert &gt; SG</li><li>Glücks&shy;punkte</li></ul>
+            </div>
+            <span class="np-bento-arrow" style="align-self:flex-end;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </button>
+
+          <button type="button" class="np-bento-card np-c-adv" data-np-scroll="#np-worlds">
+            <div>
+              <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8M12 3a14 14 0 0 0 0 18a14 14 0 0 0 0-18z"/></svg></span>
+              <p class="np-bento-name">Welten</p>
+              <p class="np-bento-desc">Ein Universum je Kampagne.</p>
+            </div>
+            <span class="np-bento-arrow" style="align-self:flex-end;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </button>
+        </div>
+      </section>
+
+      <section class="np-section" id="np-dice">
+        <div class="np-section-head">
+          <p class="np-section-eyebrow">Quick Dice</p>
+          <h2 class="np-section-title">Würfeln, <span class="np-serif">ohne zu suchen.</span></h2>
+          <p class="np-section-desc">Würfelart wählen, würfeln, Ergebnis sehen — direkt hier, auch ohne Anmeldung.</p>
+        </div>
+        <div class="np-dice-panel">
+          <div class="np-dice-left">
+            <div class="np-die-types" id="landingDieTypes">
+              <button type="button" class="np-die-type-btn" data-die="4">W4</button>
+              <button type="button" class="np-die-type-btn" data-die="6">W6</button>
+              <button type="button" class="np-die-type-btn" data-die="8">W8</button>
+              <button type="button" class="np-die-type-btn" data-die="10">W10</button>
+              <button type="button" class="np-die-type-btn" data-die="12">W12</button>
+              <button type="button" class="np-die-type-btn active" data-die="20">W20</button>
+              <button type="button" class="np-die-type-btn" data-die="100">W100</button>
+            </div>
+            <div class="np-die-stage">
+              <div class="np-die-big" id="landingDieBig"><span id="landingDieFace">–</span></div>
+              <div class="np-die-label" id="landingDieLabel">W20 · bereit</div>
+            </div>
+            <button type="button" class="np-btn np-btn-primary" id="landingRollBtn" style="width:100%;max-width:220px;">Würfeln</button>
+          </div>
+          <div class="np-dice-right">
+            <h3>Letzte Würfe</h3>
+            <p class="np-hint">Nur in diesem Browser, ohne Anmeldung nicht gespeichert.</p>
+            <div class="np-roll-log" id="landingRollLog"><div class="np-roll-log-empty">Noch kein Wurf — leg los.</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="np-section">
+        <div class="np-char-preview">
+          <div class="np-char-card">
+            <div class="np-char-card-top">
+              <div class="np-avatar">JK</div>
+              <div>
+                <p class="np-char-name">Juna Kessler</p>
+                <div class="np-char-tags"><span class="np-char-tag">Werwolf</span><span class="np-char-tag">Pinewood</span></div>
+              </div>
+            </div>
+            <div class="np-char-attrs">
+              <div class="np-char-attr"><b>14</b><span>MU</span></div>
+              <div class="np-char-attr"><b>11</b><span>IG</span></div>
+              <div class="np-char-attr"><b>16</b><span>GE</span></div>
+              <div class="np-char-attr"><b>13</b><span>KO</span></div>
+              <div class="np-char-attr"><b>10</b><span>IN</span></div>
+              <div class="np-char-attr"><b>12</b><span>KK</span></div>
+              <div class="np-char-attr"><b>15</b><span>FF</span></div>
+              <div class="np-char-attr"><b>9</b><span>CH</span></div>
+              <div class="np-char-attr"><b>11</b><span>SB</span></div>
+              <div class="np-char-attr"><b>3</b><span>GL</span></div>
+            </div>
+            <div class="np-char-talents">
+              <span class="np-char-talent-chip">Reflexe</span><span class="np-char-talent-chip">Klettern</span>
+              <span class="np-char-talent-chip">Sinnesschärfe</span><span class="np-char-talent-chip">Überleben</span>
+            </div>
+            <button type="button" class="np-btn np-btn-ghost" style="width:100%;" data-np-goto="auth">Charakter öffnen
+              <svg class="np-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+          <div>
+            <div class="np-section-head" style="margin-bottom:22px;">
+              <p class="np-section-eyebrow">Charaktervorschau</p>
+              <h2 class="np-section-title">Auf einen Blick <span class="np-serif">erkennbar.</span></h2>
+            </div>
+            <ul class="np-feature-list">
+              <li><span class="np-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Alle 10 Attribute kompakt statt in einer langen Tabelle.</li>
+              <li><span class="np-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Besondere Natur und Welt direkt als Kennzeichnung sichtbar.</li>
+              <li><span class="np-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Eigene Felder für alles, was das System nicht vorsieht.</li>
+              <li><span class="np-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Als PDF exportierbar, wenn du ihn ausdrucken oder teilen willst.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="np-section" id="np-features">
+        <div class="np-feature-row">
+          <div>
+            <div class="np-section-head">
+              <p class="np-section-eyebrow">Attributwerte</p>
+              <h2 class="np-section-title">Alle Werte, <span class="np-serif">ein Blick.</span></h2>
+              <p class="np-section-desc">Basiswert, Bonus und Gesamtwert stehen nebeneinander — Rassenboni und Grenzen rechnet der Bogen automatisch mit.</p>
+            </div>
+          </div>
+          <div class="np-feature-visual">
+            <div class="np-mini-table">
+              <div class="np-mini-table-head"><div>Attribut</div><div>Basis</div><div>Bonus</div><div>Gesamt</div></div>
+              <div class="np-mini-table-row"><div>Mut</div><div>12</div><div>+2</div><div>14</div></div>
+              <div class="np-mini-table-row np-hi"><div>Gewandtheit</div><div>13</div><div>+3</div><div>16</div></div>
+              <div class="np-mini-table-row"><div>Konstitution</div><div>11</div><div>+2</div><div>13</div></div>
+              <div class="np-mini-table-row"><div>Fingerfertigkeit</div><div>12</div><div>+3</div><div>15</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="np-section">
+        <div class="np-feature-row np-reverse">
+          <div>
+            <div class="np-section-head">
+              <p class="np-section-eyebrow">Talente</p>
+              <h2 class="np-section-title">Talente, die <span class="np-serif">mitdenken.</span></h2>
+              <p class="np-section-desc">Das Bonus-Budget zählt live mit — wer zu viel verteilt, sieht es sofort statt erst beim Speichern.</p>
+            </div>
+          </div>
+          <div class="np-feature-visual">
+            <div class="np-budget-viz">
+              <div class="np-budget-row"><span>Talentbudget</span><b>13 / 20</b></div>
+              <div class="np-budget-bar-track"><div class="np-budget-bar-fill"></div></div>
+              <div class="np-talent-chip-grid">
+                <span class="np-char-talent-chip">Reflexe +3</span><span class="np-char-talent-chip">Klettern +2</span>
+                <span class="np-char-talent-chip">Medizin +4</span><span class="np-char-talent-chip">Überleben +4</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="np-section" id="np-worlds">
+        <div class="np-feature-row">
+          <div>
+            <div class="np-section-head">
+              <p class="np-section-eyebrow">Welten</p>
+              <h2 class="np-section-title">Deine Welt, <span class="np-serif">deine Charaktere.</span></h2>
+              <p class="np-section-desc">Jede Kampagne bekommt eine eigene Welt mit Titelbild — Charaktere lassen sich direkt zur passenden Welt zuordnen.</p>
+            </div>
+          </div>
+          <div class="np-feature-visual">
+            <div class="np-worlds-strip">
+              <div class="np-world-card"><div class="np-world-cover">🌲</div><p>Pinewood</p></div>
+              <div class="np-world-card"><div class="np-world-cover">🏰</div><p>Aventurien</p></div>
+              <div class="np-world-card"><div class="np-world-cover">🌙</div><p>Mittelerde</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="np-section" id="np-feed">
+        <div class="np-section-head">
+          <p class="np-section-eyebrow">Feed</p>
+          <h2 class="np-section-title">Eure Runde, <span class="np-serif">an einem Ort.</span></h2>
+          <p class="np-section-desc">Beiträge teilen, kommentieren, liken — und sehen, wer aus der Gruppe gerade online ist.</p>
+        </div>
+        <div class="np-feed-band">
+          <div class="np-feed-post">
+            <div class="np-feed-post-head">
+              <span class="np-avatar" style="width:30px;height:30px;font-size:12px;border-radius:9px;">BT</span>
+              <span class="np-feed-post-author">Bernd</span>
+              <span class="np-feed-post-time">vor 2 Std.</span>
+            </div>
+            <p class="np-feed-post-text">Nächste Sitzung am Freitag — bringt eure Charakterbögen aktuell mit, es gibt eine neue Fraktion in Pinewood. 🐺</p>
+            <div class="np-feed-post-foot">
+              <span class="np-feed-stat np-liked"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>4</span>
+              <span class="np-feed-stat">💬 2 Kommentare</span>
+            </div>
+          </div>
+          <div>
+            <ul class="np-feature-list">
+              <li><span class="np-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Beiträge mit Formatierung, Bildern und Tabellen.</li>
+              <li><span class="np-tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Likes und Kommentare in Echtzeit für die ganze Runde.</li>
+            </ul>
+            <div class="np-presence-row">
+              <div class="np-presence-stack">
+                <span class="np-avatar" style="width:30px;height:30px;font-size:12px;border-radius:9px;">JK</span>
+                <span class="np-avatar" style="width:30px;height:30px;font-size:12px;border-radius:9px;">BT</span>
+                <span class="np-avatar" style="width:30px;height:30px;font-size:12px;border-radius:9px;">AL</span>
+              </div>
+              <span class="np-presence-label"><span class="np-presence-dot"></span>3 gerade online</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="np-section">
+        <div class="np-cta-band">
+          <h2>Bereit für den ersten Wurf?</h2>
+          <p>Leg einen Charakter an oder öffne direkt den Würfel — beides ist in Sekunden erledigt.</p>
+          <button type="button" class="np-btn np-btn-primary" data-np-goto="auth">Charakter erstellen</button>
+        </div>
+      </section>
+    </div>
+
+    <footer class="np-footer">
+      <div class="np-wrap np-footer-inner">
+        <span>Charakterbogen</span>
+        <span>Für deine Tischrunde, im Browser.</span>
+      </div>
+    </footer>
+  </div>
+
+  <div class="auth-gate" id="authGate" style="display:none;">
     <div class="auth-card">
       <h1>Charakterbogen</h1>
       <p class="auth-sub">Melde dich an, um deine Charaktere zu speichern und abzurufen.</p>
@@ -1685,6 +2421,7 @@
       </form>
       <button type="button" class="auth-forgot" id="authForgotBtn">Passwort vergessen?</button>
       <div class="auth-error" id="authError"></div>
+      <button type="button" class="auth-back-link" id="authBackBtn">← zurück zur Startseite</button>
     </div>
   </div>
 
@@ -1833,6 +2570,88 @@
 
   <button type="button" class="sidebar-toggle" id="sidebarToggleBtn" aria-label="Menü öffnen">☰</button>
 
+  <div id="dashboardRoot" class="np-scope">
+    <nav class="np-nav">
+      <div class="np-nav-inner">
+        <button type="button" class="np-brand" id="dashBrandBtn">
+          <span class="np-brand-mark"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 7l9 5 9-5-9-5z"/><path d="M3 7v10l9 5 9-5V7"/><path d="M12 12v10"/></svg></span>
+          Charakterbogen
+        </button>
+        <div class="np-nav-links">
+          <a class="active">Start</a>
+          <button type="button" data-np-open="dice">Würfeln</button>
+          <button type="button" data-np-open="chars">Charaktere</button>
+          <button type="button" data-np-open="worlds">Welten</button>
+          <button type="button" data-np-open="feed">Feed</button>
+          <button type="button" data-np-open="help">Hilfe</button>
+        </div>
+        <div class="np-nav-cta">
+          <button type="button" class="np-theme-toggle" id="dashPdfBtn" title="Als PDF herunterladen" aria-label="Als PDF herunterladen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+          <button type="button" class="np-theme-toggle" id="dashThemeToggle" title="Dunkles Design" aria-label="Design umschalten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+          <div class="np-user-chip">
+            <button type="button" id="dashProfileBtn" style="display:flex;align-items:center;gap:8px;border:none;background:none;cursor:pointer;font-family:inherit;padding:0;">
+              <span class="np-avatar" id="dashUserAvatar" style="width:26px;height:26px;font-size:11px;border-radius:8px;">–</span>
+              <span id="dashUserName">–</span>
+            </button>
+            <button type="button" id="dashLogoutBtn">Abmelden</button>
+          </div>
+        </div>
+        <button class="np-nav-toggle" aria-label="Menü" id="dashNavToggle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </nav>
+    <div class="np-wrap np-app-page">
+      <p class="np-dash-hello">Willkommen zurück</p>
+      <h1 class="np-dash-title" id="dashGreeting">Hallo 👋</h1>
+
+      <div class="np-dash-grid">
+        <div class="np-dash-char-card" id="dashCharCard">
+          <div class="np-dash-char-top">
+            <span class="np-avatar" id="dashCharAvatar">–</span>
+            <div>
+              <p class="np-char-name" id="dashCharName" style="margin:0;">–</p>
+              <div class="np-char-tags" id="dashCharTags"></div>
+            </div>
+          </div>
+          <div class="np-char-attrs" id="dashCharAttrs" style="margin-bottom:0;"></div>
+          <button type="button" class="np-btn np-btn-primary" id="dashOpenAttrBtn" style="align-self:flex-start;">Attributwerte öffnen
+            <svg class="np-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+        <div class="np-dash-side">
+          <button type="button" class="np-dash-mini-card" id="dashOpenAttrTile">
+            <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20v-5M12 20V8M18 20V4"/></svg></span>
+            <div><p class="np-bento-name" style="margin-bottom:2px;">Attributwerte</p><p class="np-bento-desc">Basis, Bonus, Gesamt.</p></div>
+          </button>
+          <button type="button" class="np-dash-mini-card" data-np-open="talente">
+            <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2.6 2.6 6.2 6.7.6-5.1 4.4 1.5 6.6L12 16.9l-5.7 3.5 1.5-6.6-5.1-4.4 6.7-.6z"/></svg></span>
+            <div><p class="np-bento-name" style="margin-bottom:2px;">Talente</p><p class="np-tag-soon">Öffnet im bisherigen Design</p></div>
+          </button>
+        </div>
+      </div>
+
+      <div class="np-dash-row">
+        <button type="button" class="np-dash-mini-card" data-np-open="dice">
+          <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 7l9 5 9-5-9-5z"/><path d="M3 7v10l9 5 9-5V7"/></svg></span>
+          <div><p class="np-bento-name" style="margin-bottom:2px;">Würfeln</p><p class="np-tag-soon">Öffnet im bisherigen Design</p></div>
+        </button>
+        <button type="button" class="np-dash-mini-card" data-np-open="notizen">
+          <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.4 2.6a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></span>
+          <div><p class="np-bento-name" style="margin-bottom:2px;">Notizen</p><p class="np-tag-soon">Öffnet im bisherigen Design</p></div>
+        </button>
+        <button type="button" class="np-dash-mini-card" data-np-open="feed">
+          <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+          <div><p class="np-bento-name" style="margin-bottom:2px;">Feed</p><p class="np-tag-soon">Öffnet im bisherigen Design</p></div>
+        </button>
+        <button type="button" class="np-dash-mini-card" data-np-open="worlds">
+          <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8M12 3a14 14 0 0 0 0 18a14 14 0 0 0 0-18z"/></svg></span>
+          <div><p class="np-bento-name" style="margin-bottom:2px;">Welten</p><p class="np-tag-soon">Öffnet als Übersicht</p></div>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="app-shell">
     <nav class="sidebar" id="sidebar">
       <div class="sidebar-brand">
@@ -1840,6 +2659,7 @@
         <span class="sidebar-brand-text">Charakterbogen</span>
       </div>
       <div class="tabs" id="tabs">
+        <button class="tab-btn" id="sidebarDashboardBtn" type="button"><svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>Dashboard</button>
         <button class="tab-btn active" data-page="deckblatt"><svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M15 2v5h5"/></svg>Deckblatt</button>
         <button class="tab-btn" data-page="personal"><svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Persönliche Infos</button>
         <button class="tab-btn" data-page="werte"><svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 20v-5"/><path d="M12 20V8"/><path d="M18 20V4"/></svg>Attributwerte</button>
@@ -1865,6 +2685,22 @@
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
     <div class="main-content">
+    <div id="attrPageChrome" class="np-scope np-wrap">
+      <div class="np-breadcrumb">
+        <button type="button" id="attrCrumbDashboard">Dashboard</button>
+        <span class="np-sep">/</span>
+        <span id="attrCrumbChar">–</span>
+        <span class="np-sep">/</span>
+        <span class="np-current">Attributwerte</span>
+      </div>
+      <div class="np-page-head-row">
+        <h1 class="np-dash-title" style="margin-bottom:0;">Attributwerte</h1>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <span class="save-indicator" id="attrPageSaveIndicator"></span>
+          <button type="button" class="np-btn np-btn-ghost" id="attrPageEditBtn">✎ Bearbeiten</button>
+        </div>
+      </div>
+    </div>
     <div class="sheet">
 
     <!-- SEITE 1: DECKBLATT -->
@@ -4136,15 +4972,22 @@
   var saveIndicatorFadeTimer = null;
   function setSaveIndicator(text, variant){
     clearTimeout(saveIndicatorFadeTimer);
-    saveIndicator.classList.remove("success", "fading");
-    saveIndicator.textContent = text;
+    var mirror = document.getElementById("attrPageSaveIndicator");
+    [saveIndicator, mirror].forEach(function(el){
+      if (!el) return;
+      el.classList.remove("success", "fading");
+      el.textContent = text;
+      if (variant === "success") el.classList.add("success");
+    });
     if (variant === "success"){
-      saveIndicator.classList.add("success");
       saveIndicatorFadeTimer = setTimeout(function(){
-        saveIndicator.classList.add("fading");
+        [saveIndicator, mirror].forEach(function(el){ if (el) el.classList.add("fading"); });
         saveIndicatorFadeTimer = setTimeout(function(){
-          saveIndicator.textContent = "";
-          saveIndicator.classList.remove("success", "fading");
+          [saveIndicator, mirror].forEach(function(el){
+            if (!el) return;
+            el.textContent = "";
+            el.classList.remove("success", "fading");
+          });
         }, 650);
       }, 1800);
     }
@@ -4199,6 +5042,7 @@
     setEditMode(false);
     userDocRef().set({ activeCharacterId: id }, { merge: true }).catch(function(){});
     setSaveIndicator("");
+    renderDashboard();
   }
 
   function createCharacter(name, data){
@@ -4745,14 +5589,13 @@
   fbAuth.onAuthStateChanged(function(user){
     currentUser = user;
     if (user){
-      authGate.style.display = "none";
-      appRoot.style.display = "block";
+      showTopView("app");
       authForm.reset();
       loadInitialCharacter();
       checkProfile();
+      showDashboard();
     } else {
-      appRoot.style.display = "none";
-      authGate.style.display = "flex";
+      showTopView("landing");
       activeCharacterId = null;
       activeCharacterName = null;
       myProfile = null;
@@ -4769,6 +5612,184 @@
       renderPosts();
     }
   });
+
+  /* ===================== Neue Seiten: Startseite / Dashboard / migrierte Feature-Seiten =====================
+     Ablösung des Sidebar-Reiter-Musters, Feature für Feature. Solange eine Seite noch nicht
+     umgestellt ist, öffnet ihre Dashboard-Kachel den bisherigen Bogen direkt bei diesem Reiter. */
+  var landingRoot = document.getElementById("landingRoot");
+
+  function showTopView(name){
+    landingRoot.style.display = (name === "landing") ? "block" : "none";
+    authGate.style.display = (name === "auth") ? "flex" : "none";
+    appRoot.style.display = (name === "app") ? "block" : "none";
+  }
+  showTopView("landing");
+
+  function openTab(pageName){
+    var btn = document.querySelector('.tab-btn[data-page="' + pageName + '"]');
+    if (btn) btn.click();
+  }
+
+  function showDashboard(){
+    document.body.classList.remove("attr-page-mode");
+    document.body.classList.add("view-dashboard");
+    renderDashboard();
+    renderDashboardUser();
+  }
+  function showSheet(pageName){
+    document.body.classList.remove("view-dashboard");
+    document.body.classList.remove("attr-page-mode");
+    if (pageName) openTab(pageName);
+  }
+  function enterAttrPage(){
+    document.body.classList.remove("view-dashboard");
+    openTab("werte");
+    document.body.classList.add("attr-page-mode");
+    var crumb = document.getElementById("attrCrumbChar");
+    if (crumb) crumb.textContent = activeCharacterName || "–";
+    window.scrollTo({ top: 0 });
+  }
+
+  var RACE_TAG_LABELS = { werwolf: "Werwolf", vampir: "Vampir" };
+
+  function renderDashboardUser(){
+    var nameEl = document.getElementById("dashUserName");
+    var avatarEl = document.getElementById("dashUserAvatar");
+    var greetEl = document.getElementById("dashGreeting");
+    if (!nameEl) return;
+    var label = myProfile ? (myProfile.nickname || myProfile.username) : "–";
+    nameEl.textContent = label;
+    avatarEl.textContent = label && label !== "–" ? label.slice(0, 2).toUpperCase() : "–";
+    if (greetEl) greetEl.textContent = "Hallo, " + (label === "–" ? "du" : label) + " 👋";
+  }
+
+  function renderDashboard(){
+    var nameEl = document.getElementById("dashCharName");
+    if (!nameEl) return;
+    nameEl.textContent = activeCharacterName || "Unbenannt";
+
+    var avatarEl = document.getElementById("dashCharAvatar");
+    if (uploadedImage && uploadedImage.dataUrl){
+      avatarEl.innerHTML = '<img src="' + uploadedImage.dataUrl + '" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">';
+    } else {
+      avatarEl.textContent = (activeCharacterName || "?").slice(0, 2).toUpperCase();
+    }
+
+    var tagsEl = document.getElementById("dashCharTags");
+    var universe = (document.getElementById("rpg_universum").value || "").trim();
+    var tags = [];
+    if (RACE_TAG_LABELS[currentRace]) tags.push(RACE_TAG_LABELS[currentRace]);
+    if (universe) tags.push(universe);
+    tagsEl.innerHTML = tags.map(function(t){ return '<span class="np-char-tag">' + escapeAttr(t) + '</span>'; }).join("");
+
+    var attrsEl = document.getElementById("dashCharAttrs");
+    attrsEl.innerHTML = ATTR_TABLE.map(function(a){
+      var val = document.getElementById(a.code + "_gesamt");
+      return '<div class="np-char-attr"><b>' + escapeAttr((val && val.value) || "–") + '</b><span>' + a.code + '</span></div>';
+    }).join("");
+  }
+
+  document.getElementById("sidebarDashboardBtn").addEventListener("click", showDashboard);
+  document.getElementById("dashBrandBtn").addEventListener("click", showDashboard);
+  document.getElementById("attrCrumbDashboard").addEventListener("click", showDashboard);
+  document.getElementById("dashLogoutBtn").addEventListener("click", function(){ logoutBtn.click(); });
+  document.getElementById("dashOpenAttrBtn").addEventListener("click", enterAttrPage);
+  document.getElementById("dashOpenAttrTile").addEventListener("click", enterAttrPage);
+  document.getElementById("attrPageEditBtn").addEventListener("click", function(){ editToggleBtn.click(); });
+  document.getElementById("dashThemeToggle").addEventListener("click", function(){ document.getElementById("themeToggleBtn").click(); });
+  document.getElementById("dashPdfBtn").addEventListener("click", function(){ dlBtn.click(); });
+  document.getElementById("dashProfileBtn").addEventListener("click", function(){ openProfileModal(false); });
+  document.getElementById("landingThemeToggle").addEventListener("click", function(){ document.getElementById("themeToggleBtn").click(); });
+
+  document.querySelectorAll('#dashboardRoot [data-np-open]').forEach(function(el){
+    el.addEventListener("click", function(){
+      var target = el.dataset.npOpen;
+      if (target === "dice") { openRollPanel(); return; }
+      if (target === "worlds") { openUniverses(); return; }
+      if (target === "help") { openHelpModal(); return; }
+      if (target === "chars") { clearUniverseFilter(); openLibrary(); return; }
+      if (target === "feed") { showSheet("kommentare"); return; }
+      if (target === "talente") { showSheet("talente"); return; }
+      if (target === "notizen") { showSheet("notizen"); return; }
+    });
+  });
+
+  document.querySelectorAll('#landingRoot [data-np-goto="auth"]').forEach(function(btn){
+    btn.addEventListener("click", function(){ showTopView("auth"); });
+  });
+  document.getElementById("authBackBtn").addEventListener("click", function(){ showTopView("landing"); });
+  document.getElementById("landingBrandBtn").addEventListener("click", function(){ window.scrollTo({ top: 0, behavior: "smooth" }); });
+  document.querySelectorAll('#landingRoot [data-np-scroll]').forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var target = document.querySelector(btn.dataset.npScroll);
+      if (target) target.scrollIntoView({ behavior: "smooth" });
+    });
+  });
+  [document.getElementById("landingNavToggle"), document.getElementById("dashNavToggle")].forEach(function(toggle){
+    if (!toggle) return;
+    toggle.addEventListener("click", function(){
+      var links = toggle.closest(".np-nav-inner").querySelector(".np-nav-links");
+      var open = links.style.display === "flex";
+      links.style.cssText = open ? "" :
+        "display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:var(--np-surface);padding:12px;border-bottom:1px solid var(--np-border-soft);gap:2px;";
+    });
+  });
+
+  /* ---- Quick Dice auf der Startseite: echt, aber ohne Anmeldung nicht gespeichert ---- */
+  (function initLandingDice(){
+    var typesWrap = document.getElementById("landingDieTypes");
+    var dieBig = document.getElementById("landingDieBig");
+    var dieFace = document.getElementById("landingDieFace");
+    var dieLabel = document.getElementById("landingDieLabel");
+    var rollBtn = document.getElementById("landingRollBtn");
+    var logWrap = document.getElementById("landingRollLog");
+    if (!typesWrap) return;
+    var currentSides = 20;
+    var entries = [];
+
+    typesWrap.addEventListener("click", function(e){
+      var btn = e.target.closest(".np-die-type-btn");
+      if (!btn) return;
+      typesWrap.querySelectorAll(".np-die-type-btn").forEach(function(b){ b.classList.remove("active"); });
+      btn.classList.add("active");
+      currentSides = parseInt(btn.dataset.die, 10);
+      dieFace.textContent = "–";
+      dieLabel.textContent = "W" + currentSides + " · bereit";
+    });
+
+    function renderLog(){
+      if (!entries.length){
+        logWrap.innerHTML = '<div class="np-roll-log-empty">Noch kein Wurf — leg los.</div>';
+        return;
+      }
+      logWrap.innerHTML = entries.slice(0, 5).map(function(e){
+        var crit = (e.val === e.max || e.val === 1) ? " np-crit" : "";
+        return '<div class="np-roll-log-row"><span class="np-roll-log-die">W' + e.max + '</span><span>Ergebnis</span>' +
+          '<span class="np-roll-log-val' + crit + '">' + e.val + '</span></div>';
+      }).join("");
+    }
+
+    rollBtn.addEventListener("click", function(){
+      if (rollBtn.disabled) return;
+      rollBtn.disabled = true;
+      dieBig.classList.add("rolling");
+      var ticks = 0;
+      var iv = setInterval(function(){
+        dieFace.textContent = String(1 + Math.floor(Math.random() * currentSides));
+        ticks++;
+        if (ticks > 7){
+          clearInterval(iv);
+          var result = 1 + Math.floor(Math.random() * currentSides);
+          dieFace.textContent = result;
+          dieBig.classList.remove("rolling");
+          dieLabel.textContent = "W" + currentSides + " · Ergebnis " + result;
+          entries.unshift({ max: currentSides, val: result });
+          renderLog();
+          rollBtn.disabled = false;
+        }
+      }, 55);
+    });
+  })();
 
   /* ===================== Würfeln ===================== */
   var diceFabBtn = document.getElementById("diceFabBtn");
@@ -5128,6 +6149,7 @@
       profileSaveBtn.disabled = false;
       closeProfileModal();
       startPresenceHeartbeat();
+      renderDashboardUser();
     }).catch(function(err){
       profileSaveBtn.disabled = false;
       profileError.textContent = "Speichern fehlgeschlagen: " + (err && err.message ? err.message : err);
@@ -5143,6 +6165,7 @@
       } else {
         sidebarUsernameLabel.textContent = myProfile.username;
         startPresenceHeartbeat();
+        renderDashboardUser();
       }
     }).catch(function(){});
   }
@@ -5629,6 +6652,12 @@
     isEditMode = editing;
     editToggleBtn.textContent = editing ? "✓ Fertig" : "✎ Bearbeiten";
     editToggleBtn.classList.toggle("editing", editing);
+    var mirrorBtn = document.getElementById("attrPageEditBtn");
+    if (mirrorBtn){
+      mirrorBtn.textContent = editing ? "✓ Fertig" : "✎ Bearbeiten";
+      mirrorBtn.classList.toggle("np-btn-primary", editing);
+      mirrorBtn.classList.toggle("np-btn-ghost", !editing);
+    }
     document.body.classList.toggle("is-editing", editing);
     applyEditModeToDom();
   }
