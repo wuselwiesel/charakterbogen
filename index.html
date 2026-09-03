@@ -1841,6 +1841,11 @@
     font-size: 10px; font-weight: 800; line-height: 16px; text-align: center;
     box-shadow: 0 0 0 2px var(--np-surface);
   }
+  /* ---- Glückspunkte-Badge & Online-Anzeige (immer in der Kopfleiste sichtbar) ---- */
+  .np-luck-badge { width: auto; padding: 0 11px; gap: 3px; font-size: 13px; font-weight: 700; color: var(--np-ink); border-radius: 999px; }
+  .np-online-row { display: flex; align-items: center; gap: 8px; padding: 8px 10px; font-size: 13px; color: var(--np-ink); border-radius: 10px; }
+  .np-online-dot { width: 7px; height: 7px; border-radius: 50%; background: #3FAE63; flex-shrink: 0; }
+  .np-online-empty { padding: 16px 10px; text-align: center; color: var(--np-ink-faint); font-size: 13px; }
 
   /* ---- Benachrichtigungs-Dropdown (unter der Glocke) ---- */
   .np-notif-panel {
@@ -2830,6 +2835,8 @@
   <div class="sheet-view-bar" id="sheetViewBar">
     <button type="button" id="sheetViewBackBtn">← Zurück zur Bibliothek</button>
     <span class="sheet-view-title" id="sheetViewTitle"></span>
+    <button type="button" class="np-theme-toggle np-luck-badge" data-np-luck-badge title="Glückspunkte" aria-label="Glückspunkte">🍀 <span class="np-luck-frac">0/0</span></button>
+    <button type="button" class="np-theme-toggle np-notif-bell" data-np-online-btn title="Online-Spieler" aria-label="Online-Spieler"><svg class="people-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M9 13c-4 0-7 2.5-7 6v1h14v-1c0-3.5-3-6-7-6z"/><circle cx="17" cy="8" r="3"/><path d="M17 13c-1 0-2 .15-2.85.55C15.9 15 17 17 17 19.2V20h6v-1c0-3-2.7-6-6-6z"/></svg><span class="np-notif-badge np-online-count">0</span></button>
     <button type="button" id="sheetViewDlBtn" class="sheet-view-dl-btn" title="Als PDF herunterladen" aria-label="Als PDF herunterladen">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
     </button>
@@ -2852,6 +2859,8 @@
           <button type="button" data-np-open="help">Hilfe</button>
         </div>
         <div class="np-nav-cta">
+          <button type="button" class="np-theme-toggle np-luck-badge" data-np-luck-badge title="Glückspunkte" aria-label="Glückspunkte">🍀 <span class="np-luck-frac">0/0</span></button>
+          <button type="button" class="np-theme-toggle np-notif-bell" data-np-online-btn title="Online-Spieler" aria-label="Online-Spieler"><svg class="people-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M9 13c-4 0-7 2.5-7 6v1h14v-1c0-3.5-3-6-7-6z"/><circle cx="17" cy="8" r="3"/><path d="M17 13c-1 0-2 .15-2.85.55C15.9 15 17 17 17 19.2V20h6v-1c0-3-2.7-6-6-6z"/></svg><span class="np-notif-badge np-online-count">0</span></button>
           <button type="button" class="np-theme-toggle np-notif-bell" data-np-notif-bell title="Benachrichtigungen" aria-label="Benachrichtigungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="np-notif-badge" hidden>0</span></button>
           <button type="button" class="np-theme-toggle" data-np-pdf title="Als PDF herunterladen" aria-label="Als PDF herunterladen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
           <button type="button" class="np-theme-toggle" data-np-theme-toggle title="Dunkles Design" aria-label="Design umschalten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -2992,6 +3001,8 @@
             <button type="button" data-np-open="help">Hilfe</button>
           </div>
           <div class="np-nav-cta">
+            <button type="button" class="np-theme-toggle np-luck-badge" data-np-luck-badge title="Glückspunkte" aria-label="Glückspunkte">🍀 <span class="np-luck-frac">0/0</span></button>
+            <button type="button" class="np-theme-toggle np-notif-bell" data-np-online-btn title="Online-Spieler" aria-label="Online-Spieler"><svg class="people-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M9 13c-4 0-7 2.5-7 6v1h14v-1c0-3.5-3-6-7-6z"/><circle cx="17" cy="8" r="3"/><path d="M17 13c-1 0-2 .15-2.85.55C15.9 15 17 17 17 19.2V20h6v-1c0-3-2.7-6-6-6z"/></svg><span class="np-notif-badge np-online-count">0</span></button>
             <button type="button" class="np-theme-toggle np-notif-bell" data-np-notif-bell title="Benachrichtigungen" aria-label="Benachrichtigungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="np-notif-badge" hidden>0</span></button>
           <button type="button" class="np-theme-toggle" data-np-pdf title="Als PDF herunterladen" aria-label="Als PDF herunterladen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
             <button type="button" class="np-theme-toggle" data-np-theme-toggle title="Dunkles Design" aria-label="Design umschalten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -3246,6 +3257,7 @@
 
   <div class="dl-status" id="dlStatus"></div>
   <div class="np-notif-panel" id="notifPanel"></div>
+  <div class="np-notif-panel" id="onlineDropdown"></div>
 
   <button type="button" class="dice-fab" id="diceFabBtn" title="Würfeln" aria-label="Würfeln">🎲</button>
 
@@ -4320,6 +4332,23 @@
       }).join("");
   }
 
+  var onlineDropdownEl = document.getElementById("onlineDropdown");
+  function closeOnlineDropdown(){ onlineDropdownEl.classList.remove("show"); }
+  function positionOnlineDropdown(anchorEl){
+    var r = anchorEl.getBoundingClientRect();
+    var w = 260;
+    var left = Math.min(r.left, window.innerWidth - w - 12);
+    left = Math.max(12, left);
+    onlineDropdownEl.style.left = left + "px";
+    onlineDropdownEl.style.top = (r.bottom + 8) + "px";
+  }
+  function toggleOnlineDropdown(anchorEl){
+    if (onlineDropdownEl.classList.contains("show")){ closeOnlineDropdown(); return; }
+    renderOnlineList();
+    positionOnlineDropdown(anchorEl);
+    onlineDropdownEl.classList.add("show");
+  }
+
   function toggleNotifPanel(anchorEl){
     if (notifPanelEl.classList.contains("show")){ closeNotifPanel(); return; }
     renderNotifPanel();
@@ -4329,7 +4358,7 @@
   }
 
   window.addEventListener("resize", closeNotifPanel);
-  document.addEventListener("keydown", function(e){ if (e.key === "Escape") { closeNotifPanel(); closeQuickRollPopup(); } });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape") { closeNotifPanel(); closeOnlineDropdown(); closeQuickRollPopup(); } });
 
   /* ===================== Status-Toast ===================== */
   var statusEl = document.getElementById("dlStatus");
@@ -6179,7 +6208,10 @@
 
     var attrsEl = document.getElementById("dashCharAttrs");
     attrsEl.innerHTML = ATTR_TABLE.map(function(a){
-      var val = document.getElementById(a.code + "_gesamt");
+      /* Glück hat keinen Gesamtwert (nur Basiswert -> Glückspunkte, siehe Hilfe) - dort
+         bliebe die Karte sonst immer leer ("-"). */
+      var fieldId = a.code + (a.code === "GL" ? "_basis" : "_gesamt");
+      var val = document.getElementById(fieldId);
       return '<div class="np-char-attr"><b>' + escapeAttr((val && val.value) || "–") + '</b><span>' + a.code + '</span></div>';
     }).join("");
   }
@@ -6208,6 +6240,9 @@
     if (notifPanelEl.classList.contains("show") && !e.target.closest(".np-notif-panel") && !e.target.closest("[data-np-notif-bell]")){
       closeNotifPanel();
     }
+    if (onlineDropdownEl.classList.contains("show") && !e.target.closest("#onlineDropdown") && !e.target.closest("[data-np-online-btn]")){
+      closeOnlineDropdown();
+    }
     var notifItem = e.target.closest(".np-notif-item");
     if (notifItem){
       closeNotifPanel();
@@ -6233,6 +6268,13 @@
     if (e.target.closest("[data-np-pdf]")) { dlBtn.click(); return; }
     var notifBell = e.target.closest("[data-np-notif-bell]");
     if (notifBell) { toggleNotifPanel(notifBell); return; }
+    var onlineNavBtn = e.target.closest("[data-np-online-btn]");
+    if (onlineNavBtn) { toggleOnlineDropdown(onlineNavBtn); return; }
+    if (e.target.closest("[data-np-luck-badge]")){
+      var n = getLuckPointsAvailable();
+      showStatus(n + " Glückspunkt" + (n === 1 ? "" : "e") + " verfügbar");
+      return;
+    }
     if (e.target.closest("[data-np-profile]")) { openProfileModal(false); return; }
     if (e.target.closest("[data-np-logout]")) { logoutBtn.click(); return; }
     var navToggle = e.target.closest("[data-np-nav-toggle]");
@@ -6336,6 +6378,9 @@
   function updateLuckDisplay(){
     var badge = document.getElementById("luckBadgeTop");
     if (badge) badge.textContent = "🍀 " + getLuckPointsAvailable() + "/" + getLuckPointsTotal();
+    document.querySelectorAll(".np-luck-frac").forEach(function(el){
+      el.textContent = getLuckPointsAvailable() + "/" + getLuckPointsTotal();
+    });
     if (!luckAvailableDisplay) return;
     luckTotalDisplay.textContent = getLuckPointsTotal();
     luckAvailableDisplay.textContent = getLuckPointsAvailable();
@@ -6834,17 +6879,28 @@
       if (now - entry.lastSeen < ONLINE_THRESHOLD_MS) names.push(entry.nickname);
     });
     document.getElementById("onlineCount").textContent = names.length;
+    document.querySelectorAll(".np-online-count").forEach(function(el){ el.textContent = String(names.length); });
     onlineList.innerHTML = "";
     if (!names.length){
       onlineList.innerHTML = '<div class="online-empty">Niemand sonst online.</div>';
-      return;
+    } else {
+      names.forEach(function(name){
+        var row = document.createElement("div");
+        row.className = "online-item";
+        row.innerHTML = '<span class="dot"></span><span>' + escapeAttr(name) + '</span>';
+        onlineList.appendChild(row);
+      });
     }
-    names.forEach(function(name){
-      var row = document.createElement("div");
-      row.className = "online-item";
-      row.innerHTML = '<span class="dot"></span><span>' + escapeAttr(name) + '</span>';
-      onlineList.appendChild(row);
-    });
+    /* Dropdown fuer die neuen Kopfleisten-Instanzen (dieselben Daten wie onlineList oben,
+       nur mit dark-mode-faehigen np-Tokens statt der immer-hellen .online-item-Farben). */
+    if (onlineDropdownEl){
+      onlineDropdownEl.innerHTML = '<div class="np-notif-panel-head">Online</div>' +
+        (names.length
+          ? names.map(function(name){
+              return '<div class="np-online-row"><span class="np-online-dot"></span>' + escapeAttr(name) + '</div>';
+            }).join("")
+          : '<div class="np-notif-empty">Niemand sonst online.</div>');
+    }
   }
   setInterval(renderOnlineList, 15000);
 
