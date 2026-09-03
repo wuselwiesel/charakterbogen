@@ -2147,7 +2147,11 @@
   }
   :is(body.feature-page-mode, body.sheet-view-mode) .note-box { background: var(--np-primary-soft); color: var(--np-primary-text); border: none; border-radius: 12px; }
   :is(body.feature-page-mode, body.sheet-view-mode) .race-row select:not(:disabled) { border-color: var(--np-border); }
-  :is(body.feature-page-mode, body.sheet-view-mode) .talent-row .attr-name .code { color: var(--np-ink); }
+  /* .code/.name faerben sich sonst nie um (var(--text)/var(--muted), immer fuer's helle
+     Papier gedacht) - auf der migrierten dunklen Flaeche wurden Attribut-Kuerzel und -Namen
+     dadurch unsichtbar bzw. sehr kontrastarm. Gilt fuer Attribut- UND Talent-Zeilen. */
+  :is(body.feature-page-mode, body.sheet-view-mode) .attr-row .attr-name .code { color: var(--np-ink); }
+  :is(body.feature-page-mode, body.sheet-view-mode) .attr-row .attr-name .name { color: var(--np-ink-faint); }
   /* .row-alt nutzt sonst --row-light (immer hell, nicht themenfaehig) - im Dunkelmodus
      landete damit heller Text auf hellem Grund. Auf der migrierten Seite stattdessen
      eine np-Flaeche verwenden, die mit dem Text mitwechselt. */
