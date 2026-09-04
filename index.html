@@ -2124,6 +2124,18 @@
       background: var(--np-surface); cursor: pointer; flex-shrink: 0;
     }
     .np-nav-cta .np-btn-ghost { display: none; }
+    /* App-Kopfleiste (Dashboard/Feature-Seiten) hat inzwischen 6 Icons - die passen nicht
+       mehr in eine Zeile neben Logo + Menu-Button und liefen bisher seitlich aus dem
+       Viewport heraus (die ganze Seite wurde dadurch breiter als der Bildschirm). Bricht
+       jetzt rechtsbuendig in eine zweite Zeile um, statt etwas zu verstecken. */
+    .np-nav-inner { flex-wrap: wrap; row-gap: 10px; }
+    .np-nav-cta { flex: 1 1 100%; flex-wrap: wrap; justify-content: flex-end; order: 3; row-gap: 8px; }
+    .np-nav-toggle { order: 2; }
+    .np-user-chip .np-user-name { display: none; }
+    /* Vollansicht-Kopfleiste: Titel darf schrumpfen (sonst kein Platz fuer die Icons),
+       die drei Icon-Buttons brechen bei Bedarf in eine zweite Zeile um. */
+    .sheet-view-bar { flex-wrap: wrap; row-gap: 8px; }
+    .sheet-view-title { flex: 1 1 auto; min-width: 0; }
   }
 
   /* ---- Login/Registrieren im neuen Stil (Restyle des bestehenden #authGate) ---- */
