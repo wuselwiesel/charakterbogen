@@ -1609,6 +1609,9 @@
     display: none; z-index: 60;
   }
   .online-panel.show { display: block; }
+  .share-panel { min-width: 260px; max-width: 300px; }
+  .share-link-row:not([hidden]) { display: flex; gap: 6px; margin-top: 10px; }
+  .share-link-row input { flex: 1; min-width: 0; font-size: 12px; }
   .online-panel-head { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
   .online-list { display: flex; flex-direction: column; gap: 5px; max-height: 180px; overflow-y: auto; }
   .online-item { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--text); }
@@ -3046,6 +3049,24 @@
           <h1 class="np-dash-title" style="margin-bottom:0;" id="featurePageTitle">Attributwerte</h1>
           <div style="display:flex;align-items:center;gap:14px;" id="featurePageEditWrap">
             <span class="save-indicator" id="featurePageSaveIndicator"></span>
+            <div class="online-wrap">
+              <button type="button" class="np-btn np-btn-ghost" id="shareBtn" title="Für Chronik freigeben">🔗 Freigeben</button>
+              <div class="online-panel share-panel" id="sharePanel">
+                <div class="online-panel-head">Für Chronik freigeben</div>
+                <p class="profile-setting-hint" id="shareHint" style="margin:0 0 8px;"></p>
+                <div class="profile-setting-row">
+                  <div>
+                    <span class="profile-setting-label">Öffentlich lesbar</span>
+                    <p class="profile-setting-hint">Schreibgeschützte Ansicht in Chronik, ohne Login.</p>
+                  </div>
+                  <button type="button" class="np-switch" id="shareToggle" role="switch" aria-checked="false"><span class="np-switch-knob"></span></button>
+                </div>
+                <div class="share-link-row" id="shareLinkRow" hidden>
+                  <input type="text" id="shareLinkInput" readonly>
+                  <button type="button" class="np-btn np-btn-ghost" id="shareCopyBtn">Kopieren</button>
+                </div>
+              </div>
+            </div>
             <button type="button" class="np-btn np-btn-ghost" id="featurePageEditBtn">✎ Bearbeiten</button>
           </div>
         </div>
@@ -7394,6 +7415,69 @@
       setEditMode(false);
     } else {
       setEditMode(true);
+    }
+  });
+
+  /* ===================== Freigabe für Chronik (öffentlich lesbarer Link) ===================== */
+  var shareBtn = document.getElementById("shareBtn");
+  var sharePanel = document.getElementById("sharePanel");
+  var shareHint = document.getElementById("shareHint");
+  var shareToggle = document.getElementById("shareToggle");
+  var shareLinkRow = document.getElementById("shareLinkRow");
+  var shareLinkInput = document.getElementById("shareLinkInput");
+  var shareCopyBtn = document.getElementById("shareCopyBtn");
+
+  function buildShareUrl(){
+    return location.origin + location.pathname + "?public=" + currentUser.uid + "." + activeCharacterId;
+  }
+
+  function refreshSharePanel(){
+    if (!activeCharacterId){
+      shareHint.textContent = "Wähle zuerst einen Charakter aus.";
+      shareToggle.style.display = "none";
+      shareLinkRow.hidden = true;
+      return;
+    }
+    shareHint.textContent = "";
+    shareToggle.style.display = "";
+    charsColRef().doc(activeCharacterId).get().then(function(snap){
+      var isPublic = !!(snap.exists && snap.data().public);
+      shareToggle.setAttribute("aria-checked", String(isPublic));
+      shareLinkRow.hidden = !isPublic;
+      if (isPublic) shareLinkInput.value = buildShareUrl();
+    });
+  }
+
+  shareBtn.addEventListener("click", function(){
+    var willShow = !sharePanel.classList.contains("show");
+    sharePanel.classList.toggle("show", willShow);
+    if (willShow) refreshSharePanel();
+  });
+
+  shareToggle.addEventListener("click", function(){
+    if (!activeCharacterId) return;
+    var next = shareToggle.getAttribute("aria-checked") !== "true";
+    charsColRef().doc(activeCharacterId).set({ public: next }, { merge: true }).then(function(){
+      shareToggle.setAttribute("aria-checked", String(next));
+      shareLinkRow.hidden = !next;
+      if (next) shareLinkInput.value = buildShareUrl();
+    });
+  });
+
+  shareCopyBtn.addEventListener("click", function(){
+    shareLinkInput.select();
+    if (navigator.clipboard){
+      navigator.clipboard.writeText(shareLinkInput.value).then(function(){
+        var original = shareCopyBtn.textContent;
+        shareCopyBtn.textContent = "Kopiert!";
+        setTimeout(function(){ shareCopyBtn.textContent = original; }, 1500);
+      });
+    }
+  });
+
+  document.addEventListener("click", function(e){
+    if (!sharePanel.contains(e.target) && e.target !== shareBtn){
+      sharePanel.classList.remove("show");
     }
   });
 
