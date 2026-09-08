@@ -1602,14 +1602,17 @@
   /* ===== Online-Anzeige ===== */
   .online-wrap { position: relative; }
   .online-panel {
-    position: absolute; top: calc(100% + 6px); right: 0;
-    min-width: 170px; max-width: 240px;
+    /* position:fixed statt absolute + JS-berechnete, viewport-geklemmte Position (siehe
+       positionOnlinePanel) - der Button kann je nach Umbruch der Kopfzeile ueberall stehen,
+       ein rein CSS-verankertes "right:0" lief auf schmalen Bildschirmen aus dem Bild. */
+    position: fixed;
+    min-width: 170px; max-width: min(240px, calc(100vw - 24px));
     background: var(--paper); border: 1px solid var(--border);
     border-radius: 12px; box-shadow: var(--shadow-md); padding: 10px 12px;
-    display: none; z-index: 60;
+    display: none; z-index: 190;
   }
   .online-panel.show { display: block; }
-  .share-panel { min-width: 260px; max-width: 300px; }
+  .share-panel { min-width: 260px; max-width: min(300px, calc(100vw - 24px)); }
   .share-link-row:not([hidden]) { display: flex; gap: 6px; margin-top: 10px; }
   .share-link-row input { flex: 1; min-width: 0; font-size: 12px; }
   .online-panel-head { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
@@ -3050,14 +3053,14 @@
           <div style="display:flex;align-items:center;gap:14px;" id="featurePageEditWrap">
             <span class="save-indicator" id="featurePageSaveIndicator"></span>
             <div class="online-wrap">
-              <button type="button" class="np-btn np-btn-ghost" id="shareBtn" title="Für Chronik freigeben">🔗 Freigeben</button>
+              <button type="button" class="np-btn np-btn-ghost" id="shareBtn" title="Für Wortwinkel freigeben">🔗 Freigeben</button>
               <div class="online-panel share-panel" id="sharePanel">
-                <div class="online-panel-head">Für Chronik freigeben</div>
+                <div class="online-panel-head">Für Wortwinkel freigeben</div>
                 <p class="profile-setting-hint" id="shareHint" style="margin:0 0 8px;"></p>
                 <div class="profile-setting-row">
                   <div>
                     <span class="profile-setting-label">Öffentlich lesbar</span>
-                    <p class="profile-setting-hint">Schreibgeschützte Ansicht in Chronik, ohne Login.</p>
+                    <p class="profile-setting-hint">Schreibgeschützte Ansicht in Wortwinkel, ohne Login.</p>
                   </div>
                   <button type="button" class="np-switch" id="shareToggle" role="switch" aria-checked="false"><span class="np-switch-knob"></span></button>
                 </div>
@@ -4332,6 +4335,18 @@
   }
 
   function closeNotifPanel(){ notifPanelEl.classList.remove("show"); }
+
+  /* Gemeinsame Positionierung fuer .online-panel-artige Popover (Online-Liste, Freigeben-Panel):
+     rechtsbuendig unter dem Anker, aber an den tatsaechlichen Viewport geklemmt statt blind
+     CSS right:0 zu vertrauen - der Anker kann je nach Kopfzeilen-Umbruch ueberall stehen. */
+  function positionFixedPanel(panelEl, anchorEl){
+    var r = anchorEl.getBoundingClientRect();
+    var w = panelEl.getBoundingClientRect().width || 260;
+    var left = Math.min(r.right - w, window.innerWidth - w - 12);
+    left = Math.max(12, left);
+    panelEl.style.left = left + "px";
+    panelEl.style.top = (r.bottom + 6) + "px";
+  }
 
   function positionNotifPanel(anchorEl){
     var r = anchorEl.getBoundingClientRect();
@@ -6875,7 +6890,9 @@
 
   onlineBtn.addEventListener("click", function(e){
     e.stopPropagation();
-    onlinePanel.classList.toggle("show");
+    var willShow = !onlinePanel.classList.contains("show");
+    onlinePanel.classList.toggle("show", willShow);
+    if (willShow) positionFixedPanel(onlinePanel, onlineBtn);
   });
   document.addEventListener("click", function(e){
     if (!onlinePanel.contains(e.target) && e.target !== onlineBtn){
@@ -7418,7 +7435,7 @@
     }
   });
 
-  /* ===================== Freigabe für Chronik (öffentlich lesbarer Link) ===================== */
+  /* ===================== Freigabe für Wortwinkel (öffentlich lesbarer Link) ===================== */
   var shareBtn = document.getElementById("shareBtn");
   var sharePanel = document.getElementById("sharePanel");
   var shareHint = document.getElementById("shareHint");
@@ -7451,7 +7468,11 @@
   shareBtn.addEventListener("click", function(){
     var willShow = !sharePanel.classList.contains("show");
     sharePanel.classList.toggle("show", willShow);
-    if (willShow) refreshSharePanel();
+    if (willShow) { positionFixedPanel(sharePanel, shareBtn); refreshSharePanel(); }
+  });
+  window.addEventListener("resize", function(){
+    if (sharePanel.classList.contains("show")) positionFixedPanel(sharePanel, shareBtn);
+    if (onlinePanel.classList.contains("show")) positionFixedPanel(onlinePanel, onlineBtn);
   });
 
   shareToggle.addEventListener("click", function(){
