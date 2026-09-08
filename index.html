@@ -1622,7 +1622,7 @@
   .online-empty { font-size: 12px; color: var(--muted); }
   .luck-badge-wrap { position: relative; }
   .luck-badge-panel {
-    position: absolute; top: calc(100% + 6px); right: 0;
+    position: fixed;
     min-width: 170px; white-space: nowrap;
     background: var(--paper); border: 1px solid var(--border);
     border-radius: 12px; box-shadow: var(--shadow-md); padding: 10px 12px;
@@ -6442,7 +6442,9 @@
     e.stopPropagation();
     var n = getLuckPointsAvailable();
     luckBadgePanel.textContent = n + " Glückspunkt" + (n === 1 ? "" : "e") + " verfügbar";
-    luckBadgePanel.classList.toggle("show");
+    var willShow = !luckBadgePanel.classList.contains("show");
+    luckBadgePanel.classList.toggle("show", willShow);
+    if (willShow) positionFixedPanel(luckBadgePanel, document.getElementById("luckBadgeTop"));
   });
   document.addEventListener("click", function(e){
     if (!luckBadgePanel.contains(e.target) && e.target !== document.getElementById("luckBadgeTop")){
