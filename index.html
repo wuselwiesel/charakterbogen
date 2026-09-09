@@ -1561,6 +1561,17 @@
   .np-switch[aria-checked="true"] .np-switch-knob { transform: translateX(18px); }
   .np-switch:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 2px; }
 
+  /* ---- Farbpaletten-Auswahl (Profil-Einstellungen) ---- */
+  .np-palette-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 2px 0 18px; }
+  .np-palette-swatch {
+    width: 34px; height: 34px; border-radius: 50%; border: 2px solid transparent;
+    cursor: pointer; padding: 3px; background-clip: content-box;
+    box-shadow: 0 0 0 1px var(--border); transition: transform .15s var(--np-ease), box-shadow .15s var(--np-ease);
+  }
+  .np-palette-swatch:hover { transform: scale(1.08); }
+  .np-palette-swatch.active { border-color: var(--text); box-shadow: 0 0 0 1px var(--text); }
+  .np-palette-swatch:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 2px; }
+
   .help-panel {
     width: 100%; max-width: 720px; background: var(--paper);
     border-radius: 20px; box-shadow: var(--shadow-lg); padding: 26px 28px 34px;
@@ -2751,6 +2762,11 @@
         </div>
         <button type="button" class="np-switch" id="diceFabToggle" role="switch" aria-checked="true"><span class="np-switch-knob"></span></button>
       </div>
+      <div>
+        <span class="profile-setting-label">Farbschema</span>
+        <p class="profile-setting-hint" style="margin:2px 0 8px;">Wirkt sofort, auf jeder Seite.</p>
+        <div class="np-palette-row" id="paletteRow"></div>
+      </div>
       <div class="profile-error" id="profileError"></div>
       <button type="button" class="roll-btn" id="profileSaveBtn">Speichern</button>
       <button type="button" class="profile-skip" id="profileCloseBtn" hidden>Schließen</button>
@@ -3381,6 +3397,73 @@
     try { stored = localStorage.getItem(THEME_KEY); } catch (e) {}
     if (stored === "dark" || stored === "light") document.documentElement.setAttribute("data-theme", stored);
     updateThemeToggleLabel();
+  })();
+
+  /* ===================== Farbpalette (Akzentfarbe) =====================
+     Aendert nur die markenfarbe-tragenden Variablen (accent/np-primary/np-accent-Familie) -
+     die sind bereits hell/dunkel-unabhaengig (siehe :root vs. [data-theme="dark"] weiter oben),
+     eine Palette gilt also unveraendert in beiden Themes. Hintergrund-/Text-/Rahmenfarben
+     bleiben bewusst unangetastet, damit Kontrast und Lesbarkeit ueberall erhalten bleiben. */
+  var PALETTE_KEY = "charakterbogen:palette";
+  var PALETTES = {
+    flieder: {
+      label: "Flieder", swatch: "#7A5AA6",
+      "accent": "#7A5AA6", "accent-strong": "#5E3E8C",
+      "np-primary": "#6C4FD6", "np-primary-strong": "#4E35A8", "np-primary-soft": "#EFE9FC", "np-primary-text": "#4E35A8",
+      "np-accent": "#E0952B", "np-accent-soft": "#FBEBD2", "np-accent-strong": "#B9761A", "np-accent-text": "#B9761A"
+    },
+    ozean: {
+      label: "Ozean", swatch: "#1E9AA6",
+      "accent": "#2F8C93", "accent-strong": "#1F6E74",
+      "np-primary": "#1E9AA6", "np-primary-strong": "#146E77", "np-primary-soft": "#E1F4F5", "np-primary-text": "#146E77",
+      "np-accent": "#E0785A", "np-accent-soft": "#FBE4DC", "np-accent-strong": "#B85838", "np-accent-text": "#B85838"
+    },
+    bordeaux: {
+      label: "Bordeaux", swatch: "#A13456",
+      "accent": "#8C3B52", "accent-strong": "#6B2B3E",
+      "np-primary": "#A13456", "np-primary-strong": "#7A2540", "np-primary-soft": "#FBE7EC", "np-primary-text": "#7A2540",
+      "np-accent": "#D9678A", "np-accent-soft": "#FAE1E9", "np-accent-strong": "#B03F63", "np-accent-text": "#B03F63"
+    },
+    wald: {
+      label: "Wald", swatch: "#4F8F58",
+      "accent": "#4C7A52", "accent-strong": "#365A3B",
+      "np-primary": "#4F8F58", "np-primary-strong": "#356339", "np-primary-soft": "#E5F3E6", "np-primary-text": "#356339",
+      "np-accent": "#E0876B", "np-accent-soft": "#FBE6DE", "np-accent-strong": "#B85F45", "np-accent-text": "#B85F45"
+    },
+    sonnenuntergang: {
+      label: "Sonnenuntergang", swatch: "#E37D4A",
+      "accent": "#D9724F", "accent-strong": "#B0532F",
+      "np-primary": "#E37D4A", "np-primary-strong": "#B85A2A", "np-primary-soft": "#FCEADB", "np-primary-text": "#B85A2A",
+      "np-accent": "#2E9BA0", "np-accent-soft": "#DFF3F4", "np-accent-strong": "#1F7275", "np-accent-text": "#1F7275"
+    },
+    daemmerung: {
+      label: "Dämmerung", swatch: "#5F76A8",
+      "accent": "#5C6E96", "accent-strong": "#43516F",
+      "np-primary": "#5F76A8", "np-primary-strong": "#435577", "np-primary-soft": "#E8ECF6", "np-primary-text": "#435577",
+      "np-accent": "#C98A93", "np-accent-soft": "#F7E6E8", "np-accent-strong": "#A15E68", "np-accent-text": "#A15E68"
+    }
+  };
+  function applyPalette(name){
+    var p = PALETTES[name] || PALETTES.flieder;
+    Object.keys(p).forEach(function(k){
+      if (k === "label" || k === "swatch") return;
+      document.documentElement.style.setProperty("--" + k, p[k]);
+    });
+    currentPaletteName = PALETTES[name] ? name : "flieder";
+    document.querySelectorAll(".np-palette-swatch").forEach(function(el){
+      el.classList.toggle("active", el.dataset.palette === currentPaletteName);
+    });
+  }
+  var currentPaletteName = "flieder";
+  function setPalette(name){
+    if (!PALETTES[name]) name = "flieder";
+    try { localStorage.setItem(PALETTE_KEY, name); } catch(e){}
+    applyPalette(name);
+  }
+  (function initPalette(){
+    var stored = "flieder";
+    try { stored = localStorage.getItem(PALETTE_KEY) || "flieder"; } catch(e){}
+    applyPalette(stored);
   })();
 
   /* ===================== Daten ===================== */
@@ -6794,6 +6877,25 @@
     setDiceFabEnabled(next);
   });
   diceFabBtn.hidden = !isDiceFabEnabled();
+
+  var paletteRow = document.getElementById("paletteRow");
+  Object.keys(PALETTES).forEach(function(key){
+    var p = PALETTES[key];
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "np-palette-swatch";
+    btn.dataset.palette = key;
+    btn.title = p.label;
+    btn.setAttribute("aria-label", p.label);
+    btn.style.background = p.swatch;
+    if (key === currentPaletteName) btn.classList.add("active");
+    paletteRow.appendChild(btn);
+  });
+  paletteRow.addEventListener("click", function(e){
+    var swatch = e.target.closest(".np-palette-swatch");
+    if (!swatch) return;
+    setPalette(swatch.dataset.palette);
+  });
 
   profileCloseBtn.addEventListener("click", closeProfileModal);
   profileEditBtn.addEventListener("click", function(){ openProfileModal(false); });
