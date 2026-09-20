@@ -2,7 +2,12 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FBFAFE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121020" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Charakterbogen</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2375,6 +2380,151 @@
     background: var(--np-surface-2) !important; border-color: var(--np-border-soft); color: var(--np-ink);
   }
   :is(body.feature-page-mode, body.sheet-view-mode) .legend-row { background: var(--np-surface) !important; }
+
+  /* ===================================================================
+     MOBILE-APP-FEEL (<=760px): lesbar ohne Zoomen, Touch-Targets, Safe-Areas.
+     Steht bewusst am Ende, damit es aeltere Einzelregeln gleicher Spezifitaet schlaegt.
+     =================================================================== */
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  html, body { overscroll-behavior-y: none; }
+  button, a, label, summary, [role="button"], input[type="checkbox"], input[type="range"], select { touch-action: manipulation; }
+  @media (max-width: 760px) {
+    * { -webkit-tap-highlight-color: transparent; }
+    body { -webkit-touch-callout: none; }
+    input, textarea, .rte-editor, [contenteditable="true"] { -webkit-touch-callout: default; }
+    button { -webkit-user-select: none; user-select: none; }
+    /* Eingaben mit >=16px: iOS zoomt sonst beim Fokussieren automatisch hinein */
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+    select, textarea, .rte-editor, .rte-toolbar select.rte-font-family, .rte-toolbar select.rte-font-size,
+    .attr-row input, .lib-sort select, .share-link-row input, .custom-field-row input.custom-label-input,
+    .post-comment-input { font-size: 16px; }
+    .attr-row input { padding-top: 8px; padding-bottom: 8px; }
+    /* Lesbare Mindestgroesse 13.5px */
+    .sidebar-user,
+    .sidebar-footer-btn,
+    .field-row label,
+    .custom-field-row input.custom-label-input,
+    .hint,
+    .dropzone .dz-sub,
+    .attr-head,
+    .race-hint,
+    .attr-tooltip,
+    .diff-head,
+    .legend-head,
+    .legend-row .desc-cell .d2,
+    .rte-toolbar button,
+    .rte-img-resize-pop,
+    .rte-toolbar select.rte-font-family, .rte-toolbar select.rte-font-size,
+    .dl-status,
+    .attr-row.talent-row .attr-name .code,
+    .rollpage-detail,
+    .auth-forgot,
+    .auth-error,
+    .user-bar,
+    .user-bar button,
+    .edit-toggle-btn,
+    .luck-badge-top,
+    body:not(.is-editing) .field-row label,
+    .lib-actions button,
+    .lib-meta,
+    .lib-card-actions button,
+    .uni-count,
+    .uni-actions button,
+    .lib-context,
+    .lib-context button,
+    .roll-field label,
+    .roll-tab,
+    .roll-diff-presets button,
+    .roll-hint,
+    .roll-die-caption,
+    .roll-luck-row,
+    .roll-luck-row button,
+    .roll-panel-history-head,
+    .roll-panel-history-list .rollpage-title,
+    .roll-panel-history-list .rollpage-detail,
+    .roll-panel-history-list .lib-empty,
+    .rh-tag,
+    .profile-sub,
+    .profile-avatar-remove,
+    .profile-error,
+    .profile-skip,
+    .info-tooltip,
+    .profile-setting-hint,
+    .help-example,
+    .help-talent-table,
+    .help-talent-table .htt-head,
+    .share-link-row input,
+    .online-panel-head,
+    .online-item,
+    .online-empty,
+    .luck-badge-panel,
+    .rh-player,
+    .lib-sort,
+    .lib-sort select,
+    .lib-group-header,
+    .rollpage-clear-btn,
+    .rollpage-detail,
+    .rollpage-time,
+    .post-time,
+    .post-comment-toggle,
+    .post-like,
+    .post-comment-entry,
+    .post-comment-entry .comment-delete,
+    .post-comment-input,
+    .post-comment-send,
+    .np-user-chip span,
+    .np-user-chip button,
+    .np-notif-panel-head,
+    .np-notif-item-sub,
+    .np-eyebrow,
+    .np-hero-stat span,
+    .np-section-eyebrow,
+    .np-bento-desc,
+    .np-dice-chip,
+    .np-system-list li,
+    .np-die-label,
+    .np-char-talent-chip,
+    .np-world-card p,
+    .np-feed-post-time,
+    .np-feed-stat,
+    .np-presence-label,
+    .np-footer-inner,
+    .auth-back-link,
+    .np-page-head-row .save-indicator { font-size: 13.5px; }
+    /* Lesbare Mindestgroesse 12px */
+    .attr-row .attr-name .name,
+    .legend-row .code-cell .name,
+    .attr-row .attr-name .name, .attr-head,
+    .roll-panel-history-list .rh-tag,
+    .roll-panel-history-list .rollpage-time,
+    .rh-luck-tag,
+    .np-char-tag,
+    .np-char-attr span,
+    .np-mini-table-head { font-size: 12px; }
+    /* Touch-Targets >= 40px */
+    .user-bar button, .lib-actions button, .lib-card-actions button, .uni-actions button, .roll-tab,
+    .roll-diff-presets button, .roll-luck-row button, .post-like, .post-comment-toggle, .post-comment-send,
+    .rte-toolbar button, .edit-toggle-btn, .sidebar-footer-btn, .np-user-chip button, .rollpage-clear-btn,
+    .lib-context button, .np-theme-toggle { min-height: 40px; }
+    .np-btn, .roll-btn { min-height: 46px; }
+    /* Hover-Effekte, die auf Touch haengen bleiben, durch Tap-Feedback ersetzen */
+    .np-btn:active, .roll-btn:active, .lib-card:active, .np-bento-card:active, .np-dash-mini-card:active { transform: scale(0.98); transition-duration: .08s; }
+    /* Feste Elemente respektieren Notch / Home-Indikator */
+    .sidebar-toggle { top: calc(14px + env(safe-area-inset-top)); left: calc(14px + env(safe-area-inset-left)); }
+    .dice-fab { right: calc(16px + env(safe-area-inset-right)); }
+    .dl-status { bottom: calc(20px + env(safe-area-inset-bottom)); max-width: calc(100vw - 32px); }
+    .np-nav, .sheet-view-bar { padding-top: env(safe-area-inset-top); }
+    .np-wrap { padding-left: max(18px, env(safe-area-inset-left)); padding-right: max(18px, env(safe-area-inset-right)); }
+    .np-nav-inner { padding-left: max(18px, env(safe-area-inset-left)); padding-right: max(18px, env(safe-area-inset-right)); }
+    /* Overlays: volle Hoehe des sichtbaren Bereichs (iOS-Adressleiste), Inhalt scrollt in sich */
+    .profile-overlay, .lib-overlay, .uni-overlay, .help-overlay, .quick-roll-overlay { padding-bottom: env(safe-area-inset-bottom); }
+    .profile-card, .uni-panel, .help-panel { max-height: calc(100dvh - 24px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .sidebar { height: 100dvh; padding-bottom: env(safe-area-inset-bottom); }
+  }
+  /* Geraete ohne Hover: keine haengenbleibenden Lift-Effekte */
+  @media (hover: none) {
+    .np-bento-card:hover, .np-dash-mini-card:hover, .lib-card:hover, .post-card:hover, .rollpage-entry:hover { transform: none; }
+  }
 </style>
 </head>
 <body>
