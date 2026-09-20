@@ -3399,62 +3399,88 @@
     updateThemeToggleLabel();
   })();
 
-  /* ===================== Farbpalette (Akzentfarbe) =====================
-     Aendert nur die markenfarbe-tragenden Variablen (accent/np-primary/np-accent-Familie) -
-     die sind bereits hell/dunkel-unabhaengig (siehe :root vs. [data-theme="dark"] weiter oben),
-     eine Palette gilt also unveraendert in beiden Themes. Hintergrund-/Text-/Rahmenfarben
-     bleiben bewusst unangetastet, damit Kontrast und Lesbarkeit ueberall erhalten bleiben. */
+  /* ===================== Farbpalette (komplettes Farbschema) =====================
+     Jede Palette bestimmt Markenfarben UND die Grundflaechen (Hintergrund, Karten, Rahmen,
+     Textfarben) - jeweils fuer Hell und Dunkel. Die Tokens werden aus Farbton + Markenfarben
+     abgeleitet und als <style> NACH dem Haupt-Stylesheet eingefuegt, damit Hell/Dunkel
+     (data-theme bzw. prefers-color-scheme) weiter korrekt umschaltet. "flieder" ist das
+     Original und erzeugt keine Overrides. */
   var PALETTE_KEY = "charakterbogen:palette";
   var PALETTES = {
-    flieder: {
-      label: "Flieder", swatch: "#7A5AA6",
-      "accent": "#7A5AA6", "accent-strong": "#5E3E8C",
-      "np-primary": "#6C4FD6", "np-primary-strong": "#4E35A8", "np-primary-soft": "#EFE9FC", "np-primary-text": "#4E35A8",
-      "np-accent": "#E0952B", "np-accent-soft": "#FBEBD2", "np-accent-strong": "#B9761A", "np-accent-text": "#B9761A"
-    },
-    ozean: {
-      label: "Ozean", swatch: "#1E9AA6",
-      "accent": "#2F8C93", "accent-strong": "#1F6E74",
-      "np-primary": "#1E9AA6", "np-primary-strong": "#146E77", "np-primary-soft": "#E1F4F5", "np-primary-text": "#146E77",
-      "np-accent": "#E0785A", "np-accent-soft": "#FBE4DC", "np-accent-strong": "#B85838", "np-accent-text": "#B85838"
-    },
-    bordeaux: {
-      label: "Bordeaux", swatch: "#A13456",
-      "accent": "#8C3B52", "accent-strong": "#6B2B3E",
-      "np-primary": "#A13456", "np-primary-strong": "#7A2540", "np-primary-soft": "#FBE7EC", "np-primary-text": "#7A2540",
-      "np-accent": "#D9678A", "np-accent-soft": "#FAE1E9", "np-accent-strong": "#B03F63", "np-accent-text": "#B03F63"
-    },
-    wald: {
-      label: "Wald", swatch: "#4F8F58",
-      "accent": "#4C7A52", "accent-strong": "#365A3B",
-      "np-primary": "#4F8F58", "np-primary-strong": "#356339", "np-primary-soft": "#E5F3E6", "np-primary-text": "#356339",
-      "np-accent": "#E0876B", "np-accent-soft": "#FBE6DE", "np-accent-strong": "#B85F45", "np-accent-text": "#B85F45"
-    },
-    sonnenuntergang: {
-      label: "Sonnenuntergang", swatch: "#E37D4A",
-      "accent": "#D9724F", "accent-strong": "#B0532F",
-      "np-primary": "#E37D4A", "np-primary-strong": "#B85A2A", "np-primary-soft": "#FCEADB", "np-primary-text": "#B85A2A",
-      "np-accent": "#2E9BA0", "np-accent-soft": "#DFF3F4", "np-accent-strong": "#1F7275", "np-accent-text": "#1F7275"
-    },
-    daemmerung: {
-      label: "Dämmerung", swatch: "#5F76A8",
-      "accent": "#5C6E96", "accent-strong": "#43516F",
-      "np-primary": "#5F76A8", "np-primary-strong": "#435577", "np-primary-soft": "#E8ECF6", "np-primary-text": "#435577",
-      "np-accent": "#C98A93", "np-accent-soft": "#F7E6E8", "np-accent-strong": "#A15E68", "np-accent-text": "#A15E68"
-    }
+    flieder:   { label: "Flieder",         swatch: "#7A5AA6" },
+    ozean:     { label: "Ozean",           swatch: "#1E9AA6", h: 190, s: 26, primary: "#1E9AA6", strong: "#146E77", accent: "#E0785A", accentStrong: "#B85838", legacy: "#2F8C93", legacyStrong: "#1F6E74" },
+    bordeaux:  { label: "Bordeaux",        swatch: "#A13456", h: 345, s: 24, primary: "#A13456", strong: "#7A2540", accent: "#D9678A", accentStrong: "#B03F63", legacy: "#8C3B52", legacyStrong: "#6B2B3E" },
+    wald:      { label: "Wald",            swatch: "#4F8F58", h: 135, s: 20, primary: "#4F8F58", strong: "#356339", accent: "#E0876B", accentStrong: "#B85F45", legacy: "#4C7A52", legacyStrong: "#365A3B" },
+    sonnenuntergang: { label: "Sonnenuntergang", swatch: "#E37D4A", h: 24, s: 30, primary: "#E37D4A", strong: "#B85A2A", accent: "#2E9BA0", accentStrong: "#1F7275", legacy: "#D9724F", legacyStrong: "#B0532F" },
+    daemmerung: { label: "Dämmerung",     swatch: "#5F76A8", h: 222, s: 24, primary: "#5F76A8", strong: "#435577", accent: "#C98A93", accentStrong: "#A15E68", legacy: "#5C6E96", legacyStrong: "#43516F" }
   };
+  function hexToHue(hex){
+    var r = parseInt(hex.substr(1,2),16)/255, g = parseInt(hex.substr(3,2),16)/255, b = parseInt(hex.substr(5,2),16)/255;
+    var mx = Math.max(r,g,b), mn = Math.min(r,g,b), d = mx - mn, h = 0;
+    if (d) { h = mx === r ? ((g-b)/d)%6 : mx === g ? (b-r)/d + 2 : (r-g)/d + 4; h *= 60; if (h < 0) h += 360; }
+    return Math.round(h);
+  }
+  function paletteCss(key, p){
+    var H = p.h, S = p.s, hp = hexToHue(p.primary), ha = hexToHue(p.accent);
+    function n(s, l){ return "hsl(" + H + "," + s + "%," + l + "%)"; }
+    function sh(a, l){ return "hsla(" + H + ",45%," + l + "%," + a + ")"; }
+    var light = {
+      "bg": n(S, 92), "bg2": n(S, 88), "paper-edge": n(S, 85), "title-bg": n(S + 6, 91),
+      "row-alt": n(S, 98), "border": n(S - 4, 81), "border-strong": n(S - 4, 75), "field-border": n(S - 6, 66),
+      "text": n(20, 13), "muted": n(10, 44),
+      "accent": p.legacy, "accent-strong": p.legacyStrong, "field-focus": p.legacy,
+      "focus-ring": "0 0 0 3px hsla(" + hp + ",60%,50%,0.24)", "focus-ring-inset": "inset 0 0 0 2px hsla(" + hp + ",60%,50%,0.26)",
+      "shadow-sm": "0 1px 2px " + sh(0.10, 30) + ",0 2px 5px " + sh(0.09, 30),
+      "shadow-md": "0 4px 10px " + sh(0.14, 30) + ",0 18px 38px -14px " + sh(0.42, 30),
+      "shadow-lg": "0 14px 30px -8px " + sh(0.5, 28) + ",0 34px 68px -22px " + sh(0.45, 30),
+      "np-bg": n(S + 20, 98.5), "np-surface-2": n(S + 14, 96), "np-border": n(S + 4, 91), "np-border-soft": n(S + 6, 94),
+      "np-ink": n(28, 10), "np-ink-soft": n(12, 37), "np-ink-faint": n(9, 56),
+      "np-primary": p.primary, "np-primary-strong": p.strong, "np-primary-text": p.strong,
+      "np-primary-soft": "hsl(" + hp + ",65%,94%)",
+      "np-accent": p.accent, "np-accent-strong": p.accentStrong, "np-accent-text": p.accentStrong,
+      "np-accent-soft": "hsl(" + ha + ",75%,92%)",
+      "np-shadow-sm": "0 1px 2px " + sh(0.07, 20) + ",0 2px 6px " + sh(0.06, 20),
+      "np-shadow-md": "0 8px 24px -10px " + sh(0.30, 25),
+      "np-shadow-lg": "0 24px 56px -20px " + sh(0.40, 25)
+    };
+    var dark = {
+      "bg": n(S, 19), "bg2": n(S, 24), "paper": n(S - 4, 96), "paper-edge": n(S - 4, 86),
+      "text": n(20, 13), "muted": n(10, 44),
+      "shadow-sm": "0 2px 4px rgba(0,0,0,0.35)",
+      "shadow-md": "0 6px 18px rgba(0,0,0,0.4), 0 20px 44px -14px rgba(0,0,0,0.6)",
+      "shadow-lg": "0 16px 34px -6px rgba(0,0,0,0.6), 0 38px 76px -20px rgba(0,0,0,0.65)",
+      "np-shadow-sm": "0 1px 2px rgba(0,0,0,0.4)",
+      "np-shadow-md": "0 10px 28px -10px rgba(0,0,0,0.55)",
+      "np-shadow-lg": "0 28px 64px -20px rgba(0,0,0,0.65)",
+      "np-bg": n(S + 10, 8), "np-surface": n(S + 8, 12), "np-surface-2": n(S + 8, 15.5),
+      "np-border": n(S + 8, 24), "np-border-soft": n(S + 8, 19),
+      "np-ink": n(30, 96), "np-ink-soft": n(22, 76), "np-ink-faint": n(14, 57),
+      "np-primary-text": "hsl(" + hp + ",85%,82%)", "np-primary-soft": "hsl(" + hp + ",40%,21%)",
+      "np-accent-text": "hsl(" + ha + ",85%,78%)", "np-accent-soft": "hsl(" + ha + ",45%,16%)"
+    };
+    function block(o){ return Object.keys(o).map(function(k){ return "--" + k + ":" + o[k] + ";"; }).join(""); }
+    var sel = ':root[data-palette="' + key + '"]';
+    return sel + ":not([data-theme=\"dark\"]){" + block(light) + "}" +
+      "@media (prefers-color-scheme: dark){" + sel + ":not([data-theme=\"light\"]){" + block(dark) + "}}" +
+      sel + "[data-theme=\"dark\"]{" + block(dark) + "}";
+  }
+  (function buildPaletteStyles(){
+    var css = "";
+    Object.keys(PALETTES).forEach(function(k){ if (PALETTES[k].h != null) css += paletteCss(k, PALETTES[k]); });
+    var st = document.createElement("style");
+    st.id = "paletteStyles";
+    st.textContent = css;
+    document.head.appendChild(st);
+  })();
+  var currentPaletteName = "flieder";
   function applyPalette(name){
-    var p = PALETTES[name] || PALETTES.flieder;
-    Object.keys(p).forEach(function(k){
-      if (k === "label" || k === "swatch") return;
-      document.documentElement.style.setProperty("--" + k, p[k]);
-    });
     currentPaletteName = PALETTES[name] ? name : "flieder";
+    if (currentPaletteName === "flieder") document.documentElement.removeAttribute("data-palette");
+    else document.documentElement.setAttribute("data-palette", currentPaletteName);
     document.querySelectorAll(".np-palette-swatch").forEach(function(el){
       el.classList.toggle("active", el.dataset.palette === currentPaletteName);
     });
   }
-  var currentPaletteName = "flieder";
   function setPalette(name){
     if (!PALETTES[name]) name = "flieder";
     try { localStorage.setItem(PALETTE_KEY, name); } catch(e){}
