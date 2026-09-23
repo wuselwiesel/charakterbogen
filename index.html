@@ -3821,7 +3821,7 @@
       scene: "{{characterName}} bekommt eine Nachricht: „Komm sofort vorbei. Ist wichtig.“",
       answers: [
         { id: "q05_a", text: "Er/Sie fragt, was passiert ist.", weights: { WAH: 1, KON: 1 } },
-        { id: "q05_b", text: "Er/Sie fährt sofort los.", weights: { BIN: 2, IMP: 1 } },
+        { id: "q05_b", text: "Er/Sie fährt sofort los.", weights: { BIN: 2, IMP: 1, BES: 1 } },
         { id: "q05_c", text: "Er/Sie ignoriert die Nachricht erst einmal.", weights: { UNA: 1, FRE: 1, EMP: -1 } },
         { id: "q05_d", text: "Er/Sie ruft an.", weights: { WAH: 1, EMP: 1 } },
         { id: "q05_e", text: "Er/Sie fragt, wer noch dort ist.", weights: { MIS: 1, KON: 1 } },
@@ -3890,7 +3890,7 @@
       header: "Ein ganzer Tag nur für sich",
       scene: "{{characterName}} bekommt plötzlich einen ganzen Tag nur für sich.",
       answers: [
-        { id: "q10_a", text: "Endlich Ruhe.", weights: { UNA: 1, SLE: 1 } },
+        { id: "q10_a", text: "Endlich Ruhe.", weights: { UNA: 1, SLE: 1, OPF: -1 } },
         { id: "q10_b", text: "Er/Sie ruft jemanden an.", weights: { BIN: 2 } },
         { id: "q10_c", text: "Er/Sie macht etwas völlig Spontanes.", weights: { IMP: 2, RIS: 1 } },
         { id: "q10_d", text: "Er/Sie arbeitet Dinge ab.", weights: { KON: 1, IMP: -1 } },
@@ -3911,8 +3911,8 @@
         { id: "q11_c", text: "Er/Sie wirkt zunächst etwas unnahbar.", weights: { MIS: 1, UNA: 1 } },
         { id: "q11_d", text: "Er/Sie bringt die Person ständig zum Lachen.", weights: { BIN: 1, IMP: 1 } },
         { id: "q11_e", text: "Er/Sie stellt ungewöhnlich viele Fragen.", weights: { WAH: 1, KON: 1 } },
-        { id: "q11_f", text: "Er/Sie erzählt viel von sich.", weights: { VRT: 1, BIN: 1 } },
-        { id: "q11_g", text: "Man kann überhaupt nicht einschätzen, was er/sie denkt.", weights: { MIS: 1, SLE: 1 } },
+        { id: "q11_f", text: "Er/Sie erzählt viel von sich.", weights: { VRT: 2, BIN: 1 } },
+        { id: "q11_g", text: "Man kann überhaupt nicht einschätzen, was er/sie denkt.", weights: { MIS: 1, SLE: 1, VRT: -1 } },
       ]
     },
     {
@@ -3921,7 +3921,7 @@
       scene: "{{characterName}} verliebt sich. Was verändert sich zuerst?",
       answers: [
         { id: "q12_a", text: "Er/Sie wird deutlich anhänglicher.", weights: { BIN: 2 } },
-        { id: "q12_b", text: "Er/Sie versucht, es sich nicht anmerken zu lassen.", weights: { SLE: 1, MIS: 1 } },
+        { id: "q12_b", text: "Er/Sie versucht, es sich nicht anmerken zu lassen.", weights: { SLE: 1, MIS: 1, VRT: -1 } },
         { id: "q12_c", text: "Er/Sie will ständig Zeit mit der Person verbringen.", weights: { BIN: 2, UNA: -1 } },
         { id: "q12_d", text: "Er/Sie wird eifersüchtiger.", weights: { KON: 1, MIS: 1 } },
         { id: "q12_e", text: "Er/Sie erzählt seinem/ihrem besten Freund alles.", weights: { VRT: 1, BIN: 1 } },
@@ -3934,13 +3934,13 @@
       header: "Streit mit dem Partner",
       scene: "{{characterName}} und sein/ihr Partner streiten. Wie endet der Streit meistens?",
       answers: [
-        { id: "q13_a", text: "Einer von beiden muss irgendwann lachen.", weights: { FLX: 1, BIN: 1 } },
+        { id: "q13_a", text: "Einer von beiden muss irgendwann lachen.", weights: { FLX: 1, BIN: 1, VRG: 2, RAC: -1 } },
         { id: "q13_b", text: "Er/Sie geht erst einmal.", weights: { UNA: 1, FRE: 1 } },
         { id: "q13_c", text: "Er/Sie will die Sache sofort klären.", weights: { KON: 1, WAH: 1 } },
         { id: "q13_d", text: "Er/Sie sagt Dinge, die er/sie später bereut.", weights: { IMP: 2 } },
         { id: "q13_e", text: "Er/Sie wird irgendwann einfach still.", weights: { SLE: 1, MIS: 1 } },
         { id: "q13_f", text: "Er/Sie lässt den anderen reden und antwortet erst später.", weights: { KON: 1, IMP: -1 } },
-        { id: "q13_g", text: "Der Streit ist vorbei, aber er/sie vergisst ihn nicht.", weights: { RAC: 1, VRG: -1 } },
+        { id: "q13_g", text: "Der Streit ist vorbei, aber er/sie vergisst ihn nicht.", weights: { RAC: 2, VRG: -2 } },
       ]
     },
     {
@@ -3954,7 +3954,7 @@
         { id: "q14_d", text: "Er/Sie fragt direkt nach.", weights: { WAH: 1, KON: -1 } },
         { id: "q14_e", text: "Er/Sie beobachtet erst einmal.", weights: { KON: 1, MIS: 1 } },
         { id: "q14_f", text: "Er/Sie zieht sich zurück.", weights: { UNA: 1, SLE: 1, BIN: -1 } },
-        { id: "q14_g", text: "Er/Sie flirtet demonstrativ mit jemand anderem.", weights: { RAC: 1, MAN: 1 } },
+        { id: "q14_g", text: "Er/Sie flirtet demonstrativ mit jemand anderem.", weights: { RAC: 2, MAN: 1 } },
       ]
     },
     {
@@ -3994,7 +3994,7 @@
         { id: "q17_c", text: "Er/Sie zögert die Sache erst einmal hinaus.", weights: { UNA: 1, FRE: 1, MIS: 1 } },
         { id: "q17_d", text: "Er/Sie fragt, ob das wirklich schon nötig ist.", weights: { UNA: 2, FRE: 1 } },
         { id: "q17_e", text: "Er/Sie bereitet sich akribisch darauf vor, einen guten Eindruck zu hinterlassen.", weights: { KON: 1, SLE: 1 } },
-        { id: "q17_f", text: "Er/Sie sagt zu, hält aber innerlich Distanz.", weights: { MIS: 1, SLE: 1, BIN: -1 } },
+        { id: "q17_f", text: "Er/Sie sagt zu, hält aber innerlich Distanz.", weights: { MIS: 1, SLE: 1, BIN: -1, VRT: -1 } },
       ]
     },
 
@@ -4004,10 +4004,10 @@
       header: "Liebeskummer beim besten Freund",
       scene: "{{characterName}}s bester Freund hat Liebeskummer. Was macht {{characterName}}?",
       answers: [
-        { id: "q18_a", text: "Er/Sie hört die ganze Nacht zu.", weights: { EMP: 2, LOY: 1 } },
+        { id: "q18_a", text: "Er/Sie hört die ganze Nacht zu.", weights: { EMP: 2, LOY: 1, BES: 1, OPF: 1 } },
         { id: "q18_b", text: "Er/Sie schleppt ihn/sie auf eine Party.", weights: { IMP: 1, BIN: 1 } },
-        { id: "q18_c", text: "Er/Sie besorgt Essen und lässt ihn/sie in Ruhe.", weights: { EMP: 1, BES: 1 } },
-        { id: "q18_d", text: "Er/Sie beleidigt den Ex gemeinsam mit ihm/ihr.", weights: { LOY: 2, RAC: 1 } },
+        { id: "q18_c", text: "Er/Sie besorgt Essen und lässt ihn/sie in Ruhe.", weights: { EMP: 1, BES: 2, OPF: 1 } },
+        { id: "q18_d", text: "Er/Sie beleidigt den Ex gemeinsam mit ihm/ihr.", weights: { LOY: 2, RAC: 2 } },
         { id: "q18_e", text: "Er/Sie versucht, das Problem zu lösen.", weights: { KON: 1, GER: 1 } },
         { id: "q18_f", text: "Er/Sie sagt: „Vergiss die Person. Wir machen heute was.“", weights: { IMP: 1, BES: 1 } },
         { id: "q18_g", text: "Er/Sie setzt sich einfach daneben und sagt gar nichts.", weights: { EMP: 1, KON: -1 } },
@@ -4018,11 +4018,11 @@
       header: "Streit in der Gruppe",
       scene: "{{characterName}} ist mit Freunden unterwegs, als plötzlich Streit in der Gruppe entsteht.",
       answers: [
-        { id: "q19_a", text: "Er/Sie versucht zu vermitteln.", weights: { GER: 1, EMP: 1 } },
-        { id: "q19_b", text: "Er/Sie stellt sich auf eine Seite.", weights: { LOY: 1, IMP: 1 } },
+        { id: "q19_a", text: "Er/Sie versucht zu vermitteln.", weights: { GER: 1, EMP: 1, VRG: 1 } },
+        { id: "q19_b", text: "Er/Sie stellt sich auf eine Seite.", weights: { LOY: 1, IMP: 1, BES: 1 } },
         { id: "q19_c", text: "Er/Sie hält sich komplett raus.", weights: { UNA: 1, EMP: -1 } },
         { id: "q19_d", text: "Er/Sie macht einen Witz, um die Stimmung zu entschärfen.", weights: { FLX: 1, EMP: 1 } },
-        { id: "q19_e", text: "Er/Sie sagt allen, was er/sie wirklich davon hält.", weights: { WAH: 2, IMP: 1 } },
+        { id: "q19_e", text: "Er/Sie sagt allen, was er/sie wirklich davon hält.", weights: { WAH: 2, IMP: 1, VRG: -1 } },
         { id: "q19_f", text: "Er/Sie beobachtet erst einmal, wer eigentlich das Problem ist.", weights: { MIS: 1, KON: 1 } },
         { id: "q19_g", text: "Er/Sie geht.", weights: { UNA: 1, FRE: 1, BIN: -1 } },
       ]
@@ -4046,9 +4046,9 @@
       header: "Ein Geheimnis",
       scene: "{{characterName}} hat ein Geheimnis. Wem erzählt er/sie es?",
       answers: [
-        { id: "q21_a", text: "Seinem/ihrem besten Freund.", weights: { VRT: 1, BIN: 1 } },
+        { id: "q21_a", text: "Seinem/ihrem besten Freund.", weights: { VRT: 2, BIN: 1 } },
         { id: "q21_b", text: "Seinem/ihrem Partner.", weights: { VRT: 1, BIN: 1 } },
-        { id: "q21_c", text: "Niemandem.", weights: { SLE: 2, MIS: 1 } },
+        { id: "q21_c", text: "Niemandem.", weights: { SLE: 2, MIS: 1, VRT: -2 } },
         { id: "q21_d", text: "Einer Person, die überhaupt nichts mit seinem/ihrem Leben zu tun hat.", weights: { MIS: 1, FRE: 1 } },
         { id: "q21_e", text: "Er/Sie erzählt es jemandem und lässt sich schwören, dass es geheim bleibt.", weights: { VRT: 1, KON: 1 } },
         { id: "q21_f", text: "Er/Sie erzählt nur einen Teil.", weights: { MAN: 1, MIS: 1 } },
@@ -4074,9 +4074,9 @@
       header: "Lästern über Abwesende",
       scene: "{{characterName}}s Freundeskreis lästert über eine Person, die gerade nicht dabei ist.",
       answers: [
-        { id: "q23_a", text: "Er/Sie macht mit.", weights: { MIS: 1, LOY: -1 } },
+        { id: "q23_a", text: "Er/Sie macht mit.", weights: { MIS: 1, LOY: -1, VRG: -1 } },
         { id: "q23_b", text: "Er/Sie wechselt das Thema.", weights: { FLX: 1, EMP: 1 } },
-        { id: "q23_c", text: "Er/Sie verteidigt die Person.", weights: { GER: 1, EMP: 1 } },
+        { id: "q23_c", text: "Er/Sie verteidigt die Person.", weights: { GER: 1, EMP: 1, VRG: 1 } },
         { id: "q23_d", text: "Er/Sie hört nur zu, sagt aber nichts.", weights: { KON: 1, MIS: 1 } },
         { id: "q23_e", text: "Er/Sie erzählt der betroffenen Person später, was gelaufen ist.", weights: { WAH: 2, LOY: -1 } },
         { id: "q23_f", text: "Er/Sie findet es unangenehm, bleibt aber ruhig.", weights: { EMP: 1, FLX: 1 } },
@@ -4089,10 +4089,10 @@
       header: "Ein verheimlichtes Geheimnis",
       scene: "{{characterName}} bemerkt, dass jemand in seinem/ihrem Freundeskreis etwas Übernatürliches verheimlicht.",
       answers: [
-        { id: "q24_a", text: "Er/Sie fragt direkt.", weights: { WAH: 2, IMP: 1 } },
+        { id: "q24_a", text: "Er/Sie fragt direkt.", weights: { WAH: 2, IMP: 1, BES: 1 } },
         { id: "q24_b", text: "Er/Sie beobachtet die Person erst einmal.", weights: { MIS: 1, KON: 1 } },
         { id: "q24_c", text: "Er/Sie sucht im Internet nach Antworten.", weights: { WAH: 1, KON: 1 } },
-        { id: "q24_d", text: "Er/Sie erzählt seinem/ihrem besten Freund davon.", weights: { VRT: 1, BIN: 1 } },
+        { id: "q24_d", text: "Er/Sie erzählt seinem/ihrem besten Freund davon.", weights: { VRT: 2, BIN: 1 } },
         { id: "q24_e", text: "Er/Sie tut so, als hätte er/sie nichts bemerkt.", weights: { MAN: 1, MIS: 1 } },
         { id: "q24_f", text: "Er/Sie stellt eine Falle.", weights: { KON: 2, RIS: 1, MAN: 1 } },
         { id: "q24_g", text: "Er/Sie wartet darauf, dass die Person von selbst damit herauskommt.", weights: { KON: -1, MIS: 1 } },
@@ -4106,7 +4106,7 @@
         { id: "q25_a", text: "Gedanken lesen.", weights: { MIS: 1, KON: 1 } },
         { id: "q25_b", text: "Unsichtbar sein.", weights: { FRE: 1, UNA: 1 } },
         { id: "q25_c", text: "Sich teleportieren können.", weights: { FRE: 1, RIS: 1 } },
-        { id: "q25_d", text: "Andere heilen können.", weights: { EMP: 2, OPF: 1 } },
+        { id: "q25_d", text: "Andere heilen können.", weights: { EMP: 2, OPF: 2, BES: 2 } },
         { id: "q25_e", text: "Die Zukunft für kurze Zeit sehen.", weights: { WAH: 1, KON: 1 } },
         { id: "q25_f", text: "Jede körperliche Verletzung überstehen.", weights: { SLE: 1, RIS: 1 } },
         { id: "q25_g", text: "Andere dazu bringen können, ihm/ihr zu gehorchen.", weights: { MAC: 2, KON: 1 } },
@@ -4150,7 +4150,7 @@
         { id: "q28_c", text: "Er/Sie findet es faszinierend.", weights: { RIS: 1, WAH: 1 } },
         { id: "q28_d", text: "Er/Sie bekommt Angst.", weights: { SLE: 1, MIS: 1 } },
         { id: "q28_e", text: "Er/Sie fragt sich sofort, was davon für ihn/sie gefährlich werden könnte.", weights: { SLE: 1, KON: 1 } },
-        { id: "q28_f", text: "Er/Sie sucht nach einer Möglichkeit, selbst davon zu profitieren.", weights: { MAC: 2, MAN: 1 } },
+        { id: "q28_f", text: "Er/Sie sucht nach einer Möglichkeit, selbst davon zu profitieren.", weights: { MAC: 3, MAN: 1 } },
         { id: "q28_g", text: "Er/Sie will vor allem wissen, warum ihm/ihr das bisher niemand erzählt hat.", weights: { WAH: 1, MIS: 1 } },
       ]
     },
@@ -4161,13 +4161,13 @@
       header: "Spontanes Geld",
       scene: "{{characterName}} bekommt spontan 5.000 €. Was macht er/sie damit?",
       answers: [
-        { id: "q29_a", text: "Ausgeben.", weights: { IMP: 2, RIS: 1 } },
+        { id: "q29_a", text: "Ausgeben.", weights: { IMP: 2, RIS: 1, OPF: -1 } },
         { id: "q29_b", text: "Sparen.", weights: { KON: 1, SLE: 1 } },
-        { id: "q29_c", text: "Jemandem etwas davon geben.", weights: { OPF: 1, EMP: 1 } },
+        { id: "q29_c", text: "Jemandem etwas davon geben.", weights: { OPF: 2, EMP: 1 } },
         { id: "q29_d", text: "Etwas kaufen, das er/sie sich sonst nie leisten würde.", weights: { RIS: 1, IMP: 1 } },
         { id: "q29_e", text: "Schulden bezahlen.", weights: { GER: 1, KON: 1 } },
         { id: "q29_f", text: "Investieren.", weights: { KON: 1, MAC: 1 } },
-        { id: "q29_g", text: "Niemandem erzählen, dass er/sie das Geld hat.", weights: { MIS: 2, SLE: 1 } },
+        { id: "q29_g", text: "Niemandem erzählen, dass er/sie das Geld hat.", weights: { MIS: 2, SLE: 1, OPF: -1 } },
       ]
     },
     {
@@ -4175,9 +4175,9 @@
       header: "Ein entsperrtes Handy",
       scene: "{{characterName}}s Handy liegt entsperrt vor ihm/ihr. Er/Sie könnte problemlos die Nachrichten einer anderen Person lesen.",
       answers: [
-        { id: "q30_a", text: "Er/Sie tut es.", weights: { MIS: 2, GER: -2 } },
+        { id: "q30_a", text: "Er/Sie tut es.", weights: { MIS: 2, GER: -2, VRT: -1 } },
         { id: "q30_b", text: "Er/Sie schaut nur kurz.", weights: { MIS: 1, GER: -1 } },
-        { id: "q30_c", text: "Er/Sie legt das Handy weg.", weights: { GER: 2, VRT: 1 } },
+        { id: "q30_c", text: "Er/Sie legt das Handy weg.", weights: { GER: 2, VRT: 1, BES: 2 } },
         { id: "q30_d", text: "Er/Sie würde es nur tun, wenn er/sie einen konkreten Verdacht hat.", weights: { MIS: 1, KON: 1 } },
         { id: "q30_e", text: "Er/Sie macht ein Foto vom Bildschirm.", weights: { MIS: 2, MAN: 1, GER: -1 } },
         { id: "q30_f", text: "Er/Sie gibt das Handy zurück und sagt, dass es entsperrt war.", weights: { WAH: 2, GER: 1 } },
@@ -4192,7 +4192,7 @@
         { id: "q31_a", text: "Er/Sie versucht herauszufinden, wer die Liste erstellt hat.", weights: { WAH: 1, KON: 1 } },
         { id: "q31_b", text: "Er/Sie tut so, als hätte er/sie nichts gesehen.", weights: { SLE: 1, MAN: 1 } },
         { id: "q31_c", text: "Er/Sie nimmt die Liste mit.", weights: { RIS: 2, KON: 1 } },
-        { id: "q31_d", text: "Er/Sie fragt jemanden, der mehr darüber wissen könnte.", weights: { VRT: 1, WAH: 1 } },
+        { id: "q31_d", text: "Er/Sie fragt jemanden, der mehr darüber wissen könnte.", weights: { VRT: 2, WAH: 1 } },
         { id: "q31_e", text: "Er/Sie macht ein Foto davon.", weights: { KON: 1, MIS: 1 } },
         { id: "q31_f", text: "Er/Sie wartet ab, ob jemand bemerkt, dass er/sie sie gesehen hat.", weights: { MIS: 1, SLE: 1 } },
         { id: "q31_g", text: "Er/Sie sucht sofort nach seinem/ihrem Namen im Internet.", weights: { WAH: 1, MIS: 1, RIS: 1 } },
@@ -4204,7 +4204,7 @@
       scene: "{{characterName}} bekommt die Möglichkeit, für einen Tag das Leben einer anderen Person zu leben.",
       answers: [
         { id: "q32_a", text: "Er/Sie wählt jemanden, den er/sie liebt.", weights: { BIN: 2 } },
-        { id: "q32_b", text: "Jemanden, den er/sie hasst.", weights: { RAC: 1, RIS: 1 } },
+        { id: "q32_b", text: "Jemanden, den er/sie hasst.", weights: { RAC: 2, RIS: 1 } },
         { id: "q32_c", text: "Jemanden völlig Fremden.", weights: { FRE: 1, RIS: 1 } },
         { id: "q32_d", text: "Eine Person mit sehr viel Macht.", weights: { MAC: 2 } },
         { id: "q32_e", text: "Eine Person, die ein völlig anderes Leben führt.", weights: { FRE: 1, WAH: 1 } },
@@ -4237,7 +4237,7 @@
         { id: "q34_c", text: "{{characterName}} erzählt den betroffenen Personen die Wahrheit.", weights: { WAH: 2, EMP: 1 } },
         { id: "q34_d", text: "{{characterName}} lässt die Situation ihren Lauf nehmen.", weights: { SLE: 1, GER: -1, FLX: 1 } },
         { id: "q34_e", text: "{{characterName}} vertuscht ihn, solange niemand dadurch Schaden nimmt.", weights: { WAH: -2, FLX: 1, GER: -1 } },
-        { id: "q34_f", text: "{{characterName}} übernimmt die Verantwortung, obwohl die Konsequenzen schlimm sein könnten.", weights: { GER: 2, WAH: 2, SLE: -1 } },
+        { id: "q34_f", text: "{{characterName}} übernimmt die Verantwortung, obwohl die Konsequenzen schlimm sein könnten.", weights: { GER: 2, WAH: 2, SLE: -1, OPF: 2 } },
       ]
     },
     {
@@ -4245,9 +4245,9 @@
       header: "Der Feind muss gerettet werden",
       scene: "{{characterName}} könnte seinen/ihren größten Feind retten. Niemand würde jemals erfahren, dass {{characterName}} geholfen hat.",
       answers: [
-        { id: "q35_a", text: "{{characterName}} rettet ihn/sie, weil er/sie nicht über Leben und Tod entscheiden will.", weights: { GER: 2, MAC: -1 } },
-        { id: "q35_b", text: "{{characterName}} rettet ihn/sie, weil er/sie nicht zu einem Mörder werden möchte.", weights: { GER: 2, EMP: 1 } },
-        { id: "q35_c", text: "{{characterName}} lässt ihn/sie sterben.", weights: { RAC: 2, GER: -2 } },
+        { id: "q35_a", text: "{{characterName}} rettet ihn/sie, weil er/sie nicht über Leben und Tod entscheiden will.", weights: { GER: 2, MAC: -1, BES: 1, VRG: 1 } },
+        { id: "q35_b", text: "{{characterName}} rettet ihn/sie, weil er/sie nicht zu einem Mörder werden möchte.", weights: { GER: 2, EMP: 1, OPF: 1, RAC: -1 } },
+        { id: "q35_c", text: "{{characterName}} lässt ihn/sie sterben.", weights: { RAC: 2, GER: -2, BES: -2, VRG: -2 } },
         { id: "q35_d", text: "{{characterName}} rettet ihn/sie und sorgt anschließend dafür, dass er/sie keine Gefahr mehr darstellt.", weights: { GER: 2, KON: 2 } },
         { id: "q35_e", text: "{{characterName}} überlässt die Situation dem Zufall.", weights: { FLX: 1, KON: -1 } },
         { id: "q35_f", text: "{{characterName}} rettet ihn/sie unter einer Bedingung.", weights: { KON: 2, MAN: 1, GER: 1 } },
