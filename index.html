@@ -2382,6 +2382,82 @@
   :is(body.feature-page-mode, body.sheet-view-mode) .legend-row { background: var(--np-surface) !important; }
 
   /* ===================================================================
+     CHARAKTERPROFIL: eigene, in sich geschlossene UI. Nutzt durchgehend die
+     theme-fähigen --np-* Tokens direkt (keine feature-page-mode-Kompatibilitäts-
+     Ueberschreibung noetig, siehe Block oben - --np-* ist bereits an :root theme-aware).
+     =================================================================== */
+  .cp-body { display: flex; flex-direction: column; gap: 4px; }
+  .cp-intro-text { color: var(--np-ink-soft); font-size: 14.5px; max-width: 62ch; line-height: 1.6; }
+  .cp-intro-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+
+  .cp-progress-wrap { margin: 2px 0 20px; }
+  .cp-progress-label { font-size: 12.5px; color: var(--np-ink-faint); margin-bottom: 6px; }
+  .cp-progress-track { height: 6px; border-radius: 999px; background: var(--np-surface-2); overflow: hidden; }
+  .cp-progress-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--np-primary), var(--np-accent)); transition: width .3s var(--np-ease); }
+
+  .cp-question-card { background: var(--np-surface); border: 1px solid var(--np-border); border-radius: var(--np-radius-md); padding: 22px; box-shadow: var(--np-shadow-sm); }
+  .cp-q-eyebrow { font-size: 12px; color: var(--np-ink-faint); margin-bottom: 8px; }
+  .cp-q-header { font-size: 19px; font-weight: 700; margin: 0 0 10px; color: var(--np-ink); }
+  .cp-q-scene { color: var(--np-ink-soft); font-size: 14.5px; line-height: 1.55; margin-bottom: 18px; }
+  .cp-choices { display: flex; flex-direction: column; gap: 8px; }
+  .cp-choice {
+    display: flex; align-items: flex-start; gap: 11px; width: 100%; text-align: left;
+    padding: 12px 14px; border-radius: 12px; border: 1px solid var(--np-border);
+    background: var(--np-surface-2); color: var(--np-ink); font: inherit; cursor: pointer;
+    transition: border-color .15s var(--np-ease), background .15s var(--np-ease), box-shadow .15s var(--np-ease);
+  }
+  .cp-choice:hover { border-color: var(--np-primary); background: var(--np-primary-soft); }
+  .cp-choice:active { transform: scale(0.99); }
+  .cp-choice.selected { border-color: var(--np-primary); background: var(--np-primary-soft); box-shadow: 0 0 0 1px var(--np-primary); }
+  .cp-choice-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--np-border); flex: 0 0 auto; margin-top: 2px; position: relative; }
+  .cp-choice.selected .cp-choice-dot { border-color: var(--np-primary); }
+  .cp-choice.selected .cp-choice-dot::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--np-primary); }
+  .cp-choice-text { font-size: 14.5px; line-height: 1.45; }
+  .cp-nav { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 18px; }
+  .cp-nav-spacer { flex: 1; }
+
+  .cp-result-head { text-align: center; padding: 6px 0 4px; }
+  .cp-result-kicker { font-size: 12px; letter-spacing: .06em; color: var(--np-primary-text); font-weight: 700; text-transform: uppercase; }
+  .cp-result-name { font-size: 22px; font-weight: 800; margin: 6px 0 4px; color: var(--np-ink); }
+  .cp-result-alignment { font-size: 13px; font-weight: 700; color: var(--np-ink-soft); letter-spacing: .03em; text-transform: uppercase; }
+  .cp-result-archetype { font-size: 16.5px; font-style: italic; color: var(--np-accent-text); margin-top: 8px; }
+
+  .cp-bars { display: flex; flex-direction: column; gap: 11px; margin: 18px 0 4px; }
+  .cp-bar-top { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--np-ink-soft); margin-bottom: 4px; }
+  .cp-bar-track { height: 8px; border-radius: 999px; background: var(--np-surface-2); overflow: hidden; }
+  .cp-bar-fill { height: 100%; border-radius: 999px; background: var(--np-primary); transition: width .4s var(--np-ease); }
+
+  .cp-section { margin-top: 24px; }
+  .cp-section-title { font-size: 12.5px; font-weight: 700; color: var(--np-ink-faint); letter-spacing: .04em; text-transform: uppercase; margin-bottom: 10px; }
+  .cp-profile-text { font-size: 14.5px; line-height: 1.65; color: var(--np-ink); }
+
+  .cp-conflict-box { background: var(--np-accent-soft); border-radius: 12px; padding: 14px 16px; }
+  .cp-conflict-label { font-weight: 700; font-size: 13.5px; color: var(--np-accent-text); margin-bottom: 5px; }
+  .cp-conflict-text { font-size: 14px; line-height: 1.55; color: var(--np-ink); }
+
+  .cp-hook { font-style: italic; font-size: 15px; line-height: 1.5; color: var(--np-ink); border-left: 3px solid var(--np-primary); padding-left: 14px; margin: 4px 0; }
+
+  .cp-rpg-list { display: flex; flex-direction: column; gap: 8px; }
+  .cp-rpg-item { background: var(--np-surface-2); border-radius: 10px; padding: 10px 13px; }
+  .cp-rpg-item b { color: var(--np-ink); font-size: 14px; }
+  .cp-rpg-item span { display: block; font-size: 13px; color: var(--np-ink-soft); margin-top: 3px; line-height: 1.4; }
+
+  .cp-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 26px; }
+
+  .cp-history-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .cp-history-item {
+    display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%;
+    padding: 11px 13px; border-radius: 10px; background: var(--np-surface-2); border: 1px solid var(--np-border-soft);
+    cursor: pointer; text-align: left; font: inherit; color: var(--np-ink);
+    transition: border-color .15s var(--np-ease);
+  }
+  .cp-history-item:hover { border-color: var(--np-primary); }
+  .cp-history-item.active { border-color: var(--np-primary); background: var(--np-primary-soft); }
+  .cp-history-main { font-size: 13.5px; font-weight: 600; }
+  .cp-history-meta { font-size: 12px; color: var(--np-ink-faint); white-space: nowrap; }
+  .cp-empty-hint { font-size: 13.5px; color: var(--np-ink-faint); padding: 4px 0; }
+
+  /* ===================================================================
      MOBILE-APP-FEEL (<=760px): lesbar ohne Zoomen, Touch-Targets, Safe-Areas.
      Steht bewusst am Ende, damit es aeltere Einzelregeln gleicher Spezifitaet schlaegt.
      =================================================================== */
@@ -2505,7 +2581,7 @@
     .user-bar button, .lib-actions button, .lib-card-actions button, .uni-actions button, .roll-tab,
     .roll-diff-presets button, .roll-luck-row button, .post-like, .post-comment-toggle, .post-comment-send,
     .rte-toolbar button, .edit-toggle-btn, .sidebar-footer-btn, .np-user-chip button, .rollpage-clear-btn,
-    .lib-context button, .np-theme-toggle { min-height: 40px; }
+    .lib-context button, .np-theme-toggle, .cp-choice, .cp-history-item { min-height: 40px; }
     .np-btn, .roll-btn { min-height: 46px; }
     /* Hover-Effekte, die auf Touch haengen bleiben, durch Tap-Feedback ersetzen */
     .np-btn:active, .roll-btn:active, .lib-card:active, .np-bento-card:active, .np-dash-mini-card:active { transform: scale(0.98); transition-duration: .08s; }
@@ -2917,6 +2993,13 @@
         <p class="profile-setting-hint" style="margin:2px 0 8px;">Wirkt sofort, auf jeder Seite.</p>
         <div class="np-palette-row" id="paletteRow"></div>
       </div>
+      <div class="profile-setting-row">
+        <div>
+          <span class="profile-setting-label">RPG-Auswirkungen im Charakterprofil</span>
+          <p class="profile-setting-hint">Zeigt optionale Spielmechanik-Vorschläge (z. B. „Silberzunge“) im Testergebnis.</p>
+        </div>
+        <button type="button" class="np-switch" id="cpRpgToggle" role="switch" aria-checked="true"><span class="np-switch-knob"></span></button>
+      </div>
       <div class="profile-error" id="profileError"></div>
       <button type="button" class="roll-btn" id="profileSaveBtn">Speichern</button>
       <button type="button" class="profile-skip" id="profileCloseBtn" hidden>Schließen</button>
@@ -3156,6 +3239,7 @@
         <button class="tab-btn" data-page="wuerfelverlauf"><svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.1" fill="currentColor" stroke="none"/></svg>Würfelverlauf</button>
         <button class="tab-btn" data-page="kommentare"><svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Feed</button>
         <button class="tab-btn" data-page="wuerfeln"><svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 7l9 5 9-5-9-5z"/><path d="M3 7v10l9 5 9-5V7"/></svg>Würfeln</button>
+        <button class="tab-btn" data-page="charakterprofil"><svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1.5 2 4 3 7 3 0 8-3.5 12-7 15-3.5-3-7-7-7-15 3 0 5.5-1 7-3z"/></svg>Charakterprofil</button>
         <button class="tab-btn" id="helpTabBtn" type="button"><svg class="help-icon" viewBox="0 0 512 512" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM169.8 165.3c7.9-22.3 29.1-37.3 52.8-37.3l58.3 0c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24l0-13.4c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1l-58.3 0c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"/></svg> Hilfe</button>
       </div>
 
@@ -3454,6 +3538,12 @@
         <div class="rollpage-list roll-panel-history-list" id="rollPanelHistoryList"></div>
       </div>
       </div>
+    </section>
+
+    <!-- SEITE 10: CHARAKTERPROFIL -->
+    <section class="paper" id="page-charakterprofil">
+      <div class="page-title"><h2>Charakterprofil</h2></div>
+      <div class="cp-body" id="cpBody"></div>
     </section>
 
   </div>
@@ -4417,17 +4507,21 @@
     var top = dominantTraits[0];
     var profileText = [
       "Alignment: " + CHARPROFILE_ALIGN_LABEL[alignCode] + ". " + primaryArchetype.description,
-      "Am stärksten zeigt sich das an deiner ausgeprägten " + top.label.toLowerCase() + " (" + Math.round(top.value) + " %).",
+      /* Bewusst ohne Artikel/Adjektiv-Kongruenz vor dem Trait-Namen formuliert (Traits haben
+         gemischtes Genus - "Vertrauen"/"Loyalität"/"Machtstreben" - eine feste Possessiv-Formel
+         waere fuer einen Teil davon grammatikalisch falsch). */
+      "Am stärksten zeigt sich das bei „" + top.label + "“ (" + Math.round(top.value) + " %).",
       innerConflict.text
     ].join(" ");
 
-    /* 10) Optionale RPG-Traits */
+    /* 10) Optionale RPG-Traits: werden IMMER berechnet und mitgespeichert (billig, reine
+       Anzeigedaten). Ob die UI sie zeigt, entscheidet isCharprofileRpgTraitsEnabled() erst
+       beim Rendern - so wirkt der Schalter auch rueckwirkend auf bereits gespeicherte
+       Ergebnisse, ohne dass Daten neu berechnet oder verloren gehen muessen. */
     var rpgTraits = [];
-    if (isCharprofileRpgTraitsEnabled()) {
-      CHARPROFILE_RPG_TRAITS.forEach(function(rt){
-        if (rt.condition({ axes: axes, traits: traits })) rpgTraits.push({ id: rt.id, label: rt.label, effect: rt.effect });
-      });
-    }
+    CHARPROFILE_RPG_TRAITS.forEach(function(rt){
+      if (rt.condition({ axes: axes, traits: traits })) rpgTraits.push({ id: rt.id, label: rt.label, effect: rt.effect });
+    });
 
     return {
       createdAt: Date.now(),
@@ -6614,6 +6708,7 @@
     userDocRef().set({ activeCharacterId: id }, { merge: true }).catch(function(){});
     setSaveIndicator("");
     renderDashboard();
+    resetCharacterProfileView();
   }
 
   function createCharacter(name, data){
@@ -6667,7 +6762,17 @@
   var sheetViewSnapshot = null;
   var sheetViewReturnTo = "dashboard"; // "dashboard" oder "library" - bestimmt Beschriftung/Rueckweg
 
-  function openCharacterPreview(name, data, returnTo){
+  /* previewCharacterId: die ID des Charakters, der gerade in der Vollansicht ("Ansehen")
+     angezeigt wird - unabhaengig von activeCharacterId, das dabei bewusst unveraendert
+     bleibt (siehe sheetViewSnapshot). Features, die den GERADE ANGEZEIGTEN Charakter
+     brauchen (z.B. das Charakterprofil), nutzen dafuer viewedCharacterId() statt direkt
+     activeCharacterId zu lesen. */
+  var previewCharacterId = null;
+  function viewedCharacterId(){
+    return document.body.classList.contains("sheet-view-mode") ? previewCharacterId : activeCharacterId;
+  }
+
+  function openCharacterPreview(id, name, data, returnTo){
     closeLibrary();
     sheetViewSnapshot = {
       id: activeCharacterId,
@@ -6675,6 +6780,7 @@
       data: collectCharacterData(),
       editMode: isEditMode
     };
+    previewCharacterId = id;
     isApplyingCharacter = true;
     applyCharacterData(data);
     isApplyingCharacter = false;
@@ -6684,17 +6790,19 @@
     sheetViewBackBtn.textContent = sheetViewReturnTo === "library" ? "← Zurück zur Bibliothek" : "← Zurück zum Dashboard";
     document.body.classList.add("sheet-view-mode");
     window.scrollTo({ top: 0 });
+    resetCharacterProfileView();
   }
 
   /* Den eigenen, aktuell aktiven Charakter komplett auf einer Seite ansehen
      (Dashboard-Kachel "Charakterbogen") - Snapshot/Restore sind hier ein Nullwert,
      da Schnappschuss und angezeigte Daten derselbe Charakter sind. */
   function openOwnCharacterPreview(){
-    openCharacterPreview(activeCharacterName, collectCharacterData(), "dashboard");
+    openCharacterPreview(activeCharacterId, activeCharacterName, collectCharacterData(), "dashboard");
   }
 
   function closeCharacterPreview(){
     document.body.classList.remove("sheet-view-mode");
+    previewCharacterId = null;
     if (sheetViewSnapshot){
       var snap = sheetViewSnapshot;
       sheetViewSnapshot = null;
@@ -6706,9 +6814,295 @@
       setEditMode(snap.editMode);
     }
     window.scrollTo({ top: 0 });
+    resetCharacterProfileView();
   }
   sheetViewBackBtn.addEventListener("click", closeCharacterPreview);
   document.getElementById("sheetViewDlBtn").addEventListener("click", function(){ dlBtn.click(); });
+
+  /* ===================== Charakterprofil (UI) =====================
+     Verbindet den UI-freien Auswertungskern (CHARPROFILE_* / evaluateCharacterProfile(),
+     siehe weiter oben) mit einer eigenen Seite im Charakterbogen. Pro Charakter:
+     - laufender Fortschritt liegt in localStorage (Wiedereinstieg nach Schliessen moeglich),
+     - abgeschlossene Ergebnisse liegen in Firestore unter
+       charsColRef().doc(charId).collection("characterProfiles") - mehrere pro Charakter
+       moeglich, aeltere bleiben als Verlauf erhalten. */
+  var cpBodyEl = document.getElementById("cpBody");
+  var CP_HEADLINE_AXES = ["MOR", "ORD", "EMP", "LOY", "MAC", "GEW"];
+  var CP_HEADLINE_LABELS = { MOR: "Moralität", ORD: "Ordnung", EMP: "Empathie", LOY: "Loyalität", MAC: "Machtstreben", GEW: "Gewaltbereitschaft" };
+
+  var cpState = "intro";      // "intro" | "quiz" | "result"
+  var cpDraft = null;         // { index, answers: {questionId: answerId} }
+  var cpResults = [];         // aus Firestore geladen, neueste zuerst
+  var cpViewingResultId = null; // welches Ergebnis aus cpResults angezeigt wird (null = neuestes)
+  var cpLoadedForCharId = null; // gegen welchen Charakter cpResults/cpDraft zuletzt geladen wurden
+  var cpShowHistory = false;
+  var cpLoading = false;
+
+  function cpDraftKey(charId){ return "charakterbogen:charprofile:draft:" + charId; }
+  function cpLoadDraft(charId){
+    try {
+      var raw = localStorage.getItem(cpDraftKey(charId));
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed.index !== "number" || !parsed.answers) return null;
+      return parsed;
+    } catch(e){ return null; }
+  }
+  function cpSaveDraft(charId, draft){
+    try { localStorage.setItem(cpDraftKey(charId), JSON.stringify(draft)); } catch(e){}
+  }
+  function cpClearDraft(charId){
+    try { localStorage.removeItem(cpDraftKey(charId)); } catch(e){}
+  }
+
+  /* Wird bei jedem Charakterwechsel gerufen (setActiveCharacter / openCharacterPreview /
+     closeCharacterPreview) - verwirft nur den In-Memory-Zustand der UI, nichts Gespeichertes. */
+  function resetCharacterProfileView(){
+    cpState = "intro";
+    cpDraft = null;
+    cpResults = [];
+    cpViewingResultId = null;
+    cpLoadedForCharId = null;
+    cpShowHistory = false;
+    cpLoading = false;
+    if (cpBodyEl) cpBodyEl.innerHTML = "";
+  }
+
+  function cpRenderLoading(){ cpBodyEl.innerHTML = '<p class="cp-empty-hint">Lädt …</p>'; }
+  function cpRenderNoCharacter(){ cpBodyEl.innerHTML = '<p class="cp-empty-hint">Kein Charakter geladen.</p>'; }
+  function cpRenderError(err){
+    cpBodyEl.innerHTML = '<p class="cp-empty-hint">Charakterprofil konnte nicht geladen werden' +
+      (err && err.message ? (": " + escapeAttr(err.message)) : "") + '.</p>';
+  }
+
+  /* Lazy: wird nur aufgerufen, wenn der Tab tatsaechlich geoeffnet wird (nicht bei jedem
+     Charakterwechsel), damit nicht bei jedem Bogen ungefragt Firestore-Reads anfallen. */
+  function cpEnsureLoaded(){
+    var charId = viewedCharacterId();
+    if (!charId) { cpRenderNoCharacter(); return; }
+    if (cpLoadedForCharId === charId && !cpLoading) { cpRender(); return; }
+    cpLoadedForCharId = charId;
+    cpDraft = cpLoadDraft(charId);
+    cpLoading = true;
+    cpRenderLoading();
+    charsColRef().doc(charId).collection("characterProfiles").orderBy("createdAt", "desc").limit(20).get()
+      .then(function(snap){
+        if (viewedCharacterId() !== charId) return; // in der Zwischenzeit Charakter gewechselt
+        cpResults = snap.docs.map(function(d){ var data = d.data(); data.id = d.id; return data; });
+        cpLoading = false;
+        cpViewingResultId = null;
+        cpState = cpResults.length ? "result" : (cpDraft ? "quiz" : "intro");
+        cpRender();
+      })
+      .catch(function(err){
+        cpLoading = false;
+        cpRenderError(err);
+      });
+  }
+
+  function cpRender(){
+    if (cpState === "quiz") return cpRenderQuiz();
+    if (cpState === "result") return cpRenderResult();
+    return cpRenderIntro();
+  }
+
+  function cpRenderIntro(){
+    var hasHistory = cpResults.length > 0;
+    var resumeHtml = cpDraft
+      ? '<button type="button" class="np-btn np-btn-ghost" id="cpResumeBtn">Test fortsetzen (Frage ' + (cpDraft.index + 1) + ' von ' + CHARPROFILE_QUESTIONS.length + ')</button>'
+      : "";
+    var backHtml = hasHistory
+      ? '<button type="button" class="np-btn np-btn-ghost" id="cpBackToResultBtn">Letztes Ergebnis ansehen</button>'
+      : "";
+    cpBodyEl.innerHTML =
+      '<p class="cp-intro-text">Ein atmosphärischer Charaktertest: ' + CHARPROFILE_QUESTIONS.length + ' Situationen aus Sicht deines Charakters, jede mit mehreren möglichen Reaktionen. Am Ende entsteht daraus ein Charakterprofil mit Alignment, Archetyp und den auffälligsten Charakterzügen – berechnet aus deinen Antworten, nicht aus einer sichtbaren Punkteskala.</p>' +
+      '<div class="cp-intro-actions">' +
+        '<button type="button" class="np-btn" id="cpStartBtn">' + (hasHistory ? "Neuen Test starten" : "Test starten") + '</button>' +
+        resumeHtml + backHtml +
+      '</div>';
+    document.getElementById("cpStartBtn").addEventListener("click", cpStartNewQuiz);
+    var resumeBtn = document.getElementById("cpResumeBtn");
+    if (resumeBtn) resumeBtn.addEventListener("click", function(){ cpState = "quiz"; cpRender(); });
+    var backBtn = document.getElementById("cpBackToResultBtn");
+    if (backBtn) backBtn.addEventListener("click", function(){ cpViewingResultId = null; cpState = "result"; cpRender(); });
+  }
+
+  function cpStartNewQuiz(){
+    var charId = viewedCharacterId();
+    if (!charId) return;
+    cpDraft = { index: 0, answers: {} };
+    cpSaveDraft(charId, cpDraft);
+    cpShowHistory = false;
+    cpState = "quiz";
+    cpRender();
+  }
+
+  function cpRenderQuiz(){
+    var charId = viewedCharacterId();
+    if (!cpDraft) cpDraft = { index: 0, answers: {} };
+    var idx = Math.max(0, Math.min(CHARPROFILE_QUESTIONS.length - 1, cpDraft.index));
+    var q = CHARPROFILE_QUESTIONS[idx];
+    var selectedAnswerId = cpDraft.answers[q.id] || null;
+
+    var choicesHtml = q.answers.map(function(a){
+      var sel = a.id === selectedAnswerId;
+      return '<button type="button" class="cp-choice' + (sel ? ' selected' : '') + '" data-answer-id="' + escapeAttr(a.id) + '">' +
+        '<span class="cp-choice-dot"></span><span class="cp-choice-text">' + escapeAttr(a.text) + '</span></button>';
+    }).join("");
+
+    cpBodyEl.innerHTML =
+      '<div class="cp-progress-wrap">' +
+        '<div class="cp-progress-label">Frage ' + (idx + 1) + ' von ' + CHARPROFILE_QUESTIONS.length + '</div>' +
+        '<div class="cp-progress-track"><div class="cp-progress-fill" style="width:' + Math.round((idx / CHARPROFILE_QUESTIONS.length) * 100) + '%"></div></div>' +
+      '</div>' +
+      '<div class="cp-question-card">' +
+        '<div class="cp-q-eyebrow">' + escapeAttr(q.header) + '</div>' +
+        '<p class="cp-q-scene">' + escapeAttr(q.scene) + '</p>' +
+        '<div class="cp-choices">' + choicesHtml + '</div>' +
+      '</div>' +
+      '<div class="cp-nav">' +
+        '<button type="button" class="np-btn np-btn-ghost" id="cpBackBtn"' + (idx === 0 ? " disabled" : "") + '>← Zurück</button>' +
+        '<span class="cp-nav-spacer"></span>' +
+        '<button type="button" class="np-btn np-btn-ghost" id="cpAbortBtn">Abbrechen</button>' +
+      '</div>';
+
+    cpBodyEl.querySelectorAll(".cp-choice").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        cpDraft.answers[q.id] = btn.dataset.answerId;
+        if (idx < CHARPROFILE_QUESTIONS.length - 1) {
+          cpDraft.index = idx + 1;
+          cpSaveDraft(charId, cpDraft);
+          cpRenderQuiz();
+        } else {
+          cpSaveDraft(charId, cpDraft);
+          cpFinishQuiz();
+        }
+      });
+    });
+    var backBtn = document.getElementById("cpBackBtn");
+    if (backBtn) backBtn.addEventListener("click", function(){
+      if (idx === 0) return;
+      cpDraft.index = idx - 1;
+      cpSaveDraft(charId, cpDraft);
+      cpRenderQuiz();
+    });
+    document.getElementById("cpAbortBtn").addEventListener("click", function(){
+      cpState = cpResults.length ? "result" : "intro";
+      cpViewingResultId = null;
+      cpRender();
+    });
+  }
+
+  function cpRenderSaving(){ cpBodyEl.innerHTML = '<p class="cp-empty-hint">Wird ausgewertet …</p>'; }
+
+  function cpFinishQuiz(){
+    var charId = viewedCharacterId();
+    var answerIds = CHARPROFILE_QUESTIONS.map(function(q){ return cpDraft.answers[q.id]; }).filter(Boolean);
+    var result = evaluateCharacterProfile(answerIds, CHARPROFILE_QUESTIONS);
+    cpRenderSaving();
+    charsColRef().doc(charId).collection("characterProfiles").add({
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      answers: result.answers,
+      axisScores: result.axisScores,
+      traitScores: result.traitScores,
+      alignment: result.alignment,
+      archetype: result.archetype,
+      dominantTraits: result.dominantTraits,
+      innerConflict: result.innerConflict,
+      profileText: result.profileText,
+      hook: result.hook,
+      rpgTraits: result.rpgTraits
+    }).then(function(){
+      cpClearDraft(charId);
+      cpDraft = null;
+      return charsColRef().doc(charId).collection("characterProfiles").orderBy("createdAt", "desc").limit(20).get();
+    }).then(function(snap){
+      if (viewedCharacterId() !== charId) return;
+      cpResults = snap.docs.map(function(d){ var data = d.data(); data.id = d.id; return data; });
+      cpViewingResultId = null;
+      cpShowHistory = false;
+      cpState = "result";
+      cpRender();
+    }).catch(function(err){
+      cpRenderError(err);
+    });
+  }
+
+  function cpCurrentResult(){
+    if (!cpResults.length) return null;
+    if (cpViewingResultId) {
+      var found = cpResults.filter(function(r){ return r.id === cpViewingResultId; })[0];
+      if (found) return found;
+    }
+    return cpResults[0];
+  }
+
+  function cpRenderResult(){
+    var r = cpCurrentResult();
+    if (!r) { cpState = "intro"; return cpRenderIntro(); }
+
+    function barRow(label, value){
+      var v = Math.round(value);
+      return '<div class="cp-bar-row"><div class="cp-bar-top"><span>' + escapeAttr(label) + '</span><span>' + v + ' %</span></div>' +
+        '<div class="cp-bar-track"><div class="cp-bar-fill" style="width:' + v + '%"></div></div></div>';
+    }
+
+    var barsHtml = CP_HEADLINE_AXES.map(function(ax){ return barRow(CP_HEADLINE_LABELS[ax], r.axisScores[ax]); }).join("");
+    var traitBarsHtml = r.dominantTraits.map(function(t){ return barRow(t.label, t.value); }).join("");
+
+    var archetypeSecondaryHtml = r.archetype.secondaryLabel
+      ? ('<p class="cp-profile-text" style="margin-top:8px;">Sekundär erkennbar: ' + escapeAttr(r.archetype.secondaryLabel) + '.</p>')
+      : "";
+
+    var rpgHtml = "";
+    if (isCharprofileRpgTraitsEnabled() && r.rpgTraits && r.rpgTraits.length) {
+      rpgHtml = '<div class="cp-section"><div class="cp-section-title">RPG-Auswirkungen</div><div class="cp-rpg-list">' +
+        r.rpgTraits.map(function(rt){ return '<div class="cp-rpg-item"><b>' + escapeAttr(rt.label) + '</b><span>' + escapeAttr(rt.effect) + '</span></div>'; }).join("") +
+        '</div></div>';
+    }
+
+    var historyHtml = "";
+    if (cpShowHistory) {
+      var currentId = r.id;
+      historyHtml = '<div class="cp-section"><div class="cp-section-title">Verlauf (' + cpResults.length + ')</div><div class="cp-history-list">' +
+        cpResults.map(function(res){
+          var active = res.id === currentId;
+          return '<button type="button" class="cp-history-item' + (active ? " active" : "") + '" data-result-id="' + escapeAttr(res.id) + '">' +
+            '<span class="cp-history-main">' + escapeAttr(res.alignment.label) + ' · ' + escapeAttr(res.archetype.primaryLabel) + '</span>' +
+            '<span class="cp-history-meta">' + escapeAttr(formatUpdatedAt(res.createdAt)) + '</span></button>';
+        }).join("") +
+      '</div></div>';
+    }
+
+    cpBodyEl.innerHTML =
+      '<div class="cp-result-head">' +
+        '<div class="cp-result-kicker">Charakterprofil</div>' +
+        '<div class="cp-result-name">' + escapeAttr(activeCharacterName || "Unbenannt") + '</div>' +
+        '<div class="cp-result-alignment">' + escapeAttr(r.alignment.label) + '</div>' +
+        '<div class="cp-result-archetype">„' + escapeAttr(r.archetype.displayName) + '“</div>' +
+      '</div>' +
+      '<div class="cp-bars">' + barsHtml + '</div>' +
+      '<div class="cp-section"><div class="cp-section-title">Charakterprofil</div><p class="cp-profile-text">' + escapeAttr(r.profileText) + '</p>' + archetypeSecondaryHtml + '</div>' +
+      '<div class="cp-section"><div class="cp-section-title">Dominante Eigenschaften</div><div class="cp-bars">' + traitBarsHtml + '</div></div>' +
+      '<div class="cp-section"><div class="cp-section-title">Innerer Konflikt</div><div class="cp-conflict-box"><div class="cp-conflict-label">' + escapeAttr(r.innerConflict.label) + '</div><div class="cp-conflict-text">' + escapeAttr(r.innerConflict.text) + '</div></div></div>' +
+      '<div class="cp-section"><div class="cp-section-title">Charakter-Hook</div><p class="cp-hook">„' + escapeAttr(r.hook) + '“</p></div>' +
+      rpgHtml + historyHtml +
+      '<div class="cp-actions">' +
+        '<button type="button" class="np-btn" id="cpRetakeBtn">Test erneut machen</button>' +
+        (cpResults.length > 1 ? ('<button type="button" class="np-btn np-btn-ghost" id="cpHistoryBtn">' + (cpShowHistory ? "Verlauf ausblenden" : "Verlauf anzeigen") + '</button>') : "") +
+      '</div>';
+
+    document.getElementById("cpRetakeBtn").addEventListener("click", cpStartNewQuiz);
+    var historyBtn = document.getElementById("cpHistoryBtn");
+    if (historyBtn) historyBtn.addEventListener("click", function(){ cpShowHistory = !cpShowHistory; cpRenderResult(); });
+    cpBodyEl.querySelectorAll(".cp-history-item").forEach(function(btn){
+      btn.addEventListener("click", function(){ cpViewingResultId = btn.dataset.resultId; cpRenderResult(); });
+    });
+  }
+
+  var cpTabBtn = document.querySelector('.tab-btn[data-page="charakterprofil"]');
+  if (cpTabBtn) cpTabBtn.addEventListener("click", cpEnsureLoaded);
+
 
   function promptNewCharacterName(){
     var name = window.prompt("Name des neuen Charakters:", "Neuer Charakter");
@@ -7028,7 +7422,7 @@
       '</div>';
 
     card.querySelector('[data-action="view"]').addEventListener("click", function(){
-      openCharacterPreview(d.name, charData, "library");
+      openCharacterPreview(docSnap.id, d.name, charData, "library");
     });
     card.querySelector('[data-action="open"]').addEventListener("click", function(){
       setActiveCharacter(docSnap.id, d.name, charData);
@@ -7835,6 +8229,7 @@
     pendingProfileAvatar = undefined;
     renderProfileAvatarPreview(myProfile && myProfile.avatar);
     diceFabToggle.setAttribute("aria-checked", String(isDiceFabEnabled()));
+    cpRpgToggle.setAttribute("aria-checked", String(isCharprofileRpgTraitsEnabled()));
     profileOverlay.classList.add("show");
   }
   function closeProfileModal(){ profileOverlay.classList.remove("show"); }
@@ -7857,6 +8252,14 @@
     setDiceFabEnabled(next);
   });
   diceFabBtn.hidden = !isDiceFabEnabled();
+
+  var cpRpgToggle = document.getElementById("cpRpgToggle");
+  cpRpgToggle.addEventListener("click", function(){
+    var next = cpRpgToggle.getAttribute("aria-checked") !== "true";
+    cpRpgToggle.setAttribute("aria-checked", String(next));
+    setCharprofileRpgTraitsEnabled(next);
+    if (cpState === "result" && document.getElementById("page-charakterprofil").classList.contains("active")) cpRenderResult();
+  });
 
   var paletteRow = document.getElementById("paletteRow");
   Object.keys(PALETTES).forEach(function(key){
