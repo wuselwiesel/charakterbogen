@@ -6981,7 +6981,7 @@
     cpBodyEl.innerHTML =
       '<p class="cp-intro-text">Ein atmosphärisches Seelenprofil: ' + CHARPROFILE_QUESTIONS.length + ' Situationen aus dem Leben deines Charakters – Liebe, Loyalität, Geheimnisse, Macht, das Übernatürliche. Jede mit mehreren möglichen Reaktionen. Am Ende entsteht daraus ein Profil mit Alignment, Archetyp und den auffälligsten Charakterzügen, berechnet aus den Antworten, nicht aus einer sichtbaren Punkteskala.</p>' +
       '<div class="cp-intro-actions">' +
-        '<button type="button" class="np-btn" id="cpStartBtn">' + (hasHistory ? "Neues Profil erstellen" : "Profil erstellen") + '</button>' +
+        '<button type="button" class="np-btn np-btn-primary" id="cpStartBtn">' + (hasHistory ? "Neues Profil erstellen" : "Profil erstellen") + '</button>' +
         resumeHtml + backHtml +
       '</div>';
     document.getElementById("cpStartBtn").addEventListener("click", function(){ cpState = "setup"; cpRender(); });
@@ -7015,7 +7015,7 @@
       '<div class="cp-nav">' +
         '<button type="button" class="np-btn np-btn-ghost" id="cpSetupBackBtn">← Zurück</button>' +
         '<span class="cp-nav-spacer"></span>' +
-        '<button type="button" class="np-btn" id="cpSetupNextBtn">Fragen starten →</button>' +
+        '<button type="button" class="np-btn np-btn-primary" id="cpSetupNextBtn">Fragen starten →</button>' +
       '</div>';
 
     var nameInput = document.getElementById("cpNameInput");
@@ -7199,7 +7199,7 @@
       '<div class="cp-section"><div class="cp-section-title">Charakter-Hook</div><p class="cp-hook">„' + escapeAttr(r.hook) + '“</p></div>' +
       rpgHtml + historyHtml +
       '<div class="cp-actions">' +
-        '<button type="button" class="np-btn" id="cpRetakeBtn">Neues Profil erstellen</button>' +
+        '<button type="button" class="np-btn np-btn-primary" id="cpRetakeBtn">Neues Profil erstellen</button>' +
         (cpResults.length > 1 ? ('<button type="button" class="np-btn np-btn-ghost" id="cpHistoryBtn">' + (cpShowHistory ? "Verlauf ausblenden" : "Verlauf anzeigen") + '</button>') : "") +
       '</div>';
 
