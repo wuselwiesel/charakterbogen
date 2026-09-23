@@ -7202,32 +7202,51 @@
   }
 
   /* ---- Charakterprofil als PDF (nutzt die PDF-Basis-Helfer von buildPdf(): textBL/lineBL/rectBL/
-     drawPageTitle/footer/PAGE_W/PAGE_H/MARGIN/COL_*, siehe weiter oben in der Datei). ---- */
+     roundedRectBL/drawPageTitle/footer/PAGE_W/PAGE_H/COL_*, siehe weiter oben in der Datei).
+     Eigenes, grosszuegigeres Layout (M statt MARGIN, feste Zeilenhoehen BAR_ROW_H/COMPASS_ROW_H/
+     CHIP_ROW_H) statt des engen Charakterbogen-Rasters: Daten (Balken/Chips) in Helvetica,
+     Fliesstext in Times, damit sich "Statblock" und "Erzaehltext" auch typografisch unterscheiden. ---- */
+  var CP_PDF_M = 56;
+  var CP_PDF_BAR_ROW_H = 40;
+  var CP_PDF_COMPASS_ROW_H = 52;
+  var CP_PDF_CHIP_ROW_H = 22;
+  var CP_PDF_COL = {
+    primary: [108, 79, 214],
+    accent: [224, 149, 43],
+    accentText: [185, 118, 26],
+    accentSoft: [251, 235, 210],
+    muted: [110, 110, 110],
+    track: [237, 235, 244],
+    panelFill: [246, 244, 252],
+    panelBorder: [223, 217, 240]
+  };
   function cpPdfBar(doc, x, yTop, width, label, valuePct, fillRgb, highlight){
     var v = Math.max(0, Math.min(100, Math.round(valuePct)));
-    doc.setFont("helvetica", highlight ? "bold" : "normal"); doc.setFontSize(9.5);
+    doc.setFont("helvetica", highlight ? "bold" : "normal"); doc.setFontSize(10);
     doc.setTextColor.apply(doc, COL_TEXT);
-    textBL(doc, x, yTop - 9, label);
-    doc.setFont("helvetica", "normal"); doc.setFontSize(9.5);
-    textBL(doc, x + width, yTop - 9, v + " %", { align: "right" });
-    var barY = yTop - 12, barH = 6;
-    doc.setFillColor(233, 233, 238);
+    textBL(doc, x, yTop - 11, label);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+    doc.setTextColor.apply(doc, CP_PDF_COL.muted);
+    textBL(doc, x + width, yTop - 11, v + " %", { align: "right" });
+    var barY = yTop - 19, barH = 8;
+    doc.setFillColor.apply(doc, CP_PDF_COL.track);
     rectBL(doc, x, barY - barH, width, barH, "F");
     if (v > 0) {
       doc.setFillColor.apply(doc, fillRgb);
       rectBL(doc, x, barY - barH, width * (v / 100), barH, "F");
     }
-    return 12 + barH + 10;
+    return CP_PDF_BAR_ROW_H;
   }
   function cpPdfCompass(doc, x, yTop, width, label, value, leftLabel, rightLabel, accentRgb){
     var v = Math.max(-100, Math.min(100, Math.round(value)));
-    doc.setFont("helvetica", "bold"); doc.setFontSize(9.5);
+    doc.setFont("helvetica", "bold"); doc.setFontSize(10);
     doc.setTextColor.apply(doc, COL_TEXT);
-    textBL(doc, x, yTop - 9, label);
+    textBL(doc, x, yTop - 11, label);
     doc.setFont("helvetica", "normal");
-    textBL(doc, x + width, yTop - 9, (v > 0 ? "+" : "") + v, { align: "right" });
-    var barY = yTop - 12, barH = 6;
-    doc.setFillColor(233, 233, 238);
+    doc.setTextColor.apply(doc, CP_PDF_COL.muted);
+    textBL(doc, x + width, yTop - 11, (v > 0 ? "+" : "") + v, { align: "right" });
+    var barY = yTop - 19, barH = 8;
+    doc.setFillColor.apply(doc, CP_PDF_COL.track);
     rectBL(doc, x, barY - barH, width, barH, "F");
     var pct = 0.5 + v / 200;
     var fx = x + width * Math.min(0.5, pct);
@@ -7236,124 +7255,212 @@
       doc.setFillColor.apply(doc, accentRgb);
       rectBL(doc, fx, barY - barH, fw, barH, "F");
     }
-    doc.setDrawColor.apply(doc, COL_BORDER);
-    doc.setLineWidth(0.6);
-    lineBL(doc, x + width / 2, barY - barH, x + width / 2, barY);
-    doc.setFont("helvetica", "normal"); doc.setFontSize(7.5);
-    doc.setTextColor(140, 140, 140);
-    textBL(doc, x, barY - barH - 9, leftLabel);
-    textBL(doc, x + width, barY - barH - 9, rightLabel, { align: "right" });
-    return 12 + barH + 16;
+    doc.setDrawColor.apply(doc, CP_PDF_COL.panelBorder);
+    doc.setLineWidth(1);
+    lineBL(doc, x + width / 2, barY - barH - 2, x + width / 2, barY + 2);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    textBL(doc, x, barY - barH - 13, leftLabel);
+    textBL(doc, x + width, barY - barH - 13, rightLabel, { align: "right" });
+    return CP_PDF_COMPASS_ROW_H;
+  }
+  function cpPdfChip(doc, x, yTop, text, textRgb){
+    doc.setFont("helvetica", "bold"); doc.setFontSize(9.5);
+    var w = doc.getTextWidth(text) + 22;
+    doc.setFillColor(255, 255, 255);
+    doc.setDrawColor.apply(doc, textRgb);
+    doc.setLineWidth(0.8);
+    roundedRectBL(doc, x, yTop - CP_PDF_CHIP_ROW_H, w, CP_PDF_CHIP_ROW_H, CP_PDF_CHIP_ROW_H / 2, "FD");
+    doc.setTextColor.apply(doc, textRgb);
+    textBL(doc, x + w / 2, yTop - CP_PDF_CHIP_ROW_H / 2 - 3.3, text, { align: "center" });
+    return w;
   }
   function buildCharacterProfilePdf(r){
     var jsPDFCtor = window.jspdf.jsPDF;
     var doc = new jsPDFCtor({ unit: "pt", format: "a4" });
-    var COL_PRIMARY_RGB = [108, 79, 214];
-    var COL_ACCENT_RGB = [224, 149, 43];
-    var COL_ACCENT_TEXT_RGB = [185, 118, 26];
-    var textWidth = PAGE_W - 2 * MARGIN;
+    var M = CP_PDF_M;
+    var textWidth = PAGE_W - 2 * M;
     var pageLabel = "Charakterprofil";
 
     function ensureSpace(needed, curY){
-      if (curY - needed < MARGIN + 24) {
+      if (curY - needed < M + 28) {
         footer(doc, "Seite " + doc.internal.getNumberOfPages() + " – " + pageLabel);
         doc.addPage();
-        return PAGE_H - MARGIN - 10;
+        return PAGE_H - M - 12;
       }
       return curY;
     }
-    function heading(text, curY){
-      curY = ensureSpace(28, curY);
-      doc.setFont("helvetica", "bold"); doc.setFontSize(13.5);
-      doc.setTextColor.apply(doc, COL_TEXT);
-      textBL(doc, MARGIN, curY, text);
-      doc.setDrawColor.apply(doc, COL_BORDER);
-      doc.setLineWidth(0.6);
-      lineBL(doc, MARGIN, curY - 6, PAGE_W - MARGIN, curY - 6);
-      return curY - 22;
+    function newPage(curY){
+      footer(doc, "Seite " + doc.internal.getNumberOfPages() + " – " + pageLabel);
+      doc.addPage();
+      return PAGE_H - M - 12;
     }
-    function paragraph(text, curY){
-      if (!text) return curY;
-      doc.setFont("helvetica", "normal"); doc.setFontSize(10.5);
+    /* Datensektionen (Helvetica, mit Trennlinie) vs. Erzaehlsektionen (Times, ohne Linie) -
+       die Linie markiert "Statblock", ihr Fehlen "Fliesstext". */
+    function heading(text, curY, narrative){
+      curY = ensureSpace(70, curY); // Ueberschrift nie allein am Seitenende ("orphan")
+      doc.setFont(narrative ? "times" : "helvetica", "bold"); doc.setFontSize(narrative ? 15.5 : 13.5);
       doc.setTextColor.apply(doc, COL_TEXT);
-      var lines = doc.splitTextToSize(text, textWidth);
+      textBL(doc, M, curY, text);
+      if (!narrative) {
+        doc.setDrawColor.apply(doc, CP_PDF_COL.panelBorder);
+        doc.setLineWidth(0.75);
+        lineBL(doc, M, curY - 9, PAGE_W - M, curY - 9);
+        return curY - 30;
+      }
+      return curY - 26;
+    }
+    function paragraph(text, curY, opts){
+      if (!text) return curY;
+      opts = opts || {};
+      var indent = opts.indent || 0;
+      var w = textWidth - indent * 2;
+      var style = opts.style || "normal";
+      doc.setFont("times", style); doc.setFontSize(opts.size || 11);
+      doc.setTextColor.apply(doc, COL_TEXT);
+      var lineH = opts.lineH || 17;
+      var lines = doc.splitTextToSize(text, w);
       lines.forEach(function(line){
-        curY = ensureSpace(15, curY);
-        textBL(doc, MARGIN, curY, line);
-        curY -= 15;
+        curY = ensureSpace(lineH, curY);
+        textBL(doc, M + indent, curY, line);
+        curY -= lineH;
       });
-      return curY - 8;
+      return curY - 16;
     }
 
     var y = drawPageTitle(doc, "Charakterprofil");
-    y -= 30;
-    doc.setFont("helvetica", "bold"); doc.setFontSize(18);
+    y -= 36;
+    doc.setFont("helvetica", "bold"); doc.setFontSize(20);
     doc.setTextColor.apply(doc, COL_TEXT);
     textBL(doc, PAGE_W / 2, y, r.characterName || "Unbenannt", { align: "center" });
-    y -= 22;
-    doc.setFont("helvetica", "normal"); doc.setFontSize(12);
-    doc.setTextColor(110, 110, 110);
-    textBL(doc, PAGE_W / 2, y, r.alignment.label + "  ·  " + r.archetype.displayName, { align: "center" });
-    y -= 34;
+    y -= 24;
+    doc.setFont("times", "italic"); doc.setFontSize(12.5);
+    doc.setTextColor.apply(doc, CP_PDF_COL.muted);
+    textBL(doc, PAGE_W / 2, y, r.alignment.label + "   " + String.fromCharCode(0x2022) + "   " + r.archetype.displayName, { align: "center" });
+    y -= 40;
 
-    y = heading("Auf einen Blick", y);
-    y -= cpPdfCompass(doc, MARGIN, y, textWidth, "Ordnung", r.alignment.ordnung, "Chaotisch", "Rechtschaffen", COL_ACCENT_RGB);
-    y -= cpPdfCompass(doc, MARGIN, y, textWidth, "Moral", r.alignment.moral, "Böse", "Gut", COL_ACCENT_RGB);
-    y -= 6;
-
-    y = heading("Charakterprofil", y);
-    y = paragraph(r.profileText, y);
+    /* "Auf einen Blick": eigenes, umrandetes Panel statt loser Zeilen - Hoehe ist
+       fix (Chip-Zeile + 2 Kompass-Zeilen + Innenabstand), damit der Hintergrund vor
+       dem Inhalt gezeichnet werden kann. */
     var secondaryArc = r.archetype.secondary ? (r.archetype.scores || []).filter(function(a){ return a.id === r.archetype.secondary; })[0] : null;
-    if (secondaryArc) y = paragraph("Sekundär: " + secondaryArc.label + ". " + secondaryArc.description, y);
+    var panelPad = 22;
+    var panelH = panelPad + CP_PDF_CHIP_ROW_H + 20 + CP_PDF_COMPASS_ROW_H + CP_PDF_COMPASS_ROW_H + panelPad;
+    y = ensureSpace(panelH + 40, y);
+    y = heading("Auf einen Blick", y);
+    var panelTop = y;
+    doc.setFillColor.apply(doc, CP_PDF_COL.panelFill);
+    doc.setDrawColor.apply(doc, CP_PDF_COL.panelBorder);
+    doc.setLineWidth(1);
+    roundedRectBL(doc, M, panelTop - panelH, textWidth, panelH, 10, "FD");
 
+    var chipY = panelTop - panelPad;
+    var chipX = M + panelPad;
+    chipX += cpPdfChip(doc, chipX, chipY, "Alignment " + String.fromCharCode(0x2022) + " " + r.alignment.label, CP_PDF_COL.primary) + 10;
+    chipX += cpPdfChip(doc, chipX, chipY, "Archetyp " + String.fromCharCode(0x2022) + " " + r.archetype.displayName, CP_PDF_COL.accentText) + 10;
+    if (secondaryArc) cpPdfChip(doc, chipX, chipY, "Sekundär " + String.fromCharCode(0x2022) + " " + secondaryArc.label, CP_PDF_COL.muted);
+
+    var compassX = M + panelPad, compassW = textWidth - panelPad * 2;
+    var compassY = chipY - CP_PDF_CHIP_ROW_H - 20;
+    compassY -= cpPdfCompass(doc, compassX, compassY, compassW, "Ordnung", r.alignment.ordnung, "Chaotisch", "Rechtschaffen", CP_PDF_COL.accent);
+    cpPdfCompass(doc, compassX, compassY, compassW, "Moral", r.alignment.moral, "Böse", "Gut", CP_PDF_COL.accent);
+    y = panelTop - panelH - 34;
+
+    y = heading("Charakterprofil", y, true);
+    y = paragraph(r.profileText, y, { indent: 12 });
+    if (secondaryArc) y = paragraph("Sekundär: " + secondaryArc.label + ". " + secondaryArc.description, y, { indent: 12, style: "italic" });
+
+    var archScores = (r.archetype.scores || []).slice(0, 5);
+    var archNeeded = 40 + archScores.length * CP_PDF_BAR_ROW_H;
+    if (y - archNeeded < M + 28) y = newPage(y);
     y = heading("Archetyp-Übereinstimmung", y);
-    (r.archetype.scores || []).slice(0, 5).forEach(function(a, i){
-      y = ensureSpace(40, y);
+    archScores.forEach(function(a, i){
       var tag = a.id === r.archetype.primary ? " (primär)" : (r.archetype.secondary && a.id === r.archetype.secondary ? " (sekundär)" : "");
-      y -= cpPdfBar(doc, MARGIN, y, textWidth, (i + 1) + ". " + a.label + tag, a.score, COL_PRIMARY_RGB, i === 0);
+      y -= cpPdfBar(doc, M, y, textWidth, (i + 1) + ". " + a.label + tag, a.score, CP_PDF_COL.primary, i === 0);
     });
+    y -= 10;
 
+    /* Charaktereigenschaften: eigene Seite, zweispaltig - alle 20 Werte (5 Gruppen a 4) passen
+       damit locker auf eine Seite statt eng ueber zwei Spalten zu laufen. Die Gruppenaufteilung
+       3/2 ist mit M=56pt/BAR_ROW_H=40pt so bemessen, dass beide Spalten sicher auf eine A4-Seite
+       passen (kein eigenes ensureSpace pro Balken noetig). */
+    y = newPage(y);
     y = heading("Charaktereigenschaften", y);
-    CHARPROFILE_TRAIT_GROUPS.forEach(function(g){
-      y = ensureSpace(20, y);
-      doc.setFont("helvetica", "bold"); doc.setFontSize(10.5);
-      doc.setTextColor.apply(doc, COL_ACCENT_TEXT_RGB);
-      textBL(doc, MARGIN, y, g.title);
-      y -= 16;
-      g.axes.forEach(function(ax){
-        y = ensureSpace(40, y);
-        var dominant = (r.dominantTraits || []).some(function(t){ return t.id === ax; });
-        y -= cpPdfBar(doc, MARGIN, y, textWidth, CHARPROFILE_AXIS_LABELS[ax], r.axisScores[ax], dominant ? COL_ACCENT_RGB : COL_PRIMARY_RGB, dominant);
+    var colGutter = 30;
+    var colW = (textWidth - colGutter) / 2;
+    var leftX = M, rightX = M + colW + colGutter;
+    var colTopY = y;
+    function drawTraitColumn(groups, colX){
+      var cy = colTopY;
+      groups.forEach(function(g){
+        doc.setFont("helvetica", "bold"); doc.setFontSize(11.5);
+        doc.setTextColor.apply(doc, CP_PDF_COL.accentText);
+        textBL(doc, colX, cy, g.title);
+        cy -= 24;
+        g.axes.forEach(function(ax){
+          var dominant = (r.dominantTraits || []).some(function(t){ return t.id === ax; });
+          cy -= cpPdfBar(doc, colX, cy, colW, CHARPROFILE_AXIS_LABELS[ax], r.axisScores[ax], dominant ? CP_PDF_COL.accent : CP_PDF_COL.primary, dominant);
+        });
+        cy -= 18;
       });
-      y -= 6;
-    });
+      return cy;
+    }
+    var leftEndY = drawTraitColumn(CHARPROFILE_TRAIT_GROUPS.slice(0, 3), leftX);
+    var rightEndY = drawTraitColumn(CHARPROFILE_TRAIT_GROUPS.slice(3), rightX);
+    doc.setDrawColor.apply(doc, CP_PDF_COL.panelBorder);
+    doc.setLineWidth(0.75);
+    lineBL(doc, rightX - colGutter / 2, Math.min(leftEndY, rightEndY), rightX - colGutter / 2, colTopY + 8);
+    y = Math.min(leftEndY, rightEndY) - 10;
 
-    y = heading("Innerer Konflikt: " + r.innerConflict.label, y);
-    y = paragraph(r.innerConflict.text, y);
-
-    y = heading("Moralisches Verhalten", y);
-    y = paragraph(r.moralText, y);
-
-    y = heading("Beziehungen", y);
-    y = paragraph(r.relationshipsText, y);
-
-    y = heading("Übernatürliches Verhalten", y);
-    y = paragraph(r.supernaturalText, y);
-
-    y = heading("Charakter-Hook", y);
-    doc.setFont("helvetica", "italic"); doc.setFontSize(11);
+    y = newPage(y);
+    /* Innerer Konflikt bekommt wie in der Web-Ansicht eine eigene, farbig hinterlegte Box -
+       der einzige hervorgehobene Kasten im Fliesstext-Teil. */
+    var conflictLines = doc.splitTextToSize(r.innerConflict.text, textWidth - 44);
+    var conflictBoxH = 34 + conflictLines.length * 16.5 + 20;
+    y = ensureSpace(conflictBoxH + 50, y);
+    y = heading("Innerer Konflikt", y, true);
+    var boxTop = y;
+    doc.setFillColor.apply(doc, CP_PDF_COL.accentSoft);
+    roundedRectBL(doc, M, boxTop - conflictBoxH, textWidth, conflictBoxH, 8, "F");
+    doc.setFont("times", "bold"); doc.setFontSize(12);
+    doc.setTextColor.apply(doc, CP_PDF_COL.accentText);
+    textBL(doc, M + 22, boxTop - 24, r.innerConflict.label);
+    doc.setFont("times", "italic"); doc.setFontSize(11);
     doc.setTextColor.apply(doc, COL_TEXT);
-    y = paragraph("„" + r.hook + "“", y);
+    var cly = boxTop - 24 - 22;
+    conflictLines.forEach(function(line){ textBL(doc, M + 22, cly, line); cly -= 16.5; });
+    y = boxTop - conflictBoxH - 30;
+
+    y = heading("Moralisches Verhalten", y, true);
+    y = paragraph(r.moralText, y, { indent: 12 });
+
+    y = heading("Beziehungen", y, true);
+    y = paragraph(r.relationshipsText, y, { indent: 12 });
+
+    y = heading("Übernatürliches Verhalten", y, true);
+    y = paragraph(r.supernaturalText, y, { indent: 12 });
+
+    /* Charakter-Hook als Zitat mit Akzentlinie, wie die Sprechblasen-Optik der Web-Ansicht. */
+    var hookLines = doc.splitTextToSize("„" + r.hook + "“", textWidth - 44);
+    var hookH = hookLines.length * 18;
+    y = ensureSpace(hookH + 60, y);
+    y = heading("Charakter-Hook", y, true);
+    doc.setFillColor.apply(doc, CP_PDF_COL.primary);
+    rectBL(doc, M, y - hookH + 4, 3, hookH, "F");
+    doc.setFont("times", "italic"); doc.setFontSize(12.5);
+    doc.setTextColor.apply(doc, COL_TEXT);
+    var hy = y;
+    hookLines.forEach(function(line){ textBL(doc, M + 22, hy, line); hy -= 18; });
+    y = hy - 20;
 
     if (isCharprofileRpgTraitsEnabled() && r.rpgTraits && r.rpgTraits.length) {
       y = heading("RPG-Auswirkungen", y);
       r.rpgTraits.forEach(function(rt){
-        y = ensureSpace(30, y);
-        doc.setFont("helvetica", "bold"); doc.setFontSize(10.5);
+        y = ensureSpace(34, y);
+        doc.setFont("helvetica", "bold"); doc.setFontSize(11);
         doc.setTextColor.apply(doc, COL_TEXT);
-        textBL(doc, MARGIN, y, rt.label);
-        y -= 14;
-        y = paragraph(rt.effect, y);
+        textBL(doc, M, y, rt.label);
+        y -= 18;
+        y = paragraph(rt.effect, y, { size: 10, lineH: 14.5 });
       });
     }
 
