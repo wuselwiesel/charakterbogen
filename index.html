@@ -3219,6 +3219,13 @@
           <div><p class="np-bento-name" style="margin-bottom:2px;">Würfelverlauf</p><p class="np-bento-desc">Alle Würfe der Runde.</p></div>
         </button>
       </div>
+
+      <div class="np-dash-row">
+        <button type="button" class="np-dash-mini-card" data-np-open="charakterprofil" style="grid-column: 1 / -1;">
+          <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1.5 2 4 3 7 3 0 8-3.5 12-7 15-3.5-3-7-7-7-15 3 0 5.5-1 7-3z"/></svg></span>
+          <div><p class="np-bento-name" style="margin-bottom:2px;">Charakterprofil</p><p class="np-bento-desc">35 Fragen, ein Alignment, ein Archetyp.</p></div>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -6871,8 +6878,9 @@
   function cpRenderLoading(){ cpBodyEl.innerHTML = '<p class="cp-empty-hint">Lädt …</p>'; }
   function cpRenderNoCharacter(){ cpBodyEl.innerHTML = '<p class="cp-empty-hint">Kein Charakter geladen.</p>'; }
   function cpRenderError(err){
+    var msg = err && err.message ? String(err.message).replace(/\.+$/, "") : "";
     cpBodyEl.innerHTML = '<p class="cp-empty-hint">Charakterprofil konnte nicht geladen werden' +
-      (err && err.message ? (": " + escapeAttr(err.message)) : "") + '.</p>';
+      (msg ? (": " + escapeAttr(msg)) : "") + '.</p>';
   }
 
   /* Lazy: wird nur aufgerufen, wenn der Tab tatsaechlich geoeffnet wird (nicht bei jedem
@@ -7654,7 +7662,8 @@
     legende:        { title: "Attribute erklärt", editable: false },
     wuerfelverlauf: { title: "Würfelverlauf",     editable: false },
     kommentare:     { title: "Feed",              editable: false },
-    wuerfeln:       { title: "Würfeln",           editable: false }
+    wuerfeln:       { title: "Würfeln",           editable: false },
+    charakterprofil:{ title: "Charakterprofil",   editable: false }
   };
 
   function enterFeaturePage(pageKey){
