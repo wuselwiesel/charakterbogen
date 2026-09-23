@@ -2426,13 +2426,33 @@
   .cp-bar-top { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--np-ink-soft); margin-bottom: 4px; }
   .cp-bar-track { height: 8px; border-radius: 999px; background: var(--np-surface-2); overflow: hidden; }
   .cp-bar-fill { height: 100%; border-radius: 999px; background: var(--np-primary); transition: width .4s var(--np-ease); }
+  .cp-bar-row-dominant .cp-bar-top { color: var(--np-ink); font-weight: 700; }
+  .cp-bar-row-dominant .cp-bar-fill { background: var(--np-accent); }
 
   .cp-section { margin-top: 24px; }
   .cp-section-title { font-size: 12.5px; font-weight: 700; color: var(--np-ink-faint); letter-spacing: .04em; text-transform: uppercase; margin-bottom: 10px; }
   .cp-profile-text { font-size: 14.5px; line-height: 1.65; color: var(--np-ink); }
 
+  .cp-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .cp-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--np-ink); background: var(--np-primary-soft); border: 1px solid var(--np-border-soft); border-radius: 999px; padding: 6px 12px; }
+
+  .cp-compass { display: flex; flex-direction: column; gap: 14px; }
+  .cp-compass-top { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 700; color: var(--np-ink-soft); margin-bottom: 4px; }
+  .cp-compass-track { position: relative; height: 8px; border-radius: 999px; background: var(--np-surface-2); overflow: hidden; }
+  .cp-compass-mid { position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--np-border); }
+  .cp-compass-fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: var(--np-accent); }
+  .cp-compass-ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--np-ink-faint); margin-top: 4px; }
+
+  .cp-trait-group { margin-bottom: 18px; }
+  .cp-trait-group:last-child { margin-bottom: 0; }
+  .cp-trait-group-title { font-size: 12px; font-weight: 700; color: var(--np-accent-text); margin-bottom: 8px; }
+
+  .cp-archrank-item { margin-bottom: 11px; }
+  .cp-archrank-item:last-child { margin-bottom: 0; }
+
   .cp-conflict-box { background: var(--np-accent-soft); border-radius: 12px; padding: 14px 16px; }
   .cp-conflict-label { font-weight: 700; font-size: 13.5px; color: var(--np-accent-text); margin-bottom: 5px; }
+  .cp-conflict-tension { font-weight: 500; opacity: .8; text-transform: none; letter-spacing: 0; }
   .cp-conflict-text { font-size: 14px; line-height: 1.55; color: var(--np-ink); }
 
   .cp-hook { font-style: italic; font-size: 15px; line-height: 1.5; color: var(--np-ink); border-left: 3px solid var(--np-primary); padding-left: 14px; margin: 4px 0; }
@@ -3171,13 +3191,9 @@
           </div>
         </div>
         <div class="np-dash-side">
-          <button type="button" class="np-dash-mini-card" id="dashOpenAttrTile">
-            <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20v-5M12 20V8M18 20V4"/></svg></span>
-            <div><p class="np-bento-name" style="margin-bottom:2px;">Attributwerte</p><p class="np-bento-desc">Basis, Bonus, Gesamt.</p></div>
-          </button>
-          <button type="button" class="np-dash-mini-card" data-np-open="talente">
-            <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2.6 2.6 6.2 6.7.6-5.1 4.4 1.5 6.6L12 16.9l-5.7 3.5 1.5-6.6-5.1-4.4 6.7-.6z"/></svg></span>
-            <div><p class="np-bento-name" style="margin-bottom:2px;">Talente</p><p class="np-bento-desc">22 Talente, ein Budget im Blick.</p></div>
+          <button type="button" class="np-dash-mini-card" data-np-open="charakterprofil">
+            <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1.5 2 4 3 7 3 0 8-3.5 12-7 15-3.5-3-7-7-7-15 3 0 5.5-1 7-3z"/></svg></span>
+            <div><p class="np-bento-name" style="margin-bottom:2px;">Charakterprofil</p><p class="np-bento-desc">Alignment, Archetyp, Charakterzüge.</p></div>
           </button>
         </div>
       </div>
@@ -3220,12 +3236,6 @@
         </button>
       </div>
 
-      <div class="np-dash-row">
-        <button type="button" class="np-dash-mini-card" data-np-open="charakterprofil" style="grid-column: 1 / -1;">
-          <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1.5 2 4 3 7 3 0 8-3.5 12-7 15-3.5-3-7-7-7-15 3 0 5.5-1 7-3z"/></svg></span>
-          <div><p class="np-bento-name" style="margin-bottom:2px;">Charakterprofil</p><p class="np-bento-desc">35 Fragen, ein Alignment, ein Archetyp.</p></div>
-        </button>
-      </div>
     </div>
   </div>
 
@@ -3748,459 +3758,499 @@
      vollstaendig deterministisch, ohne KI-Abhaengigkeit. UI-frei: evaluateCharacterProfile()
      nimmt Antwort-IDs + Name/Ansprache entgegen und gibt ein reines Datenobjekt zurueck. */
   var CHARPROFILE_QUESTIONS = [
+    /* ===== Alltag & Persönlichkeit (10) ===== */
     {
-      id: "q01", chapter: "vertrauen",
-      header: "Ein verborgenes Geheimnis",
-      scene: "{{characterName}} bemerkt, dass eine Person, die ihm/ihr sehr nahesteht, etwas Wichtiges vor ihm/ihr verheimlicht.",
+      id: "q01", chapter: "alltag",
+      header: "Auf der Party",
+      scene: "{{characterName}} geht auf eine Party. Wo findet man ihn/sie nach einer Stunde?",
       answers: [
-        { id: "q01_a", text: "{{characterName}} lässt es zunächst auf sich beruhen. Jeder darf Geheimnisse haben.", weights: { VRT: 1, FRE: 1, UNA: 1 } },
-        { id: "q01_b", text: "{{characterName}} verlangt offen nach der Wahrheit.", weights: { WAH: 2, GER: 1, IMP: 1 } },
-        { id: "q01_c", text: "{{characterName}} beginnt heimlich herauszufinden, was dahintersteckt.", weights: { MIS: 2, MAN: 1, KON: 1 } },
-        { id: "q01_d", text: "{{characterName}} zieht sich emotional zurück.", weights: { BIN: -1, MIS: 1, SLE: 1 } },
-        { id: "q01_e", text: "{{characterName}} konfrontiert die Person direkt und wütend.", weights: { IMP: 2, GER: 1, MIS: 1 } },
-        { id: "q01_f", text: "{{characterName}} akzeptiert das Geheimnis, solange dadurch niemand gefährdet wird.", weights: { GER: 1, VRT: 1, FLX: 1 } },
+        { id: "q01_a", text: "Mitten im Raum, umringt von Leuten.", weights: { IMP: 1, BIN: 1, UNA: -1 } },
+        { id: "q01_b", text: "An der Bar, im Gespräch mit irgendjemandem.", weights: { BIN: 1, FLX: 1 } },
+        { id: "q01_c", text: "In einer Ecke, wo er/sie das Geschehen beobachtet.", weights: { MIS: 1, KON: 1, UNA: 1 } },
+        { id: "q01_d", text: "Draußen, mit ein oder zwei Leuten.", weights: { UNA: 1, BIN: 1 } },
+        { id: "q01_e", text: "Bei der Person, wegen der er/sie eigentlich überhaupt erst gekommen ist.", weights: { BIN: 2 } },
+        { id: "q01_f", text: "Irgendwo, wo es ruhiger ist.", weights: { UNA: 1, SLE: 1 } },
+        { id: "q01_g", text: "Er/Sie ist schon wieder verschwunden.", weights: { FRE: 1, UNA: 1, BIN: -1 } },
       ]
     },
     {
-      id: "q02", chapter: "vertrauen",
-      header: "Der Ex taucht wieder auf",
-      scene: "Eine frühere Beziehung von {{characterName}} taucht plötzlich wieder auf und bittet um Hilfe.",
+      id: "q02", chapter: "alltag",
+      header: "Ein freier Samstag",
+      scene: "{{characterName}} bekommt einen freien Samstag. Was macht er/sie wahrscheinlich?",
       answers: [
-        { id: "q02_a", text: "{{characterName}} hilft sofort.", weights: { EMP: 2, OPF: 2, BIN: 1 } },
-        { id: "q02_b", text: "{{characterName}} hört sich zuerst an, was passiert ist.", weights: { WAH: 1, GER: 1 } },
-        { id: "q02_c", text: "{{characterName}} verlangt eine Erklärung dafür, warum ausgerechnet er/sie helfen soll.", weights: { MIS: 1, GER: 1, KON: 1 } },
-        { id: "q02_d", text: "{{characterName}} weist die Person ab.", weights: { SLE: 2, MIS: 1, BIN: -1 } },
-        { id: "q02_e", text: "{{characterName}} hilft, hält aber bewusst Abstand.", weights: { OPF: 1, SLE: 1, MIS: 1 } },
-        { id: "q02_f", text: "{{characterName}} fragt zuerst, was für ihn/sie dabei herausspringt.", weights: { MAC: 1, MAN: 1, EMP: -1 } },
+        { id: "q02_a", text: "Freunde zusammentrommeln und etwas unternehmen.", weights: { BIN: 2, IMP: 1 } },
+        { id: "q02_b", text: "Ausschlafen und den Tag für sich haben.", weights: { UNA: 1, SLE: 1 } },
+        { id: "q02_c", text: "Spontan irgendwohin fahren.", weights: { RIS: 1, IMP: 2, FRE: 1 } },
+        { id: "q02_d", text: "Mit einer bestimmten Person Zeit verbringen.", weights: { BIN: 2 } },
+        { id: "q02_e", text: "Dinge erledigen, die er/sie schon lange vor sich herschiebt.", weights: { KON: 1, IMP: -1 } },
+        { id: "q02_f", text: "Einfach schauen, was der Tag bringt.", weights: { FLX: 1, KON: -1 } },
+        { id: "q02_g", text: "Etwas machen, das er/sie normalerweise niemandem erzählen würde.", weights: { MIS: 1, RIS: 1, FRE: 1 } },
       ]
     },
     {
-      id: "q03", chapter: "vertrauen",
-      header: "Eine kleine Lüge",
-      scene: "{{characterName}} entdeckt, dass der eigene Partner wegen einer scheinbar unwichtigen Sache gelogen hat.",
+      id: "q03", chapter: "alltag",
+      header: "Sechs Leute am Tisch",
+      scene: "{{characterName}} sitzt mit sechs Leuten an einem Tisch. Worüber redet er/sie?",
       answers: [
-        { id: "q03_a", text: "{{characterName}} beendet die Beziehung.", weights: { WAH: 2, VRG: -2, SLE: 1 } },
-        { id: "q03_b", text: "{{characterName}} versucht herauszufinden, warum gelogen wurde.", weights: { WAH: 1, EMP: 1, GER: 1 } },
-        { id: "q03_c", text: "{{characterName}} verzeiht die Lüge, wenn die Person ehrlich erklärt, warum sie gelogen hat.", weights: { VRG: 2, VRT: 1 } },
-        { id: "q03_d", text: "{{characterName}} tut so, als wäre alles in Ordnung, vergisst die Sache aber nicht.", weights: { FLX: 1, MIS: 1, IMP: -1 } },
-        { id: "q03_e", text: "{{characterName}} beginnt ebenfalls, Dinge zu verheimlichen.", weights: { MAN: 2, MIS: 1, VRT: -1 } },
-        { id: "q03_f", text: "{{characterName}} gibt der Person eine letzte Chance.", weights: { VRG: 1, KON: 1, GER: 1 } },
+        { id: "q03_a", text: "Er/Sie erzählt selbst die meisten Geschichten.", weights: { IMP: 1, BIN: 1 } },
+        { id: "q03_b", text: "Er/Sie hört hauptsächlich zu.", weights: { EMP: 1, KON: 1 } },
+        { id: "q03_c", text: "Er/Sie bringt ständig alberne Kommentare ein.", weights: { IMP: 2, FLX: 1 } },
+        { id: "q03_d", text: "Er/Sie spricht vor allem mit der Person neben ihm/ihr.", weights: { BIN: 1, UNA: 1 } },
+        { id: "q03_e", text: "Er/Sie diskutiert mit jemandem über ein Thema, das ihn/sie interessiert.", weights: { WAH: 1, GER: 1 } },
+        { id: "q03_f", text: "Er/Sie beobachtet die anderen und sagt nur gelegentlich etwas.", weights: { MIS: 1, KON: 1 } },
+        { id: "q03_g", text: "Er/Sie wechselt ständig zwischen verschiedenen Gesprächen.", weights: { IMP: 1, FRE: 1 } },
       ]
     },
     {
-      id: "q04", chapter: "vertrauen",
-      header: "Der Mensch, den {{characterName}} liebt, ist gefährlich",
-      scene: "{{characterName}} findet heraus, dass die Person, die er/sie liebt, jemanden schwer verletzt hat.",
+      id: "q04", chapter: "alltag",
+      header: "Zu spät zur Party",
+      scene: "{{characterName}} kommt zu spät zu einer Party. Was passiert?",
       answers: [
-        { id: "q04_a", text: "{{characterName}} glaubt ihm/ihr zunächst.", weights: { VRT: 2, BIN: 1 } },
-        { id: "q04_b", text: "{{characterName}} versucht herauszufinden, was wirklich passiert ist.", weights: { WAH: 2, GER: 1 } },
-        { id: "q04_c", text: "{{characterName}} hilft dabei, die Konsequenzen zu vertuschen.", weights: { LOY: 2, MAN: 1, GER: -2, WAH: -1 } },
-        { id: "q04_d", text: "{{characterName}} stellt sich gegen die geliebte Person.", weights: { GER: 2, BIN: -1 } },
-        { id: "q04_e", text: "{{characterName}} bleibt bei ihr/ihm, beobachtet sie/ihn aber genau.", weights: { BIN: 1, MIS: 1, KON: 1 } },
-        { id: "q04_f", text: "{{characterName}} beendet die Beziehung.", weights: { GER: 1, SLE: 1, BIN: -2 } },
+        { id: "q04_a", text: "Er/Sie entschuldigt sich bei allen, die gewartet haben.", weights: { GER: 1, EMP: 1 } },
+        { id: "q04_b", text: "Er/Sie tut so, als wäre er/sie gar nicht zu spät.", weights: { MAN: 1, FLX: 1 } },
+        { id: "q04_c", text: "Er/Sie kommt rein, als wäre er/sie der Mittelpunkt des Abends.", weights: { MAC: 1, IMP: 1 } },
+        { id: "q04_d", text: "Er/Sie schreibt vorher wenigstens einer Person, dass es später wird.", weights: { GER: 1, LOY: 1 } },
+        { id: "q04_e", text: "Er/Sie setzt sich erst einmal irgendwo hin und beobachtet.", weights: { KON: 1, MIS: 1 } },
+        { id: "q04_f", text: "Er/Sie hat eine völlig absurde Geschichte, warum er/sie zu spät ist.", weights: { MAN: 1, IMP: 1, FLX: 1 } },
+        { id: "q04_g", text: "Es interessiert ihn/sie ehrlich gesagt überhaupt nicht.", weights: { UNA: 1, EMP: -1 } },
       ]
     },
     {
-      id: "q05", chapter: "vertrauen",
-      header: "Die Person, die {{characterName}} liebt",
-      scene: "Die Beziehung zu einer geliebten Person würde bedeuten, dass {{characterName}} dafür einen anderen wichtigen Menschen verliert.",
+      id: "q05", chapter: "alltag",
+      header: "Komm sofort vorbei",
+      scene: "{{characterName}} bekommt eine Nachricht: „Komm sofort vorbei. Ist wichtig.“",
       answers: [
-        { id: "q05_a", text: "{{characterName}} entscheidet sich für die Liebe.", weights: { BIN: 3, LOY: -1 } },
-        { id: "q05_b", text: "{{characterName}} sucht nach einer dritten Möglichkeit.", weights: { WAH: 1, FLX: 1, RIS: 1 } },
-        { id: "q05_c", text: "{{characterName}} opfert die Beziehung.", weights: { OPF: 2, LOY: 1, BIN: -1 } },
-        { id: "q05_d", text: "{{characterName}} wartet ab, bis sich die Situation verändert.", weights: { FLX: 1, RIS: -1 } },
-        { id: "q05_e", text: "{{characterName}} entscheidet sich für sich selbst.", weights: { SLE: 2, MAC: 1, BIN: -1 } },
-        { id: "q05_f", text: "{{characterName}} versucht zuerst herauszufinden, wie groß der tatsächliche Schaden wäre.", weights: { WAH: 1, GER: 1, KON: 1 } },
+        { id: "q05_a", text: "Er/Sie fragt, was passiert ist.", weights: { WAH: 1, KON: 1 } },
+        { id: "q05_b", text: "Er/Sie fährt sofort los.", weights: { BIN: 2, IMP: 1 } },
+        { id: "q05_c", text: "Er/Sie ignoriert die Nachricht erst einmal.", weights: { UNA: 1, FRE: 1, EMP: -1 } },
+        { id: "q05_d", text: "Er/Sie ruft an.", weights: { WAH: 1, EMP: 1 } },
+        { id: "q05_e", text: "Er/Sie fragt, wer noch dort ist.", weights: { MIS: 1, KON: 1 } },
+        { id: "q05_f", text: "Er/Sie schreibt: „Wenn du mir nicht sagst, worum es geht, komme ich nicht.“", weights: { KON: 2, FRE: 1 } },
+        { id: "q05_g", text: "Er/Sie geht hin – rechnet aber mit dem Schlimmsten.", weights: { BIN: 1, MIS: 1, SLE: 1 } },
       ]
     },
     {
-      id: "q06", chapter: "vertrauen",
-      header: "Das Geheimnis des besten Freundes",
-      scene: "Der beste Freund von {{characterName}} hat etwas Unverzeihliches getan und bittet darum, dass niemand davon erfährt.",
+      id: "q06", chapter: "alltag",
+      header: "In der Bar",
+      scene: "{{characterName}} ist mit Freunden in einer Bar. Wie viel bekommt man von ihm/ihr mit?",
       answers: [
-        { id: "q06_a", text: "{{characterName}} deckt ihn/sie.", weights: { LOY: 3, GER: -2, WAH: -1 } },
-        { id: "q06_b", text: "{{characterName}} verrät ihn/sie nicht, zwingt ihn/sie aber, die Konsequenzen zu tragen.", weights: { LOY: 1, GER: 2 } },
-        { id: "q06_c", text: "{{characterName}} meldet ihn/sie.", weights: { GER: 3, LOY: -2, WAH: 1 } },
-        { id: "q06_d", text: "{{characterName}} hilft nur, wenn dadurch kein weiterer Schaden entsteht.", weights: { GER: 1, EMP: 1, FLX: 1 } },
-        { id: "q06_e", text: "{{characterName}} zieht sich zurück.", weights: { BIN: -1, SLE: 1, MIS: 1 } },
-        { id: "q06_f", text: "{{characterName}} versucht zunächst zu verstehen, warum es passiert ist.", weights: { EMP: 2, WAH: 1 } },
+        { id: "q06_a", text: "Sehr viel. Er/Sie redet ständig.", weights: { IMP: 1, BIN: 1 } },
+        { id: "q06_b", text: "Nur dann, wenn er/sie jemanden gut kennt.", weights: { MIS: 1, UNA: 1 } },
+        { id: "q06_c", text: "Er/Sie sitzt eher ruhig da und beobachtet.", weights: { KON: 1, MIS: 1 } },
+        { id: "q06_d", text: "Er/Sie ist derjenige, der alle zum Lachen bringt.", weights: { BIN: 1, IMP: 1, EMP: 1 } },
+        { id: "q06_e", text: "Er/Sie verschwindet zwischendurch immer wieder nach draußen.", weights: { UNA: 1, FRE: 1 } },
+        { id: "q06_f", text: "Er/Sie hängt hauptsächlich an einer Person.", weights: { BIN: 2 } },
+        { id: "q06_g", text: "Niemand weiß so genau, was er/sie eigentlich denkt.", weights: { MIS: 1, SLE: 1, FLX: 1 } },
       ]
     },
     {
-      id: "q07", chapter: "vertrauen",
-      header: "Die falsche Person",
-      scene: "Eine enge Freundin oder ein enger Freund von {{characterName}} verliebt sich in jemanden, dem {{characterName}} nicht vertraut.",
+      id: "q07", chapter: "alltag",
+      header: "Ein Geschenk, das nicht gefällt",
+      scene: "{{characterName}} bekommt ein Geschenk, das ihm/ihr überhaupt nicht gefällt.",
       answers: [
-        { id: "q07_a", text: "{{characterName}} erzählt sofort alles, was er/sie weiß.", weights: { WAH: 2, IMP: 1 } },
-        { id: "q07_b", text: "{{characterName}} warnt die Person, ohne konkrete Beweise zu haben.", weights: { BES: 2, MIS: 1, IMP: 1 } },
-        { id: "q07_c", text: "{{characterName}} hält sich heraus.", weights: { FRE: 1, UNA: 1, EMP: -1 } },
-        { id: "q07_d", text: "{{characterName}} beobachtet die Situation.", weights: { KON: 1, MIS: 1, GER: 1 } },
-        { id: "q07_e", text: "{{characterName}} konfrontiert die verdächtige Person.", weights: { IMP: 2, GER: 1, RIS: 1 } },
-        { id: "q07_f", text: "{{characterName}} sagt erst etwas, wenn er/sie sicher ist.", weights: { WAH: 1, GER: 1, KON: 1 } },
+        { id: "q07_a", text: "Er/Sie bedankt sich ehrlich und freundlich.", weights: { EMP: 1, FLX: 1 } },
+        { id: "q07_b", text: "Man sieht ihm/ihr sofort an, dass er/sie es hasst.", weights: { WAH: 1, IMP: 1 } },
+        { id: "q07_c", text: "Er/Sie macht einen Witz darüber.", weights: { IMP: 1, FLX: 1 } },
+        { id: "q07_d", text: "Er/Sie bedankt sich und benutzt es trotzdem irgendwann.", weights: { EMP: 1, FLX: 1 } },
+        { id: "q07_e", text: "Er/Sie fragt, warum die Person ausgerechnet das ausgesucht hat.", weights: { WAH: 1, KON: 1 } },
+        { id: "q07_f", text: "Er/Sie legt es weg und vergisst es.", weights: { UNA: 1, EMP: -1 } },
+        { id: "q07_g", text: "Er/Sie freut sich vor allem darüber, dass jemand an ihn/sie gedacht hat.", weights: { BIN: 1, EMP: 1 } },
       ]
     },
     {
-      id: "q08", chapter: "vertrauen",
-      header: "Die gut gemeinte Lüge",
-      scene: "{{characterName}} erfährt, dass Freunde ihm/ihr eine wichtige Wahrheit verschwiegen haben, um ihn/sie zu schützen.",
+      id: "q08", chapter: "alltag",
+      header: "Ein schlechter Tag",
+      scene: "{{characterName}} hat einen schlechten Tag. Was merkt man davon?",
       answers: [
-        { id: "q08_a", text: "{{characterName}} versteht ihre Entscheidung.", weights: { VRG: 2, EMP: 1 } },
-        { id: "q08_b", text: "{{characterName}} ist verletzt, weil sie ihm/ihr die Entscheidung genommen haben.", weights: { FRE: 2, UNA: 1, MIS: 1 } },
-        { id: "q08_c", text: "{{characterName}} verliert Vertrauen in sie.", weights: { VRT: -2, MIS: 2 } },
-        { id: "q08_d", text: "{{characterName}} konfrontiert sie.", weights: { IMP: 1, WAH: 1, GER: 1 } },
-        { id: "q08_e", text: "{{characterName}} hätte vermutlich dasselbe getan.", weights: { FLX: 1, EMP: 1, VRG: 1 } },
-        { id: "q08_f", text: "{{characterName}} sagt nichts, wird es aber nicht vergessen.", weights: { MIS: 1, RAC: 1, FLX: -1 } },
+        { id: "q08_a", text: "Jeder merkt es sofort.", weights: { IMP: 1, WAH: 1 } },
+        { id: "q08_b", text: "Nur Menschen, die ihn/sie wirklich kennen.", weights: { MIS: 1, UNA: 1 } },
+        { id: "q08_c", text: "Er/Sie wird ungewöhnlich still.", weights: { SLE: 1, UNA: 1 } },
+        { id: "q08_d", text: "Er/Sie wird gereizt und schnippisch.", weights: { IMP: 2 } },
+        { id: "q08_e", text: "Er/Sie tut so, als wäre alles bestens.", weights: { MAN: 1, SLE: 1 } },
+        { id: "q08_f", text: "Er/Sie sucht bewusst Gesellschaft.", weights: { BIN: 1, EMP: -1 } },
+        { id: "q08_g", text: "Er/Sie verschwindet für ein paar Stunden.", weights: { FRE: 1, UNA: 1, SLE: 1 } },
       ]
     },
     {
-      id: "q09", chapter: "vertrauen",
-      header: "Der Ausgestoßene",
-      scene: "Ein Mitglied der Gruppe von {{characterName}} wird unfair ausgeschlossen.",
+      id: "q09", chapter: "alltag",
+      header: "Niemand kennt ihn/sie",
+      scene: "{{characterName}} ist irgendwo, wo er/sie niemanden kennt.",
       answers: [
-        { id: "q09_a", text: "{{characterName}} stellt sich offen auf seine/ihre Seite.", weights: { LOY: 2, GER: 2, RIS: 1 } },
-        { id: "q09_b", text: "{{characterName}} versucht zwischen beiden Seiten zu vermitteln.", weights: { GER: 1, EMP: 1, FLX: 1 } },
-        { id: "q09_c", text: "{{characterName}} hält sich heraus.", weights: { SLE: 1, EMP: -1, FRE: 1 } },
-        { id: "q09_d", text: "{{characterName}} weist darauf hin, wenn die Person selbst Schuld trägt.", weights: { GER: 2, WAH: 1, EMP: -1 } },
-        { id: "q09_e", text: "{{characterName}} hilft ihr/ihm heimlich.", weights: { EMP: 2, MAN: 1, BES: 1 } },
-        { id: "q09_f", text: "{{characterName}} verlässt die Gruppe, wenn sie jemanden unfair fallen lässt.", weights: { GER: 2, UNA: 2, LOY: -1 } },
+        { id: "q09_a", text: "Nach zehn Minuten kennt er/sie jemanden.", weights: { BIN: 1, IMP: 1, RIS: 1 } },
+        { id: "q09_b", text: "Er/Sie bleibt erst einmal bei sich.", weights: { UNA: 1, SLE: 1 } },
+        { id: "q09_c", text: "Er/Sie sucht sich die interessanteste Person im Raum.", weights: { RIS: 1, BIN: 1 } },
+        { id: "q09_d", text: "Er/Sie beobachtet erst einmal, wie die Leute ticken.", weights: { KON: 1, MIS: 1, WAH: 1 } },
+        { id: "q09_e", text: "Er/Sie wünscht sich, wieder zu Hause zu sein.", weights: { UNA: 1, SLE: 1, BIN: -1 } },
+        { id: "q09_f", text: "Er/Sie genießt es, dass ihn/sie niemand kennt.", weights: { FRE: 2, UNA: 1 } },
+        { id: "q09_g", text: "Er/Sie tut so, als würde er/sie jemanden kennen.", weights: { MAN: 1, SLE: 1 } },
       ]
     },
     {
-      id: "q10", chapter: "vertrauen",
-      header: "Eine Bitte zu viel",
-      scene: "Der beste Freund von {{characterName}} bittet ihn/sie um etwas moralisch Falsches.",
+      id: "q10", chapter: "alltag",
+      header: "Ein ganzer Tag nur für sich",
+      scene: "{{characterName}} bekommt plötzlich einen ganzen Tag nur für sich.",
       answers: [
-        { id: "q10_a", text: "{{characterName}} lehnt ab.", weights: { GER: 2, WAH: 1, LOY: -1 } },
-        { id: "q10_b", text: "{{characterName}} sucht eine andere Möglichkeit.", weights: { FLX: 1, GER: 1, WAH: 1 } },
-        { id: "q10_c", text: "{{characterName}} tut es, weil der Freund es ebenfalls für {{characterName}} tun würde.", weights: { LOY: 3, GER: -2 } },
-        { id: "q10_d", text: "{{characterName}} fragt zuerst nach dem Grund.", weights: { WAH: 1, EMP: 1 } },
-        { id: "q10_e", text: "{{characterName}} macht es ein einziges Mal.", weights: { FLX: 2, GER: -1 } },
-        { id: "q10_f", text: "{{characterName}} sagt klar, dass Freundschaft keine Rechtfertigung für alles ist.", weights: { GER: 3, LOY: -1, WAH: 1 } },
+        { id: "q10_a", text: "Endlich Ruhe.", weights: { UNA: 1, SLE: 1 } },
+        { id: "q10_b", text: "Er/Sie ruft jemanden an.", weights: { BIN: 2 } },
+        { id: "q10_c", text: "Er/Sie macht etwas völlig Spontanes.", weights: { IMP: 2, RIS: 1 } },
+        { id: "q10_d", text: "Er/Sie arbeitet Dinge ab.", weights: { KON: 1, IMP: -1 } },
+        { id: "q10_e", text: "Er/Sie schläft.", weights: { SLE: 1 } },
+        { id: "q10_f", text: "Er/Sie geht irgendwohin, wo ihn/sie niemand kennt.", weights: { FRE: 1, UNA: 1 } },
+        { id: "q10_g", text: "Nach drei Stunden langweilt er/sie sich und sucht Gesellschaft.", weights: { BIN: 1, UNA: -1 } },
+      ]
+    },
+
+    /* ===== Beziehungen & Dating (7) ===== */
+    {
+      id: "q11", chapter: "beziehung",
+      header: "Erster Eindruck beim Date",
+      scene: "{{characterName}} hat ein Date. Was fällt seinem/ihrem Gegenüber zuerst an ihm/ihr auf?",
+      answers: [
+        { id: "q11_a", text: "Er/Sie hört erstaunlich aufmerksam zu.", weights: { EMP: 2 } },
+        { id: "q11_b", text: "Er/Sie flirtet ziemlich offensichtlich.", weights: { IMP: 1, RIS: 1 } },
+        { id: "q11_c", text: "Er/Sie wirkt zunächst etwas unnahbar.", weights: { MIS: 1, UNA: 1 } },
+        { id: "q11_d", text: "Er/Sie bringt die Person ständig zum Lachen.", weights: { BIN: 1, IMP: 1 } },
+        { id: "q11_e", text: "Er/Sie stellt ungewöhnlich viele Fragen.", weights: { WAH: 1, KON: 1 } },
+        { id: "q11_f", text: "Er/Sie erzählt viel von sich.", weights: { VRT: 1, BIN: 1 } },
+        { id: "q11_g", text: "Man kann überhaupt nicht einschätzen, was er/sie denkt.", weights: { MIS: 1, SLE: 1 } },
       ]
     },
     {
-      id: "q11", chapter: "vertrauen",
-      header: "Eine gefährliche Wahrheit",
-      scene: "{{characterName}} kennt ein Geheimnis, das das Leben eines anderen Menschen zerstören könnte.",
+      id: "q12", chapter: "beziehung",
+      header: "Verliebt",
+      scene: "{{characterName}} verliebt sich. Was verändert sich zuerst?",
       answers: [
-        { id: "q11_a", text: "{{characterName}} sagt die Wahrheit.", weights: { WAH: 3, EMP: -1 } },
-        { id: "q11_b", text: "{{characterName}} erzählt sie nur der betroffenen Person.", weights: { WAH: 1, GER: 1, KON: 1 } },
-        { id: "q11_c", text: "{{characterName}} behält das Geheimnis für sich, solange niemand gefährdet ist.", weights: { GER: 1, KON: 1, WAH: -1 } },
-        { id: "q11_d", text: "{{characterName}} sucht eine Lösung, bei der niemand die Wahrheit erfahren muss.", weights: { FLX: 2, EMP: 1 } },
-        { id: "q11_e", text: "{{characterName}} bittet eine Vertrauensperson um Rat.", weights: { BIN: 1, VRT: 1, KON: -1 } },
-        { id: "q11_f", text: "{{characterName}} behält die Information für einen späteren Zeitpunkt.", weights: { MAN: 2, KON: 1, WAH: -1 } },
+        { id: "q12_a", text: "Er/Sie wird deutlich anhänglicher.", weights: { BIN: 2 } },
+        { id: "q12_b", text: "Er/Sie versucht, es sich nicht anmerken zu lassen.", weights: { SLE: 1, MIS: 1 } },
+        { id: "q12_c", text: "Er/Sie will ständig Zeit mit der Person verbringen.", weights: { BIN: 2, UNA: -1 } },
+        { id: "q12_d", text: "Er/Sie wird eifersüchtiger.", weights: { KON: 1, MIS: 1 } },
+        { id: "q12_e", text: "Er/Sie erzählt seinem/ihrem besten Freund alles.", weights: { VRT: 1, BIN: 1 } },
+        { id: "q12_f", text: "Er/Sie verhält sich plötzlich ungewöhnlich vorsichtig.", weights: { SLE: 1, FLX: -1 } },
+        { id: "q12_g", text: "Eigentlich verändert sich gar nichts – er/sie lässt sich nichts anmerken.", weights: { SLE: 2, MIS: 1 } },
       ]
     },
     {
-      id: "q12", chapter: "vertrauen",
-      header: "Ein Versprechen",
-      scene: "Jemand vertraut {{characterName}} ein Geheimnis an, das möglicherweise eine andere Person in Gefahr bringen könnte.",
+      id: "q13", chapter: "beziehung",
+      header: "Streit mit dem Partner",
+      scene: "{{characterName}} und sein/ihr Partner streiten. Wie endet der Streit meistens?",
       answers: [
-        { id: "q12_a", text: "{{characterName}} hält das Versprechen.", weights: { LOY: 2, WAH: -1 } },
-        { id: "q12_b", text: "{{characterName}} macht klar, dass er/sie ein Versprechen nicht halten kann, wenn jemand gefährdet ist.", weights: { GER: 2, WAH: 1 } },
-        { id: "q12_c", text: "{{characterName}} schützt die gefährdete Person heimlich.", weights: { BES: 2, MAN: 1 } },
-        { id: "q12_d", text: "{{characterName}} erzählt es jemandem, der helfen kann.", weights: { GER: 1, EMP: 1, VRT: 1 } },
-        { id: "q12_e", text: "{{characterName}} sagt nichts und hofft, dass nichts passiert.", weights: { FLX: 1, RIS: 1 } },
-        { id: "q12_f", text: "{{characterName}} entscheidet spontan, welches der beiden Probleme wichtiger ist.", weights: { IMP: 2, FLX: 1 } },
+        { id: "q13_a", text: "Einer von beiden muss irgendwann lachen.", weights: { FLX: 1, BIN: 1 } },
+        { id: "q13_b", text: "Er/Sie geht erst einmal.", weights: { UNA: 1, FRE: 1 } },
+        { id: "q13_c", text: "Er/Sie will die Sache sofort klären.", weights: { KON: 1, WAH: 1 } },
+        { id: "q13_d", text: "Er/Sie sagt Dinge, die er/sie später bereut.", weights: { IMP: 2 } },
+        { id: "q13_e", text: "Er/Sie wird irgendwann einfach still.", weights: { SLE: 1, MIS: 1 } },
+        { id: "q13_f", text: "Er/Sie lässt den anderen reden und antwortet erst später.", weights: { KON: 1, IMP: -1 } },
+        { id: "q13_g", text: "Der Streit ist vorbei, aber er/sie vergisst ihn nicht.", weights: { RAC: 1, VRG: -1 } },
       ]
     },
     {
-      id: "q13", chapter: "vertrauen",
-      header: "Manipulation",
-      scene: "{{characterName}} entdeckt, dass eine Person ihn/sie monatelang manipuliert hat.",
+      id: "q14", chapter: "beziehung",
+      header: "Eifersüchtig",
+      scene: "{{characterName}} ist eifersüchtig.",
       answers: [
-        { id: "q13_a", text: "{{characterName}} bricht sofort den Kontakt ab.", weights: { SLE: 2, MIS: 1, VRG: -1 } },
-        { id: "q13_b", text: "{{characterName}} konfrontiert die Person.", weights: { GER: 2, IMP: 1 } },
-        { id: "q13_c", text: "{{characterName}} tut so, als hätte er/sie nichts bemerkt, um mehr herauszufinden.", weights: { MAN: 2, KON: 2 } },
-        { id: "q13_d", text: "{{characterName}} beginnt, die Person ebenfalls zu manipulieren.", weights: { MAN: 3, RAC: 1 } },
-        { id: "q13_e", text: "{{characterName}} vergibt, wenn die Person ehrlich zugibt, was sie getan hat.", weights: { VRG: 2, VRT: 1 } },
-        { id: "q13_f", text: "{{characterName}} lässt die Person glauben, dass sie weiterhin Kontrolle besitzt.", weights: { MAN: 2, KON: 2, RIS: 1 } },
+        { id: "q14_a", text: "Jeder merkt es.", weights: { IMP: 1, MIS: 1 } },
+        { id: "q14_b", text: "Niemand merkt etwas.", weights: { SLE: 2, MIS: 1 } },
+        { id: "q14_c", text: "Er/Sie macht einen sarkastischen Kommentar.", weights: { MAN: 1, IMP: 1 } },
+        { id: "q14_d", text: "Er/Sie fragt direkt nach.", weights: { WAH: 1, KON: -1 } },
+        { id: "q14_e", text: "Er/Sie beobachtet erst einmal.", weights: { KON: 1, MIS: 1 } },
+        { id: "q14_f", text: "Er/Sie zieht sich zurück.", weights: { UNA: 1, SLE: 1, BIN: -1 } },
+        { id: "q14_g", text: "Er/Sie flirtet demonstrativ mit jemand anderem.", weights: { RAC: 1, MAN: 1 } },
       ]
     },
     {
-      id: "q14", chapter: "vertrauen",
-      header: "Eine Wahrheit, die wehtun könnte",
-      scene: "{{characterName}} könnte eine Wahrheit erfahren, die ihm/ihr emotional sehr schaden würde.",
+      id: "q15", chapter: "beziehung",
+      header: "Wir müssen reden",
+      scene: "{{characterName}} bekommt von seinem/ihrem Partner die Nachricht: „Wir müssen reden.“",
       answers: [
-        { id: "q14_a", text: "{{characterName}} will die Wahrheit trotzdem wissen.", weights: { WAH: 2, RIS: 1 } },
-        { id: "q14_b", text: "{{characterName}} will sie nur wissen, wenn sie etwas an der Situation verändert.", weights: { FLX: 1, WAH: 1, KON: 1 } },
-        { id: "q14_c", text: "{{characterName}} möchte sie lieber nicht erfahren.", weights: { WAH: -2, SLE: 1 } },
-        { id: "q14_d", text: "{{characterName}} versucht selbst herauszufinden, was passiert ist.", weights: { WAH: 1, KON: 1, UNA: 1 } },
-        { id: "q14_e", text: "{{characterName}} fragt eine Vertrauensperson.", weights: { BIN: 1, VRT: 1 } },
-        { id: "q14_f", text: "{{characterName}} akzeptiert, mit der Unsicherheit zu leben.", weights: { FLX: 1, SLE: 1, WAH: -1 } },
+        { id: "q15_a", text: "Panik.", weights: { MIS: 1, SLE: -1 } },
+        { id: "q15_b", text: "„Okay. Wann?“", weights: { KON: 1, FLX: 1 } },
+        { id: "q15_c", text: "Er/Sie ruft sofort an.", weights: { IMP: 1, BIN: 1 } },
+        { id: "q15_d", text: "Er/Sie schreibt zehn Fragen hinterher.", weights: { KON: 1, MIS: 1 } },
+        { id: "q15_e", text: "Er/Sie wartet einfach ab.", weights: { SLE: 1, FLX: 1 } },
+        { id: "q15_f", text: "Er/Sie überlegt, was er/sie möglicherweise angestellt hat.", weights: { WAH: 1, MIS: 1 } },
+        { id: "q15_g", text: "Er/Sie geht davon aus, dass es etwas Schlimmes ist.", weights: { MIS: 2, SLE: -1 } },
       ]
     },
     {
-      id: "q15", chapter: "vertrauen",
-      header: "Eine schützende Lüge",
-      scene: "{{characterName}} hat selbst jemanden angelogen, um diese Person zu schützen. Jetzt wird er/sie direkt darauf angesprochen.",
+      id: "q16", chapter: "beziehung",
+      header: "Ein unerwartetes Kompliment",
+      scene: "{{characterName}} bekommt unerwartet ein Kompliment von der Person, für die er/sie etwas empfindet.",
       answers: [
-        { id: "q15_a", text: "{{characterName}} gibt die Lüge zu.", weights: { WAH: 2, GER: 1 } },
-        { id: "q15_b", text: "{{characterName}} erklärt, warum er/sie gelogen hat.", weights: { WAH: 1, EMP: 1 } },
-        { id: "q15_c", text: "{{characterName}} hält die Lüge aufrecht.", weights: { MAN: 1, WAH: -2, BES: 1 } },
-        { id: "q15_d", text: "{{characterName}} erzählt nur den Teil der Wahrheit, den die Person verkraften kann.", weights: { EMP: 2, FLX: 1, WAH: -1 } },
-        { id: "q15_e", text: "{{characterName}} fragt zuerst, was die andere Person bereits weiß.", weights: { KON: 1, MIS: 1 } },
-        { id: "q15_f", text: "{{characterName}} streitet alles ab.", weights: { MAN: 2, WAH: -2 } },
+        { id: "q16_a", text: "Er/Sie wird sichtlich verlegen.", weights: { SLE: 1, BIN: 1 } },
+        { id: "q16_b", text: "Er/Sie macht sofort einen Witz darüber.", weights: { IMP: 1, SLE: 1 } },
+        { id: "q16_c", text: "Er/Sie gibt das Kompliment direkt zurück.", weights: { BIN: 2, EMP: 1 } },
+        { id: "q16_d", text: "Er/Sie tut so, als hätte er/sie es kaum bemerkt.", weights: { MIS: 1, SLE: 1, FRE: 1 } },
+        { id: "q16_e", text: "Er/Sie fragt nach, ob es ernst gemeint war.", weights: { MIS: 1, WAH: 1 } },
+        { id: "q16_f", text: "Er/Sie genießt den Moment sichtlich.", weights: { BIN: 1 } },
       ]
     },
     {
-      id: "q16", chapter: "uebernatuerlich",
-      header: "Der Vampir im Freundeskreis",
-      scene: "Der beste Freund von {{characterName}} ist ein Vampir. Er behauptet, keine Menschen töten zu wollen.",
+      id: "q17", chapter: "beziehung",
+      header: "Vorstellen bei den Freunden",
+      scene: "{{characterName}}s Partner möchte ihn/sie endlich den eigenen Freunden vorstellen.",
       answers: [
-        { id: "q16_a", text: "{{characterName}} vertraut ihm/ihr.", weights: { VRT: 3, BIN: 1 } },
-        { id: "q16_b", text: "{{characterName}} hält Abstand, bis er/sie sicher ist.", weights: { MIS: 1, SLE: 1, GER: 1 } },
-        { id: "q16_c", text: "{{characterName}} möchte alles über sein/ihr Vampirdasein wissen.", weights: { WAH: 1, RIS: 1 } },
-        { id: "q16_d", text: "{{characterName}} hat Angst, würde ihn/sie aber niemals verraten.", weights: { LOY: 2, MIS: 1 } },
-        { id: "q16_e", text: "{{characterName}} setzt klare Bedingungen.", weights: { KON: 2, GER: 1 } },
-        { id: "q16_f", text: "{{characterName}} hilft dabei, das Geheimnis zu bewahren.", weights: { LOY: 2, MAN: 1, BES: 1 } },
+        { id: "q17_a", text: "Er/Sie freut sich sofort.", weights: { BIN: 2 } },
+        { id: "q17_b", text: "Er/Sie ist nervös, sagt aber zu.", weights: { SLE: 1, BIN: 1 } },
+        { id: "q17_c", text: "Er/Sie zögert die Sache erst einmal hinaus.", weights: { UNA: 1, FRE: 1, MIS: 1 } },
+        { id: "q17_d", text: "Er/Sie fragt, ob das wirklich schon nötig ist.", weights: { UNA: 2, FRE: 1 } },
+        { id: "q17_e", text: "Er/Sie bereitet sich akribisch darauf vor, einen guten Eindruck zu hinterlassen.", weights: { KON: 1, SLE: 1 } },
+        { id: "q17_f", text: "Er/Sie sagt zu, hält aber innerlich Distanz.", weights: { MIS: 1, SLE: 1, BIN: -1 } },
+      ]
+    },
+
+    /* ===== Freundschaft & soziale Situationen (6) ===== */
+    {
+      id: "q18", chapter: "freundschaft",
+      header: "Liebeskummer beim besten Freund",
+      scene: "{{characterName}}s bester Freund hat Liebeskummer. Was macht {{characterName}}?",
+      answers: [
+        { id: "q18_a", text: "Er/Sie hört die ganze Nacht zu.", weights: { EMP: 2, LOY: 1 } },
+        { id: "q18_b", text: "Er/Sie schleppt ihn/sie auf eine Party.", weights: { IMP: 1, BIN: 1 } },
+        { id: "q18_c", text: "Er/Sie besorgt Essen und lässt ihn/sie in Ruhe.", weights: { EMP: 1, BES: 1 } },
+        { id: "q18_d", text: "Er/Sie beleidigt den Ex gemeinsam mit ihm/ihr.", weights: { LOY: 2, RAC: 1 } },
+        { id: "q18_e", text: "Er/Sie versucht, das Problem zu lösen.", weights: { KON: 1, GER: 1 } },
+        { id: "q18_f", text: "Er/Sie sagt: „Vergiss die Person. Wir machen heute was.“", weights: { IMP: 1, BES: 1 } },
+        { id: "q18_g", text: "Er/Sie setzt sich einfach daneben und sagt gar nichts.", weights: { EMP: 1, KON: -1 } },
       ]
     },
     {
-      id: "q17", chapter: "uebernatuerlich",
-      header: "Eine neue Seite an {{characterName}}",
-      scene: "{{characterName}} entdeckt plötzlich übernatürliche Fähigkeiten.",
+      id: "q19", chapter: "freundschaft",
+      header: "Streit in der Gruppe",
+      scene: "{{characterName}} ist mit Freunden unterwegs, als plötzlich Streit in der Gruppe entsteht.",
       answers: [
-        { id: "q17_a", text: "{{characterName}} versucht, sein/ihr normales Leben weiterzuführen.", weights: { SLE: 1, FLX: 1 } },
-        { id: "q17_b", text: "{{characterName}} möchte lernen, die Fähigkeiten zu kontrollieren.", weights: { KON: 2, GER: 1 } },
-        { id: "q17_c", text: "{{characterName}} sucht andere Übernatürliche.", weights: { BIN: 1, RIS: 1 } },
-        { id: "q17_d", text: "{{characterName}} versteckt die Fähigkeiten vor allen.", weights: { MIS: 1, SLE: 1, MAN: 1 } },
-        { id: "q17_e", text: "{{characterName}} nutzt sie, um anderen zu helfen.", weights: { EMP: 2, OPF: 1, BES: 1 } },
-        { id: "q17_f", text: "{{characterName}} versucht, die Fähigkeiten wieder loszuwerden.", weights: { MAC: -1, KON: 1, SLE: 1 } },
+        { id: "q19_a", text: "Er/Sie versucht zu vermitteln.", weights: { GER: 1, EMP: 1 } },
+        { id: "q19_b", text: "Er/Sie stellt sich auf eine Seite.", weights: { LOY: 1, IMP: 1 } },
+        { id: "q19_c", text: "Er/Sie hält sich komplett raus.", weights: { UNA: 1, EMP: -1 } },
+        { id: "q19_d", text: "Er/Sie macht einen Witz, um die Stimmung zu entschärfen.", weights: { FLX: 1, EMP: 1 } },
+        { id: "q19_e", text: "Er/Sie sagt allen, was er/sie wirklich davon hält.", weights: { WAH: 2, IMP: 1 } },
+        { id: "q19_f", text: "Er/Sie beobachtet erst einmal, wer eigentlich das Problem ist.", weights: { MIS: 1, KON: 1 } },
+        { id: "q19_g", text: "Er/Sie geht.", weights: { UNA: 1, FRE: 1, BIN: -1 } },
       ]
     },
     {
-      id: "q18", chapter: "uebernatuerlich",
-      header: "Der Feind, der geholfen hat",
-      scene: "Ein Werwolf aus einer verfeindeten Gruppe rettet {{characterName}} das Leben.",
+      id: "q20", chapter: "freundschaft",
+      header: "Wer wird angerufen",
+      scene: "{{characterName}} braucht Hilfe. Wen ruft er/sie an?",
       answers: [
-        { id: "q18_a", text: "{{characterName}} fühlt sich verpflichtet, etwas zurückzugeben.", weights: { GER: 2, LOY: 1 } },
-        { id: "q18_b", text: "{{characterName}} bedankt sich, hält aber Abstand.", weights: { MIS: 1, GER: 1 } },
-        { id: "q18_c", text: "{{characterName}} erzählt der eigenen Gruppe davon.", weights: { WAH: 1, LOY: -1, GER: 1 } },
-        { id: "q18_d", text: "{{characterName}} behält die Begegnung geheim.", weights: { MAN: 1, UNA: 1 } },
-        { id: "q18_e", text: "{{characterName}} versucht herauszufinden, warum er/sie geholfen hat.", weights: { WAH: 1, MIS: 1, KON: 1 } },
-        { id: "q18_f", text: "{{characterName}} beginnt, den alten Konflikt infrage zu stellen.", weights: { FLX: 2, GER: 1, UNA: 1 } },
+        { id: "q20_a", text: "Seinen/ihren besten Freund.", weights: { BIN: 2, LOY: 1 } },
+        { id: "q20_b", text: "Seinen/ihren Partner.", weights: { BIN: 2 } },
+        { id: "q20_c", text: "Niemanden.", weights: { UNA: 2, SLE: 1, BIN: -1 } },
+        { id: "q20_d", text: "Die Person, die das Problem am besten lösen kann.", weights: { KON: 1, WAH: 1 } },
+        { id: "q20_e", text: "Jemanden, dem er/sie eigentlich nicht besonders nahesteht.", weights: { MIS: 1, KON: 1 } },
+        { id: "q20_f", text: "Er/Sie versucht es erst einmal allein.", weights: { UNA: 2 } },
+        { id: "q20_g", text: "Die Person, von der er/sie weiß, dass sie niemals Nein sagen würde.", weights: { MAN: 1, MAC: 1 } },
       ]
     },
     {
-      id: "q19", chapter: "uebernatuerlich",
-      header: "Das Monster, das man liebt",
-      scene: "Eine geliebte Person von {{characterName}} wird zunehmend gefährlich und könnte andere Menschen verletzen.",
+      id: "q21", chapter: "freundschaft",
+      header: "Ein Geheimnis",
+      scene: "{{characterName}} hat ein Geheimnis. Wem erzählt er/sie es?",
       answers: [
-        { id: "q19_a", text: "{{characterName}} stoppt sie.", weights: { GER: 2, BES: 1, BIN: -1 } },
-        { id: "q19_b", text: "{{characterName}} versucht zuerst, zu ihr/ihm durchzudringen.", weights: { EMP: 2, BIN: 1, VRG: 1 } },
-        { id: "q19_c", text: "{{characterName}} hilft ihr/ihm, solange niemand absichtlich verletzt wird.", weights: { LOY: 2, FLX: 1 } },
-        { id: "q19_d", text: "{{characterName}} verrät sie/ihn.", weights: { GER: 2, BIN: -2, WAH: 1 } },
-        { id: "q19_e", text: "{{characterName}} versucht gleichzeitig, sie/ihn und andere zu schützen.", weights: { BES: 2, OPF: 1, KON: 1 } },
-        { id: "q19_f", text: "{{characterName}} wartet ab, ob die Situation sich von selbst verändert.", weights: { FLX: 1, IMP: -1 } },
+        { id: "q21_a", text: "Seinem/ihrem besten Freund.", weights: { VRT: 1, BIN: 1 } },
+        { id: "q21_b", text: "Seinem/ihrem Partner.", weights: { VRT: 1, BIN: 1 } },
+        { id: "q21_c", text: "Niemandem.", weights: { SLE: 2, MIS: 1 } },
+        { id: "q21_d", text: "Einer Person, die überhaupt nichts mit seinem/ihrem Leben zu tun hat.", weights: { MIS: 1, FRE: 1 } },
+        { id: "q21_e", text: "Er/Sie erzählt es jemandem und lässt sich schwören, dass es geheim bleibt.", weights: { VRT: 1, KON: 1 } },
+        { id: "q21_f", text: "Er/Sie erzählt nur einen Teil.", weights: { MAN: 1, MIS: 1 } },
+        { id: "q21_g", text: "Er/Sie wartet, bis er/sie einen guten Grund hat, es zu erzählen.", weights: { KON: 1, WAH: -1 } },
       ]
     },
     {
-      id: "q20", chapter: "uebernatuerlich",
-      header: "Die Verwandlung",
-      scene: "Eine geliebte Person von {{characterName}} liegt im Sterben. Ein Vampir bietet an, sie zu verwandeln.",
+      id: "q22", chapter: "freundschaft",
+      header: "Etwas, das er/sie nicht machen will",
+      scene: "{{characterName}}s Freundeskreis plant etwas, das er/sie überhaupt nicht machen möchte.",
       answers: [
-        { id: "q20_a", text: "{{characterName}} lehnt es ab.", weights: { GER: 1, WAH: 1, MAC: -1 } },
-        { id: "q20_b", text: "{{characterName}} respektiert die Entscheidung der sterbenden Person.", weights: { GER: 2, EMP: 1 } },
-        { id: "q20_c", text: "{{characterName}} würde alles tun, um sie zu retten.", weights: { BIN: 3, OPF: 2, GER: -1 } },
-        { id: "q20_d", text: "{{characterName}} möchte zuerst verstehen, was die Verwandlung wirklich bedeutet.", weights: { WAH: 2, KON: 1 } },
-        { id: "q20_e", text: "{{characterName}} entscheidet selbst, wenn keine Zeit mehr bleibt.", weights: { MAC: 1, IMP: 1, KON: 1 } },
-        { id: "q20_f", text: "{{characterName}} kann die Entscheidung nicht für die andere Person treffen.", weights: { GER: 2, EMP: 1, IMP: -1 } },
+        { id: "q22_a", text: "Er/Sie macht trotzdem mit.", weights: { BIN: 1, UNA: -1 } },
+        { id: "q22_b", text: "Er/Sie sagt direkt Nein.", weights: { UNA: 2, WAH: 1 } },
+        { id: "q22_c", text: "Er/Sie schlägt etwas anderes vor.", weights: { FLX: 1, KON: 1 } },
+        { id: "q22_d", text: "Er/Sie sagt zu und sagt später wieder ab.", weights: { MAN: 1, FLX: 1 } },
+        { id: "q22_e", text: "Er/Sie geht mit, hält sich aber komplett raus.", weights: { FLX: 1, UNA: 1 } },
+        { id: "q22_f", text: "Er/Sie überzeugt alle davon, etwas anderes zu machen.", weights: { MAC: 1, KON: 1 } },
+        { id: "q22_g", text: "Er/Sie verschwindet einfach, ohne etwas zu sagen.", weights: { UNA: 1, FRE: 1, WAH: -1 } },
       ]
     },
     {
-      id: "q21", chapter: "rache",
-      header: "Eine alte Wunde",
-      scene: "Jemand hat {{characterName}} vor Jahren etwas Unwiederbringliches genommen. Jetzt ergibt sich die perfekte Gelegenheit zur Rache.",
+      id: "q23", chapter: "freundschaft",
+      header: "Lästern über Abwesende",
+      scene: "{{characterName}}s Freundeskreis lästert über eine Person, die gerade nicht dabei ist.",
       answers: [
-        { id: "q21_a", text: "{{characterName}} lässt die Vergangenheit ruhen.", weights: { VRG: 3, RAC: -2 } },
-        { id: "q21_b", text: "{{characterName}} sucht zunächst ein Gespräch.", weights: { WAH: 1, EMP: 1, VRG: 1 } },
-        { id: "q21_c", text: "{{characterName}} nimmt Rache.", weights: { RAC: 3, VRG: -2 } },
-        { id: "q21_d", text: "{{characterName}} tut so, als hätte er/sie vergeben.", weights: { FLX: 1, RAC: 1, MAN: 1 } },
-        { id: "q21_e", text: "{{characterName}} sorgt dafür, dass die Person die Konsequenzen trägt.", weights: { GER: 2, RAC: 1 } },
-        { id: "q21_f", text: "{{characterName}} versucht, nicht aus Hass zu handeln.", weights: { GER: 1, VRG: 1, KON: 1 } },
+        { id: "q23_a", text: "Er/Sie macht mit.", weights: { MIS: 1, LOY: -1 } },
+        { id: "q23_b", text: "Er/Sie wechselt das Thema.", weights: { FLX: 1, EMP: 1 } },
+        { id: "q23_c", text: "Er/Sie verteidigt die Person.", weights: { GER: 1, EMP: 1 } },
+        { id: "q23_d", text: "Er/Sie hört nur zu, sagt aber nichts.", weights: { KON: 1, MIS: 1 } },
+        { id: "q23_e", text: "Er/Sie erzählt der betroffenen Person später, was gelaufen ist.", weights: { WAH: 2, LOY: -1 } },
+        { id: "q23_f", text: "Er/Sie findet es unangenehm, bleibt aber ruhig.", weights: { EMP: 1, FLX: 1 } },
+      ]
+    },
+
+    /* ===== Übernatürliches (5) ===== */
+    {
+      id: "q24", chapter: "uebernatuerlich",
+      header: "Ein verheimlichtes Geheimnis",
+      scene: "{{characterName}} bemerkt, dass jemand in seinem/ihrem Freundeskreis etwas Übernatürliches verheimlicht.",
+      answers: [
+        { id: "q24_a", text: "Er/Sie fragt direkt.", weights: { WAH: 2, IMP: 1 } },
+        { id: "q24_b", text: "Er/Sie beobachtet die Person erst einmal.", weights: { MIS: 1, KON: 1 } },
+        { id: "q24_c", text: "Er/Sie sucht im Internet nach Antworten.", weights: { WAH: 1, KON: 1 } },
+        { id: "q24_d", text: "Er/Sie erzählt seinem/ihrem besten Freund davon.", weights: { VRT: 1, BIN: 1 } },
+        { id: "q24_e", text: "Er/Sie tut so, als hätte er/sie nichts bemerkt.", weights: { MAN: 1, MIS: 1 } },
+        { id: "q24_f", text: "Er/Sie stellt eine Falle.", weights: { KON: 2, RIS: 1, MAN: 1 } },
+        { id: "q24_g", text: "Er/Sie wartet darauf, dass die Person von selbst damit herauskommt.", weights: { KON: -1, MIS: 1 } },
       ]
     },
     {
-      id: "q22", chapter: "rache",
-      header: "Der wehrlose Feind",
-      scene: "Der größte Feind von {{characterName}} ist verletzt und völlig wehrlos.",
+      id: "q25", chapter: "uebernatuerlich",
+      header: "Eine Fähigkeit für 24 Stunden",
+      scene: "{{characterName}} könnte für 24 Stunden eine übernatürliche Fähigkeit bekommen. Welche würde er/sie wählen?",
       answers: [
-        { id: "q22_a", text: "{{characterName}} lässt ihn/sie gehen.", weights: { VRG: 2, EMP: 1, RAC: -1 } },
-        { id: "q22_b", text: "{{characterName}} sorgt dafür, dass er/sie keine Gefahr mehr darstellen kann.", weights: { GER: 1, KON: 2 } },
-        { id: "q22_c", text: "{{characterName}} tötet ihn/sie.", weights: { RAC: 3, GER: -2 } },
-        { id: "q22_d", text: "{{characterName}} lässt ihn/sie für seine/ihre Taten zur Verantwortung gezogen werden.", weights: { GER: 3 } },
-        { id: "q22_e", text: "{{characterName}} lässt ihn/sie leben, behält ihn/sie aber im Auge.", weights: { MIS: 1, KON: 1, VRG: 1 } },
-        { id: "q22_f", text: "{{characterName}} überlässt die Entscheidung jemand anderem.", weights: { FLX: 1, KON: -1 } },
+        { id: "q25_a", text: "Gedanken lesen.", weights: { MIS: 1, KON: 1 } },
+        { id: "q25_b", text: "Unsichtbar sein.", weights: { FRE: 1, UNA: 1 } },
+        { id: "q25_c", text: "Sich teleportieren können.", weights: { FRE: 1, RIS: 1 } },
+        { id: "q25_d", text: "Andere heilen können.", weights: { EMP: 2, OPF: 1 } },
+        { id: "q25_e", text: "Die Zukunft für kurze Zeit sehen.", weights: { WAH: 1, KON: 1 } },
+        { id: "q25_f", text: "Jede körperliche Verletzung überstehen.", weights: { SLE: 1, RIS: 1 } },
+        { id: "q25_g", text: "Andere dazu bringen können, ihm/ihr zu gehorchen.", weights: { MAC: 2, KON: 1 } },
       ]
     },
     {
-      id: "q23", chapter: "rache",
-      header: "Eine Entschuldigung",
-      scene: "Eine Person, die {{characterName}} schwer verletzt hat, bittet um Vergebung.",
+      id: "q26", chapter: "uebernatuerlich",
+      header: "Eine Tür, die gestern noch nicht da war",
+      scene: "{{characterName}} entdeckt eine Tür, die gestern definitiv noch nicht da war.",
       answers: [
-        { id: "q23_a", text: "{{characterName}} vergibt.", weights: { VRG: 3 } },
-        { id: "q23_b", text: "{{characterName}} vergibt, vertraut der Person aber nicht mehr.", weights: { VRG: 2, MIS: 1 } },
-        { id: "q23_c", text: "{{characterName}} verlangt Beweise dafür, dass sie sich verändert hat.", weights: { GER: 1, MIS: 1, KON: 1 } },
-        { id: "q23_d", text: "{{characterName}} kann nicht vergeben.", weights: { RAC: 2, VRG: -2 } },
-        { id: "q23_e", text: "{{characterName}} akzeptiert die Entschuldigung, wird es aber nie vergessen.", weights: { VRG: 1, MIS: 1 } },
-        { id: "q23_f", text: "{{characterName}} tut so, als hätte er/sie vergeben.", weights: { MAN: 1, FLX: 1, RAC: 1 } },
+        { id: "q26_a", text: "Er/Sie öffnet sie sofort.", weights: { RIS: 2, IMP: 1 } },
+        { id: "q26_b", text: "Er/Sie holt jemanden dazu.", weights: { BIN: 1, KON: 1 } },
+        { id: "q26_c", text: "Er/Sie fotografiert sie und geht.", weights: { SLE: 1, WAH: 1 } },
+        { id: "q26_d", text: "Er/Sie untersucht erst einmal die Umgebung.", weights: { KON: 1, WAH: 1 } },
+        { id: "q26_e", text: "Er/Sie wartet bis zum nächsten Tag.", weights: { SLE: 1, KON: -1 } },
+        { id: "q26_f", text: "Er/Sie sucht nach einem Schloss oder einer Falle.", weights: { MIS: 2, KON: 1 } },
+        { id: "q26_g", text: "Natürlich geht er/sie hinein.", weights: { RIS: 2, WAH: 1 } },
       ]
     },
     {
-      id: "q24", chapter: "rache",
-      header: "Die perfekte Gelegenheit",
-      scene: "{{characterName}} könnte sich rächen, ohne dass jemand jemals erfahren würde, dass er/sie dafür verantwortlich ist.",
+      id: "q27", chapter: "uebernatuerlich",
+      header: "Sechs fehlende Stunden",
+      scene: "{{characterName}} wacht auf und hat keine Erinnerung an die letzten sechs Stunden.",
       answers: [
-        { id: "q24_a", text: "{{characterName}} tut es nicht.", weights: { GER: 2, VRG: 1 } },
-        { id: "q24_b", text: "{{characterName}} denkt darüber nach, entscheidet sich aber wahrscheinlich dagegen.", weights: { FLX: 1, GER: 1, RAC: 1 } },
-        { id: "q24_c", text: "{{characterName}} nutzt die Gelegenheit.", weights: { RAC: 3, MAN: 1 } },
-        { id: "q24_d", text: "{{characterName}} sorgt dafür, dass die Person ihre eigenen Fehler bereut.", weights: { RAC: 1, GER: 1, MAN: 1 } },
-        { id: "q24_e", text: "{{characterName}} nutzt die Chance, wenn er/sie glaubt, dass es verdient ist.", weights: { RAC: 2, GER: 1 } },
-        { id: "q24_f", text: "{{characterName}} fragt sich zuerst, ob die Rache überhaupt etwas verändern würde.", weights: { WAH: 1, VRG: 1, KON: 1 } },
+        { id: "q27_a", text: "Er/Sie bekommt Panik.", weights: { MIS: 1, SLE: -1 } },
+        { id: "q27_b", text: "Er/Sie versucht, anhand des Handys herauszufinden, was passiert ist.", weights: { WAH: 1, KON: 1 } },
+        { id: "q27_c", text: "Er/Sie ruft sofort jemanden an.", weights: { BIN: 1, MIS: 1 } },
+        { id: "q27_d", text: "Er/Sie tut erst einmal so, als wäre alles normal.", weights: { SLE: 1, FLX: 1 } },
+        { id: "q27_e", text: "Er/Sie sucht nach körperlichen Verletzungen.", weights: { SLE: 1, WAH: 1 } },
+        { id: "q27_f", text: "Er/Sie versucht, die Nacht Stück für Stück zu rekonstruieren.", weights: { WAH: 2, KON: 1 } },
+        { id: "q27_g", text: "Er/Sie denkt sich: „Irgendwie werde ich es schon herausfinden.“", weights: { FLX: 1, SLE: 1 } },
       ]
     },
     {
-      id: "q25", chapter: "rache",
-      header: "Der Feind muss gerettet werden",
-      scene: "{{characterName}} könnte seinen/ihren größten Feind retten. Niemand würde jemals erfahren, dass {{characterName}} geholfen hat.",
+      id: "q28", chapter: "uebernatuerlich",
+      header: "Es gibt eine übernatürliche Welt",
+      scene: "{{characterName}} findet heraus, dass es eine übernatürliche Welt gibt.",
       answers: [
-        { id: "q25_a", text: "{{characterName}} rettet ihn/sie, weil er/sie nicht über Leben und Tod entscheiden will.", weights: { GER: 2, MAC: -1 } },
-        { id: "q25_b", text: "{{characterName}} rettet ihn/sie, weil er/sie nicht zu einem Mörder werden möchte.", weights: { GER: 2, EMP: 1 } },
-        { id: "q25_c", text: "{{characterName}} lässt ihn/sie sterben.", weights: { RAC: 2, GER: -2 } },
-        { id: "q25_d", text: "{{characterName}} rettet ihn/sie und sorgt anschließend dafür, dass er/sie keine Gefahr mehr darstellt.", weights: { GER: 2, KON: 2 } },
-        { id: "q25_e", text: "{{characterName}} überlässt die Situation dem Zufall.", weights: { FLX: 1, KON: -1 } },
-        { id: "q25_f", text: "{{characterName}} rettet ihn/sie unter einer Bedingung.", weights: { KON: 2, MAN: 1, GER: 1 } },
+        { id: "q28_a", text: "Er/Sie will alles darüber wissen.", weights: { WAH: 2, RIS: 1 } },
+        { id: "q28_b", text: "Er/Sie will damit nichts zu tun haben.", weights: { SLE: 1, UNA: 1 } },
+        { id: "q28_c", text: "Er/Sie findet es faszinierend.", weights: { RIS: 1, WAH: 1 } },
+        { id: "q28_d", text: "Er/Sie bekommt Angst.", weights: { SLE: 1, MIS: 1 } },
+        { id: "q28_e", text: "Er/Sie fragt sich sofort, was davon für ihn/sie gefährlich werden könnte.", weights: { SLE: 1, KON: 1 } },
+        { id: "q28_f", text: "Er/Sie sucht nach einer Möglichkeit, selbst davon zu profitieren.", weights: { MAC: 2, MAN: 1 } },
+        { id: "q28_g", text: "Er/Sie will vor allem wissen, warum ihm/ihr das bisher niemand erzählt hat.", weights: { WAH: 1, MIS: 1 } },
+      ]
+    },
+
+    /* ===== Konflikte & Grenzsituationen (4) ===== */
+    {
+      id: "q29", chapter: "grenzsituationen",
+      header: "Spontanes Geld",
+      scene: "{{characterName}} bekommt spontan 5.000 €. Was macht er/sie damit?",
+      answers: [
+        { id: "q29_a", text: "Ausgeben.", weights: { IMP: 2, RIS: 1 } },
+        { id: "q29_b", text: "Sparen.", weights: { KON: 1, SLE: 1 } },
+        { id: "q29_c", text: "Jemandem etwas davon geben.", weights: { OPF: 1, EMP: 1 } },
+        { id: "q29_d", text: "Etwas kaufen, das er/sie sich sonst nie leisten würde.", weights: { RIS: 1, IMP: 1 } },
+        { id: "q29_e", text: "Schulden bezahlen.", weights: { GER: 1, KON: 1 } },
+        { id: "q29_f", text: "Investieren.", weights: { KON: 1, MAC: 1 } },
+        { id: "q29_g", text: "Niemandem erzählen, dass er/sie das Geld hat.", weights: { MIS: 2, SLE: 1 } },
       ]
     },
     {
-      id: "q26", chapter: "macht",
-      header: "Die Kontrolle",
-      scene: "{{characterName}} erhält die Fähigkeit, die Entscheidungen anderer Menschen zu beeinflussen.",
+      id: "q30", chapter: "grenzsituationen",
+      header: "Ein entsperrtes Handy",
+      scene: "{{characterName}}s Handy liegt entsperrt vor ihm/ihr. Er/Sie könnte problemlos die Nachrichten einer anderen Person lesen.",
       answers: [
-        { id: "q26_a", text: "{{characterName}} würde diese Fähigkeit niemals benutzen.", weights: { GER: 2, MAC: -2 } },
-        { id: "q26_b", text: "{{characterName}} würde sie nur bei unmittelbarer Gefahr einsetzen.", weights: { GER: 1, BES: 1, KON: 1 } },
-        { id: "q26_c", text: "{{characterName}} würde lernen, die Fähigkeit vollständig zu kontrollieren.", weights: { KON: 2, MAC: 1 } },
-        { id: "q26_d", text: "{{characterName}} würde sie vor allen geheim halten.", weights: { MAN: 1, MIS: 1 } },
-        { id: "q26_e", text: "{{characterName}} würde sie einsetzen, wenn es notwendig erscheint.", weights: { MAC: 2, FLX: 1 } },
-        { id: "q26_f", text: "{{characterName}} würde zunächst ausprobieren, wie weit die Fähigkeit reicht.", weights: { RIS: 2, MAC: 1 } },
-      ]
-    },
-    {
-      id: "q27", chapter: "macht",
-      header: "Jemand will {{characterName}} beschützen",
-      scene: "Eine wichtige Person beginnt, Entscheidungen für {{characterName}} zu treffen, um ihn/sie zu schützen.",
-      answers: [
-        { id: "q27_a", text: "{{characterName}} lässt es zu, weil er/sie dieser Person vertraut.", weights: { VRT: 2, BIN: 1 } },
-        { id: "q27_b", text: "{{characterName}} macht klar, dass er/sie selbst entscheiden will.", weights: { FRE: 2, UNA: 1 } },
-        { id: "q27_c", text: "{{characterName}} tut so, als würde er/sie zustimmen, handelt aber trotzdem selbstständig.", weights: { MAN: 1, FRE: 1, UNA: 1 } },
-        { id: "q27_d", text: "{{characterName}} konfrontiert die Person.", weights: { IMP: 1, GER: 1, FRE: 1 } },
-        { id: "q27_e", text: "{{characterName}} akzeptiert es, solange Grenzen respektiert werden.", weights: { FLX: 1, VRT: 1, KON: 1 } },
-        { id: "q27_f", text: "{{characterName}} zieht sich zurück.", weights: { UNA: 2, BIN: -1 } },
-      ]
-    },
-    {
-      id: "q28", chapter: "macht",
-      header: "Die Machtposition",
-      scene: "{{characterName}} könnte eine einflussreiche Position innerhalb der übernatürlichen Gemeinschaft übernehmen.",
-      answers: [
-        { id: "q28_a", text: "{{characterName}} nimmt die Position an.", weights: { MAC: 2, KON: 1 } },
-        { id: "q28_b", text: "{{characterName}} lehnt sie ab.", weights: { MAC: -2, FRE: 1 } },
-        { id: "q28_c", text: "{{characterName}} nimmt sie an, um Dinge zu verändern.", weights: { GER: 1, MAC: 2 } },
-        { id: "q28_d", text: "{{characterName}} akzeptiert nur, wenn er/sie unabhängig bleiben kann.", weights: { UNA: 2, FRE: 1, MAC: 1 } },
-        { id: "q28_e", text: "{{characterName}} nutzt die Position für eigene Ziele.", weights: { MAC: 2, MAN: 2, GER: -1 } },
-        { id: "q28_f", text: "{{characterName}} überlegt zuerst, wem diese Entscheidung tatsächlich helfen oder schaden würde.", weights: { GER: 2, EMP: 1 } },
-      ]
-    },
-    {
-      id: "q29", chapter: "macht",
-      header: "Überbehütung",
-      scene: "Freunde von {{characterName}} versuchen ständig, ihn/sie zu schützen und treffen Entscheidungen über seinen/ihren Kopf hinweg.",
-      answers: [
-        { id: "q29_a", text: "{{characterName}} ist dankbar.", weights: { BIN: 2, VRT: 1 } },
-        { id: "q29_b", text: "{{characterName}} besteht auf Selbstbestimmung.", weights: { FRE: 2, UNA: 2 } },
-        { id: "q29_c", text: "{{characterName}} akzeptiert es, wenn die Gründe nachvollziehbar sind.", weights: { FLX: 1, VRT: 1 } },
-        { id: "q29_d", text: "{{characterName}} wird wütend und konfrontiert sie.", weights: { IMP: 2, FRE: 1 } },
-        { id: "q29_e", text: "{{characterName}} tut so, als würde er/sie zustimmen, handelt aber anders.", weights: { MAN: 1, FRE: 1 } },
-        { id: "q29_f", text: "{{characterName}} fragt sich, warum die anderen glauben, er/sie könne sich nicht selbst schützen.", weights: { UNA: 1, MIS: 1, FRE: 1 } },
-      ]
-    },
-    {
-      id: "q30", chapter: "macht",
-      header: "Eine gefährliche Macht",
-      scene: "{{characterName}} besitzt die Möglichkeit, einen Gegner mit einer einzigen Entscheidung dauerhaft zu vernichten.",
-      answers: [
-        { id: "q30_a", text: "{{characterName}} würde diese Macht nicht einsetzen.", weights: { GER: 2, MAC: -2 } },
-        { id: "q30_b", text: "{{characterName}} würde sie nur zum Schutz anderer einsetzen.", weights: { BES: 2, GER: 1 } },
-        { id: "q30_c", text: "{{characterName}} würde sie einsetzen, wenn der Gegner es verdient.", weights: { RAC: 1, GER: 1, MAC: 1 } },
-        { id: "q30_d", text: "{{characterName}} sucht nach einer anderen Lösung.", weights: { GER: 1, FLX: 1 } },
-        { id: "q30_e", text: "{{characterName}} entscheidet anhand der bisherigen Taten des Gegners.", weights: { GER: 2, KON: 1 } },
-        { id: "q30_f", text: "{{characterName}} behält die Möglichkeit zunächst für später.", weights: { MAC: 1, KON: 2, MAN: 1 } },
+        { id: "q30_a", text: "Er/Sie tut es.", weights: { MIS: 2, GER: -2 } },
+        { id: "q30_b", text: "Er/Sie schaut nur kurz.", weights: { MIS: 1, GER: -1 } },
+        { id: "q30_c", text: "Er/Sie legt das Handy weg.", weights: { GER: 2, VRT: 1 } },
+        { id: "q30_d", text: "Er/Sie würde es nur tun, wenn er/sie einen konkreten Verdacht hat.", weights: { MIS: 1, KON: 1 } },
+        { id: "q30_e", text: "Er/Sie macht ein Foto vom Bildschirm.", weights: { MIS: 2, MAN: 1, GER: -1 } },
+        { id: "q30_f", text: "Er/Sie gibt das Handy zurück und sagt, dass es entsperrt war.", weights: { WAH: 2, GER: 1 } },
+        { id: "q30_g", text: "Er/Sie überlegt kurz – und lässt es dann bleiben.", weights: { GER: 1, KON: 1, IMP: -1 } },
       ]
     },
     {
       id: "q31", chapter: "grenzsituationen",
-      header: "Ein unmöglicher Tausch",
-      scene: "{{characterName}} kann entweder seinen/ihren besten Freund retten oder fünf völlig fremde Menschen.",
+      header: "Der eigene Name auf der Liste",
+      scene: "{{characterName}} sieht seinen/ihren Namen auf einer Liste, auf der er/sie definitiv nicht stehen sollte.",
       answers: [
-        { id: "q31_a", text: "{{characterName}} rettet den besten Freund.", weights: { LOY: 3, GER: -1 } },
-        { id: "q31_b", text: "{{characterName}} rettet die fünf Fremden.", weights: { GER: 3, LOY: -1 } },
-        { id: "q31_c", text: "{{characterName}} sucht verzweifelt nach einer dritten Möglichkeit.", weights: { RIS: 2, OPF: 1 } },
-        { id: "q31_d", text: "{{characterName}} entscheidet danach, wer tatsächlich noch gerettet werden kann.", weights: { KON: 1, GER: 1, FLX: 1 } },
-        { id: "q31_e", text: "{{characterName}} überlässt die Entscheidung dem Zufall.", weights: { FLX: 1, KON: -1 } },
-        { id: "q31_f", text: "{{characterName}} rettet die Person, deren Verlust die größten Konsequenzen hätte.", weights: { KON: 2, GER: 1, EMP: -1 } },
+        { id: "q31_a", text: "Er/Sie versucht herauszufinden, wer die Liste erstellt hat.", weights: { WAH: 1, KON: 1 } },
+        { id: "q31_b", text: "Er/Sie tut so, als hätte er/sie nichts gesehen.", weights: { SLE: 1, MAN: 1 } },
+        { id: "q31_c", text: "Er/Sie nimmt die Liste mit.", weights: { RIS: 2, KON: 1 } },
+        { id: "q31_d", text: "Er/Sie fragt jemanden, der mehr darüber wissen könnte.", weights: { VRT: 1, WAH: 1 } },
+        { id: "q31_e", text: "Er/Sie macht ein Foto davon.", weights: { KON: 1, MIS: 1 } },
+        { id: "q31_f", text: "Er/Sie wartet ab, ob jemand bemerkt, dass er/sie sie gesehen hat.", weights: { MIS: 1, SLE: 1 } },
+        { id: "q31_g", text: "Er/Sie sucht sofort nach seinem/ihrem Namen im Internet.", weights: { WAH: 1, MIS: 1, RIS: 1 } },
       ]
     },
     {
       id: "q32", chapter: "grenzsituationen",
-      header: "Das eigene Geheimnis",
-      scene: "Das größte Geheimnis von {{characterName}} könnte das Leben eines anderen Menschen retten. Wenn es bekannt wird, könnte es jedoch das eigene Leben zerstören.",
+      header: "Ein fremdes Leben",
+      scene: "{{characterName}} bekommt die Möglichkeit, für einen Tag das Leben einer anderen Person zu leben.",
       answers: [
-        { id: "q32_a", text: "{{characterName}} offenbart das Geheimnis.", weights: { OPF: 3, GER: 1, SLE: -2 } },
-        { id: "q32_b", text: "{{characterName}} sucht nach einer anderen Lösung.", weights: { FLX: 1, RIS: 1, WAH: 1 } },
-        { id: "q32_c", text: "{{characterName}} behält es für sich.", weights: { SLE: 2, GER: -2 } },
-        { id: "q32_d", text: "{{characterName}} vertraut sich einer einzigen Person an.", weights: { VRT: 1, BIN: 1, KON: 1 } },
-        { id: "q32_e", text: "{{characterName}} wartet, bis es wirklich notwendig wird.", weights: { FLX: 1, KON: 1 } },
-        { id: "q32_f", text: "{{characterName}} opfert sich selbst, wenn es die einzige Möglichkeit ist.", weights: { OPF: 3, SLE: -2, GER: 1 } },
+        { id: "q32_a", text: "Er/Sie wählt jemanden, den er/sie liebt.", weights: { BIN: 2 } },
+        { id: "q32_b", text: "Jemanden, den er/sie hasst.", weights: { RAC: 1, RIS: 1 } },
+        { id: "q32_c", text: "Jemanden völlig Fremden.", weights: { FRE: 1, RIS: 1 } },
+        { id: "q32_d", text: "Eine Person mit sehr viel Macht.", weights: { MAC: 2 } },
+        { id: "q32_e", text: "Eine Person, die ein völlig anderes Leben führt.", weights: { FRE: 1, WAH: 1 } },
+        { id: "q32_f", text: "Er/Sie würde es überhaupt nicht tun.", weights: { UNA: 1, SLE: 1 } },
+        { id: "q32_g", text: "Er/Sie würde jemanden wählen, dessen Geheimnisse er/sie unbedingt kennen möchte.", weights: { MIS: 1, WAH: 1 } },
+      ]
+    },
+
+    /* ===== Moralische Entscheidungen (3) ===== */
+    {
+      id: "q33", chapter: "moral",
+      header: "Das Geheimnis des besten Freundes",
+      scene: "Der beste Freund von {{characterName}} hat etwas Unverzeihliches getan und bittet darum, dass niemand davon erfährt.",
+      answers: [
+        { id: "q33_a", text: "{{characterName}} deckt ihn/sie.", weights: { LOY: 3, GER: -2, WAH: -1 } },
+        { id: "q33_b", text: "{{characterName}} verrät ihn/sie nicht, zwingt ihn/sie aber, die Konsequenzen zu tragen.", weights: { LOY: 1, GER: 2 } },
+        { id: "q33_c", text: "{{characterName}} meldet ihn/sie.", weights: { GER: 3, LOY: -2, WAH: 1 } },
+        { id: "q33_d", text: "{{characterName}} hilft nur, wenn dadurch kein weiterer Schaden entsteht.", weights: { GER: 1, EMP: 1, FLX: 1 } },
+        { id: "q33_e", text: "{{characterName}} zieht sich zurück.", weights: { BIN: -1, SLE: 1, MIS: 1 } },
+        { id: "q33_f", text: "{{characterName}} versucht zunächst zu verstehen, warum es passiert ist.", weights: { EMP: 2, WAH: 1 } },
       ]
     },
     {
-      id: "q33", chapter: "grenzsituationen",
+      id: "q34", chapter: "moral",
       header: "Ein eigener Fehler",
       scene: "{{characterName}} hat einen schweren Fehler gemacht. Niemand hat ihn bemerkt und {{characterName}} könnte ihn problemlos vertuschen.",
       answers: [
-        { id: "q33_a", text: "{{characterName}} gesteht.", weights: { WAH: 3, GER: 1 } },
-        { id: "q33_b", text: "{{characterName}} versucht, den Fehler heimlich wiedergutzumachen.", weights: { GER: 1, MAN: 1, WAH: -1 } },
-        { id: "q33_c", text: "{{characterName}} erzählt den betroffenen Personen die Wahrheit.", weights: { WAH: 2, EMP: 1 } },
-        { id: "q33_d", text: "{{characterName}} lässt die Situation ihren Lauf nehmen.", weights: { SLE: 1, GER: -1, FLX: 1 } },
-        { id: "q33_e", text: "{{characterName}} vertuscht ihn, solange niemand dadurch Schaden nimmt.", weights: { WAH: -2, FLX: 1, GER: -1 } },
-        { id: "q33_f", text: "{{characterName}} übernimmt die Verantwortung, obwohl die Konsequenzen schlimm sein könnten.", weights: { GER: 2, WAH: 2, SLE: -1 } },
+        { id: "q34_a", text: "{{characterName}} gesteht.", weights: { WAH: 3, GER: 1 } },
+        { id: "q34_b", text: "{{characterName}} versucht, den Fehler heimlich wiedergutzumachen.", weights: { GER: 1, MAN: 1, WAH: -1 } },
+        { id: "q34_c", text: "{{characterName}} erzählt den betroffenen Personen die Wahrheit.", weights: { WAH: 2, EMP: 1 } },
+        { id: "q34_d", text: "{{characterName}} lässt die Situation ihren Lauf nehmen.", weights: { SLE: 1, GER: -1, FLX: 1 } },
+        { id: "q34_e", text: "{{characterName}} vertuscht ihn, solange niemand dadurch Schaden nimmt.", weights: { WAH: -2, FLX: 1, GER: -1 } },
+        { id: "q34_f", text: "{{characterName}} übernimmt die Verantwortung, obwohl die Konsequenzen schlimm sein könnten.", weights: { GER: 2, WAH: 2, SLE: -1 } },
       ]
     },
     {
-      id: "q34", chapter: "grenzsituationen",
-      header: "Das Opfer",
-      scene: "Um eine Katastrophe zu verhindern, müsste eine einzige Person geopfert werden. {{characterName}} kennt diese Person.",
+      id: "q35", chapter: "moral",
+      header: "Der Feind muss gerettet werden",
+      scene: "{{characterName}} könnte seinen/ihren größten Feind retten. Niemand würde jemals erfahren, dass {{characterName}} geholfen hat.",
       answers: [
-        { id: "q34_a", text: "{{characterName}} würde niemals einen Unschuldigen opfern.", weights: { GER: 2, EMP: 2, MAC: -1 } },
-        { id: "q34_b", text: "{{characterName}} sucht nach einer anderen Möglichkeit.", weights: { FLX: 1, RIS: 1, WAH: 1 } },
-        { id: "q34_c", text: "{{characterName}} würde eine Person opfern, um viele andere zu retten.", weights: { GER: 1, KON: 1, EMP: -2 } },
-        { id: "q34_d", text: "{{characterName}} könnte die Entscheidung nicht treffen.", weights: { FLX: -1, KON: -1 } },
-        { id: "q34_e", text: "{{characterName}} würde die betroffene Person selbst entscheiden lassen.", weights: { GER: 2, FRE: 1 } },
-        { id: "q34_f", text: "{{characterName}} würde es tun, wenn wirklich keine andere Möglichkeit existiert.", weights: { GER: 1, KON: 1, EMP: -1 } },
-      ]
-    },
-    {
-      id: "q35", chapter: "grenzsituationen",
-      header: "Die Zukunft",
-      scene: "{{characterName}} erhält die Möglichkeit, seine/ihre eigene Zukunft zu sehen. Dabei würde {{characterName}} auch erfahren, wann und wie eine wichtige Person in seinem/ihrem Leben sterben wird.",
-      answers: [
-        { id: "q35_a", text: "{{characterName}} sieht die Zukunft, egal wie schlimm sie sein könnte.", weights: { WAH: 3, RIS: 1 } },
-        { id: "q35_b", text: "{{characterName}} weigert sich, sie zu sehen.", weights: { WAH: -2, SLE: 1, FRE: 1 } },
-        { id: "q35_c", text: "{{characterName}} sieht sie, um zu verhindern, dass die Person stirbt.", weights: { BIN: 2, KON: 2, WAH: 1 } },
-        { id: "q35_d", text: "{{characterName}} sieht nur die eigene Zukunft.", weights: { SLE: 1, MIS: 1, BIN: -1 } },
-        { id: "q35_e", text: "{{characterName}} würde die Zukunft ansehen, aber niemandem davon erzählen.", weights: { MAN: 1, WAH: 1, KON: 1 } },
-        { id: "q35_f", text: "{{characterName}} würde versuchen, die Zukunft zu verändern, selbst wenn dadurch alles andere gefährdet wird.", weights: { BIN: 2, RIS: 2, KON: 1 } },
+        { id: "q35_a", text: "{{characterName}} rettet ihn/sie, weil er/sie nicht über Leben und Tod entscheiden will.", weights: { GER: 2, MAC: -1 } },
+        { id: "q35_b", text: "{{characterName}} rettet ihn/sie, weil er/sie nicht zu einem Mörder werden möchte.", weights: { GER: 2, EMP: 1 } },
+        { id: "q35_c", text: "{{characterName}} lässt ihn/sie sterben.", weights: { RAC: 2, GER: -2 } },
+        { id: "q35_d", text: "{{characterName}} rettet ihn/sie und sorgt anschließend dafür, dass er/sie keine Gefahr mehr darstellt.", weights: { GER: 2, KON: 2 } },
+        { id: "q35_e", text: "{{characterName}} überlässt die Situation dem Zufall.", weights: { FLX: 1, KON: -1 } },
+        { id: "q35_f", text: "{{characterName}} rettet ihn/sie unter einer Bedingung.", weights: { KON: 2, MAN: 1, GER: 1 } },
       ]
     },
   ];
@@ -4211,6 +4261,14 @@
     OPF: "Opferbereitschaft", RAC: "Rachebedürfnis", VRG: "Vergebungsbereitschaft", MAN: "Manipulationsneigung", IMP: "Impulsivität",
     RIS: "Risikobereitschaft", WAH: "Wahrheitsliebe", FRE: "Freiheitsbedürfnis", BIN: "Bindungsbedürfnis", FLX: "Moralische Flexibilität"
   };
+  /* Gruppierung der 20 Achsen fuer eine uebersichtliche Darstellung im Ergebnis (5 Gruppen a 4 Achsen). */
+  var CHARPROFILE_TRAIT_GROUPS = [
+    { title: "Bindung & Vertrauen", axes: ["BIN", "VRT", "MIS", "LOY"] },
+    { title: "Moral & Prinzipien", axes: ["GER", "WAH", "VRG", "FLX"] },
+    { title: "Selbstbild & Freiheit", axes: ["UNA", "FRE", "SLE", "IMP"] },
+    { title: "Macht & Umgang mit anderen", axes: ["MAC", "KON", "MAN", "RAC"] },
+    { title: "Empathie & Schutzinstinkt", axes: ["EMP", "BES", "OPF", "RIS"] }
+  ];
 
   /* ---- Pronomen-/Namens-Templating ----
      Fragen/Antworten werden mit "{{characterName}}" sowie Wortpaaren wie "ihm/ihr" (immer
@@ -6979,7 +7037,7 @@
       ? '<button type="button" class="np-btn np-btn-ghost" id="cpBackToResultBtn">Letztes Ergebnis ansehen</button>'
       : "";
     cpBodyEl.innerHTML =
-      '<p class="cp-intro-text">Ein atmosphärisches Seelenprofil: ' + CHARPROFILE_QUESTIONS.length + ' Situationen aus dem Leben deines Charakters – Liebe, Loyalität, Geheimnisse, Macht, das Übernatürliche. Jede mit mehreren möglichen Reaktionen. Am Ende entsteht daraus ein Profil mit Alignment, Archetyp und den auffälligsten Charakterzügen, berechnet aus den Antworten, nicht aus einer sichtbaren Punkteskala.</p>' +
+      '<p class="cp-intro-text">Ein atmosphärisches Charakterprofil: ' + CHARPROFILE_QUESTIONS.length + ' Situationen aus dem Leben deines Charakters – Alltag, Beziehungen, Freundschaft, das Übernatürliche, Grenzsituationen. Jede mit mehreren möglichen Reaktionen. Am Ende entsteht daraus ein ausführliches Profil mit Alignment, Archetyp und allen Charakterzügen, berechnet aus den Antworten, nicht aus einer sichtbaren Punkteskala.</p>' +
       '<div class="cp-intro-actions">' +
         '<button type="button" class="np-btn np-btn-primary" id="cpStartBtn">' + (hasHistory ? "Neues Profil erstellen" : "Profil erstellen") + '</button>' +
         resumeHtml + backHtml +
@@ -7143,25 +7201,210 @@
     return cpResults[0];
   }
 
+  /* ---- Charakterprofil als PDF (nutzt die PDF-Basis-Helfer von buildPdf(): textBL/lineBL/rectBL/
+     drawPageTitle/footer/PAGE_W/PAGE_H/MARGIN/COL_*, siehe weiter oben in der Datei). ---- */
+  function cpPdfBar(doc, x, yTop, width, label, valuePct, fillRgb, highlight){
+    var v = Math.max(0, Math.min(100, Math.round(valuePct)));
+    doc.setFont("helvetica", highlight ? "bold" : "normal"); doc.setFontSize(9.5);
+    doc.setTextColor.apply(doc, COL_TEXT);
+    textBL(doc, x, yTop - 9, label);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(9.5);
+    textBL(doc, x + width, yTop - 9, v + " %", { align: "right" });
+    var barY = yTop - 12, barH = 6;
+    doc.setFillColor(233, 233, 238);
+    rectBL(doc, x, barY - barH, width, barH, "F");
+    if (v > 0) {
+      doc.setFillColor.apply(doc, fillRgb);
+      rectBL(doc, x, barY - barH, width * (v / 100), barH, "F");
+    }
+    return 12 + barH + 10;
+  }
+  function cpPdfCompass(doc, x, yTop, width, label, value, leftLabel, rightLabel, accentRgb){
+    var v = Math.max(-100, Math.min(100, Math.round(value)));
+    doc.setFont("helvetica", "bold"); doc.setFontSize(9.5);
+    doc.setTextColor.apply(doc, COL_TEXT);
+    textBL(doc, x, yTop - 9, label);
+    doc.setFont("helvetica", "normal");
+    textBL(doc, x + width, yTop - 9, (v > 0 ? "+" : "") + v, { align: "right" });
+    var barY = yTop - 12, barH = 6;
+    doc.setFillColor(233, 233, 238);
+    rectBL(doc, x, barY - barH, width, barH, "F");
+    var pct = 0.5 + v / 200;
+    var fx = x + width * Math.min(0.5, pct);
+    var fw = width * Math.abs(pct - 0.5);
+    if (fw > 0) {
+      doc.setFillColor.apply(doc, accentRgb);
+      rectBL(doc, fx, barY - barH, fw, barH, "F");
+    }
+    doc.setDrawColor.apply(doc, COL_BORDER);
+    doc.setLineWidth(0.6);
+    lineBL(doc, x + width / 2, barY - barH, x + width / 2, barY);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(7.5);
+    doc.setTextColor(140, 140, 140);
+    textBL(doc, x, barY - barH - 9, leftLabel);
+    textBL(doc, x + width, barY - barH - 9, rightLabel, { align: "right" });
+    return 12 + barH + 16;
+  }
+  function buildCharacterProfilePdf(r){
+    var jsPDFCtor = window.jspdf.jsPDF;
+    var doc = new jsPDFCtor({ unit: "pt", format: "a4" });
+    var COL_PRIMARY_RGB = [108, 79, 214];
+    var COL_ACCENT_RGB = [224, 149, 43];
+    var COL_ACCENT_TEXT_RGB = [185, 118, 26];
+    var textWidth = PAGE_W - 2 * MARGIN;
+    var pageLabel = "Charakterprofil";
+
+    function ensureSpace(needed, curY){
+      if (curY - needed < MARGIN + 24) {
+        footer(doc, "Seite " + doc.internal.getNumberOfPages() + " – " + pageLabel);
+        doc.addPage();
+        return PAGE_H - MARGIN - 10;
+      }
+      return curY;
+    }
+    function heading(text, curY){
+      curY = ensureSpace(28, curY);
+      doc.setFont("helvetica", "bold"); doc.setFontSize(13.5);
+      doc.setTextColor.apply(doc, COL_TEXT);
+      textBL(doc, MARGIN, curY, text);
+      doc.setDrawColor.apply(doc, COL_BORDER);
+      doc.setLineWidth(0.6);
+      lineBL(doc, MARGIN, curY - 6, PAGE_W - MARGIN, curY - 6);
+      return curY - 22;
+    }
+    function paragraph(text, curY){
+      if (!text) return curY;
+      doc.setFont("helvetica", "normal"); doc.setFontSize(10.5);
+      doc.setTextColor.apply(doc, COL_TEXT);
+      var lines = doc.splitTextToSize(text, textWidth);
+      lines.forEach(function(line){
+        curY = ensureSpace(15, curY);
+        textBL(doc, MARGIN, curY, line);
+        curY -= 15;
+      });
+      return curY - 8;
+    }
+
+    var y = drawPageTitle(doc, "Charakterprofil");
+    y -= 30;
+    doc.setFont("helvetica", "bold"); doc.setFontSize(18);
+    doc.setTextColor.apply(doc, COL_TEXT);
+    textBL(doc, PAGE_W / 2, y, r.characterName || "Unbenannt", { align: "center" });
+    y -= 22;
+    doc.setFont("helvetica", "normal"); doc.setFontSize(12);
+    doc.setTextColor(110, 110, 110);
+    textBL(doc, PAGE_W / 2, y, r.alignment.label + "  ·  " + r.archetype.displayName, { align: "center" });
+    y -= 34;
+
+    y = heading("Auf einen Blick", y);
+    y -= cpPdfCompass(doc, MARGIN, y, textWidth, "Ordnung", r.alignment.ordnung, "Chaotisch", "Rechtschaffen", COL_ACCENT_RGB);
+    y -= cpPdfCompass(doc, MARGIN, y, textWidth, "Moral", r.alignment.moral, "Böse", "Gut", COL_ACCENT_RGB);
+    y -= 6;
+
+    y = heading("Charakterprofil", y);
+    y = paragraph(r.profileText, y);
+    var secondaryArc = r.archetype.secondary ? (r.archetype.scores || []).filter(function(a){ return a.id === r.archetype.secondary; })[0] : null;
+    if (secondaryArc) y = paragraph("Sekundär: " + secondaryArc.label + ". " + secondaryArc.description, y);
+
+    y = heading("Archetyp-Übereinstimmung", y);
+    (r.archetype.scores || []).slice(0, 5).forEach(function(a, i){
+      y = ensureSpace(40, y);
+      var tag = a.id === r.archetype.primary ? " (primär)" : (r.archetype.secondary && a.id === r.archetype.secondary ? " (sekundär)" : "");
+      y -= cpPdfBar(doc, MARGIN, y, textWidth, (i + 1) + ". " + a.label + tag, a.score, COL_PRIMARY_RGB, i === 0);
+    });
+
+    y = heading("Charaktereigenschaften", y);
+    CHARPROFILE_TRAIT_GROUPS.forEach(function(g){
+      y = ensureSpace(20, y);
+      doc.setFont("helvetica", "bold"); doc.setFontSize(10.5);
+      doc.setTextColor.apply(doc, COL_ACCENT_TEXT_RGB);
+      textBL(doc, MARGIN, y, g.title);
+      y -= 16;
+      g.axes.forEach(function(ax){
+        y = ensureSpace(40, y);
+        var dominant = (r.dominantTraits || []).some(function(t){ return t.id === ax; });
+        y -= cpPdfBar(doc, MARGIN, y, textWidth, CHARPROFILE_AXIS_LABELS[ax], r.axisScores[ax], dominant ? COL_ACCENT_RGB : COL_PRIMARY_RGB, dominant);
+      });
+      y -= 6;
+    });
+
+    y = heading("Innerer Konflikt: " + r.innerConflict.label, y);
+    y = paragraph(r.innerConflict.text, y);
+
+    y = heading("Moralisches Verhalten", y);
+    y = paragraph(r.moralText, y);
+
+    y = heading("Beziehungen", y);
+    y = paragraph(r.relationshipsText, y);
+
+    y = heading("Übernatürliches Verhalten", y);
+    y = paragraph(r.supernaturalText, y);
+
+    y = heading("Charakter-Hook", y);
+    doc.setFont("helvetica", "italic"); doc.setFontSize(11);
+    doc.setTextColor.apply(doc, COL_TEXT);
+    y = paragraph("„" + r.hook + "“", y);
+
+    if (isCharprofileRpgTraitsEnabled() && r.rpgTraits && r.rpgTraits.length) {
+      y = heading("RPG-Auswirkungen", y);
+      r.rpgTraits.forEach(function(rt){
+        y = ensureSpace(30, y);
+        doc.setFont("helvetica", "bold"); doc.setFontSize(10.5);
+        doc.setTextColor.apply(doc, COL_TEXT);
+        textBL(doc, MARGIN, y, rt.label);
+        y -= 14;
+        y = paragraph(rt.effect, y);
+      });
+    }
+
+    footer(doc, "Seite " + doc.internal.getNumberOfPages() + " – " + pageLabel);
+    return doc;
+  }
+
   function cpRenderResult(){
     var r = cpCurrentResult();
     if (!r) { cpState = "intro"; return cpRenderIntro(); }
 
-    function barRow(label, value){
+    function barRow(label, value, dominant){
       var v = Math.round(value);
-      return '<div class="cp-bar-row"><div class="cp-bar-top"><span>' + escapeAttr(label) + '</span><span>' + v + ' %</span></div>' +
+      return '<div class="cp-bar-row' + (dominant ? " cp-bar-row-dominant" : "") + '"><div class="cp-bar-top"><span>' + escapeAttr(label) + '</span><span>' + v + ' %</span></div>' +
         '<div class="cp-bar-track"><div class="cp-bar-fill" style="width:' + v + '%"></div></div></div>';
     }
     function textSection(title, text){
       if (!text) return "";
       return '<div class="cp-section"><div class="cp-section-title">' + escapeAttr(title) + '</div><p class="cp-profile-text">' + escapeAttr(text) + '</p></div>';
     }
+    function compassRow(label, value, leftLabel, rightLabel){
+      var v = Math.max(-100, Math.min(100, Math.round(value)));
+      var pct = 50 + v / 2;
+      var barLeft = Math.min(50, pct);
+      var barWidth = Math.abs(pct - 50);
+      return '<div class="cp-compass-row">' +
+        '<div class="cp-compass-top"><span>' + escapeAttr(label) + '</span><span>' + (v > 0 ? "+" : "") + v + '</span></div>' +
+        '<div class="cp-compass-track"><div class="cp-compass-mid"></div><div class="cp-compass-fill" style="left:' + barLeft + '%;width:' + barWidth + '%;"></div></div>' +
+        '<div class="cp-compass-ends"><span>' + escapeAttr(leftLabel) + '</span><span>' + escapeAttr(rightLabel) + '</span></div>' +
+      '</div>';
+    }
 
-    var traitBarsHtml = (r.dominantTraits || []).map(function(t){ return barRow(t.label, t.value); }).join("");
+    var dominantIds = (r.dominantTraits || []).map(function(t){ return t.id; });
+    var traitGroupsHtml = CHARPROFILE_TRAIT_GROUPS.map(function(g){
+      var rows = g.axes.map(function(ax){
+        return barRow(CHARPROFILE_AXIS_LABELS[ax], r.axisScores[ax], dominantIds.indexOf(ax) !== -1);
+      }).join("");
+      return '<div class="cp-trait-group"><div class="cp-trait-group-title">' + escapeAttr(g.title) + '</div><div class="cp-bars">' + rows + '</div></div>';
+    }).join("");
 
-    var archetypeSecondaryHtml = r.archetype.secondaryLabel
-      ? ('<p class="cp-profile-text" style="margin-top:8px;">Sekundär erkennbar: ' + escapeAttr(r.archetype.secondaryLabel) + '.</p>')
+    var secondaryArc = r.archetype.secondary ? (r.archetype.scores || []).filter(function(a){ return a.id === r.archetype.secondary; })[0] : null;
+    var archetypeSecondaryHtml = secondaryArc
+      ? ('<p class="cp-profile-text" style="margin-top:10px;"><b>Sekundär: ' + escapeAttr(secondaryArc.label) + '.</b> ' + escapeAttr(secondaryArc.description) + '</p>')
       : "";
+
+    var archRankHtml = (r.archetype.scores || []).slice(0, 5).map(function(a, i){
+      var tag = a.id === r.archetype.primary ? " (primär)" : (r.archetype.secondary && a.id === r.archetype.secondary ? " (sekundär)" : "");
+      var v = Math.round(a.score);
+      return '<div class="cp-archrank-item"><div class="cp-bar-top"><span>' + (i + 1) + '. ' + escapeAttr(a.label) + escapeAttr(tag) + '</span><span>' + v + ' %</span></div>' +
+        '<div class="cp-bar-track"><div class="cp-bar-fill" style="width:' + v + '%"></div></div></div>';
+    }).join("");
 
     var rpgHtml = "";
     if (isCharprofileRpgTraitsEnabled() && r.rpgTraits && r.rpgTraits.length) {
@@ -7185,14 +7428,26 @@
 
     cpBodyEl.innerHTML =
       '<div class="cp-result-head">' +
-        '<div class="cp-result-kicker">Seelenprofil</div>' +
+        '<div class="cp-result-kicker">Charakterprofil</div>' +
         '<div class="cp-result-name">' + escapeAttr(r.characterName || activeCharacterName || "Unbenannt") + '</div>' +
         '<div class="cp-result-alignment">' + escapeAttr(r.alignment.label) + '</div>' +
         '<div class="cp-result-archetype">„' + escapeAttr(r.archetype.displayName) + '“</div>' +
       '</div>' +
+      '<div class="cp-section"><div class="cp-section-title">Auf einen Blick</div>' +
+        '<div class="cp-badges">' +
+          '<span class="cp-badge">⚖️ ' + escapeAttr(r.alignment.label) + '</span>' +
+          '<span class="cp-badge">🎭 ' + escapeAttr(r.archetype.displayName) + '</span>' +
+          (secondaryArc ? ('<span class="cp-badge">✦ ' + escapeAttr(secondaryArc.label) + '</span>') : "") +
+        '</div>' +
+        '<div class="cp-compass">' +
+          compassRow("Ordnung", r.alignment.ordnung, "Chaotisch", "Rechtschaffen") +
+          compassRow("Moral", r.alignment.moral, "Böse", "Gut") +
+        '</div>' +
+      '</div>' +
       '<div class="cp-section"><div class="cp-section-title">Charakterprofil</div><p class="cp-profile-text">' + escapeAttr(r.profileText) + '</p>' + archetypeSecondaryHtml + '</div>' +
-      '<div class="cp-section"><div class="cp-section-title">Charaktereigenschaften</div><div class="cp-bars">' + traitBarsHtml + '</div></div>' +
-      '<div class="cp-section"><div class="cp-section-title">Innerer Konflikt</div><div class="cp-conflict-box"><div class="cp-conflict-label">' + escapeAttr(r.innerConflict.label) + '</div><div class="cp-conflict-text">' + escapeAttr(r.innerConflict.text) + '</div></div></div>' +
+      '<div class="cp-section"><div class="cp-section-title">Archetyp-Übereinstimmung</div><div class="cp-bars">' + archRankHtml + '</div></div>' +
+      '<div class="cp-section"><div class="cp-section-title">Charaktereigenschaften</div>' + traitGroupsHtml + '</div>' +
+      '<div class="cp-section"><div class="cp-section-title">Innerer Konflikt</div><div class="cp-conflict-box"><div class="cp-conflict-label">' + escapeAttr(r.innerConflict.label) + ' <span class="cp-conflict-tension">· Spannung ' + Math.round(r.innerConflict.tension) + ' %</span></div><div class="cp-conflict-text">' + escapeAttr(r.innerConflict.text) + '</div></div></div>' +
       textSection("Moralisches Verhalten", r.moralText) +
       textSection("Beziehungen", r.relationshipsText) +
       textSection("Übernatürliches Verhalten", r.supernaturalText) +
@@ -7200,10 +7455,48 @@
       rpgHtml + historyHtml +
       '<div class="cp-actions">' +
         '<button type="button" class="np-btn np-btn-primary" id="cpRetakeBtn">Neues Profil erstellen</button>' +
+        '<button type="button" class="np-btn np-btn-ghost" id="cpDownloadPdfBtn">PDF herunterladen</button>' +
         (cpResults.length > 1 ? ('<button type="button" class="np-btn np-btn-ghost" id="cpHistoryBtn">' + (cpShowHistory ? "Verlauf ausblenden" : "Verlauf anzeigen") + '</button>') : "") +
       '</div>';
 
     document.getElementById("cpRetakeBtn").addEventListener("click", function(){ cpState = "setup"; cpRender(); });
+    document.getElementById("cpDownloadPdfBtn").addEventListener("click", async function(){
+      var btn = this;
+      btn.disabled = true;
+      showStatus("PDF wird erstellt …", true);
+      var doc;
+      try {
+        doc = buildCharacterProfilePdf(r);
+      } catch(e){
+        console.error(e);
+        showStatus("PDF konnte nicht erstellt werden.");
+        btn.disabled = false;
+        return;
+      }
+      var filenameBase = (r.characterName || "Charakterprofil").replace(/[^a-zA-Z0-9À-ſ_\- ]/g, "").trim();
+      var filename = "Charakterprofil_" + (filenameBase ? filenameBase.replace(/\s+/g, "_") : "Charakter") + ".pdf";
+      var arrayBuffer = doc.output("arraybuffer");
+      var downloads = await downloadsPromise;
+      if (downloads) {
+        try {
+          await downloads.save({ filename: filename, data: arrayBuffer });
+          showStatus("PDF gespeichert.");
+        } catch(err){
+          var code = err && err.code;
+          if (code === "declined") { hideStatus(); }
+          else if (code === "rate_limited") { showStatus("Bitte kurz warten und erneut versuchen."); }
+          else if (code === "too_large") { showStatus("PDF ist zu groß."); }
+          else {
+            showStatus("Download nicht möglich. Versuch es direkt über den Browser.");
+            try { doc.save(filename); } catch(e2){}
+          }
+        }
+      } else {
+        try { doc.save(filename); showStatus("PDF wird heruntergeladen …"); }
+        catch(e){ showStatus("Download in dieser Ansicht nicht verfügbar."); }
+      }
+      btn.disabled = false;
+    });
     var historyBtn = document.getElementById("cpHistoryBtn");
     if (historyBtn) historyBtn.addEventListener("click", function(){ cpShowHistory = !cpShowHistory; cpRenderResult(); });
     cpBodyEl.querySelectorAll(".cp-history-item").forEach(function(btn){
@@ -7840,7 +8133,6 @@
   document.getElementById("sidebarDashboardBtn").addEventListener("click", showDashboard);
   document.getElementById("featureCrumbDashboard").addEventListener("click", showDashboard);
   document.getElementById("dashOpenAttrBtn").addEventListener("click", function(){ enterFeaturePage("werte"); });
-  document.getElementById("dashOpenAttrTile").addEventListener("click", function(){ enterFeaturePage("werte"); });
   document.getElementById("dashOpenTalenteBtn").addEventListener("click", function(){ enterFeaturePage("talente"); });
   document.getElementById("featurePageEditBtn").addEventListener("click", function(){ editToggleBtn.click(); });
   document.getElementById("authBackBtn").addEventListener("click", function(){ showTopView("landing"); });
