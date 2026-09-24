@@ -7633,12 +7633,9 @@
     });
     y -= 10;
 
-    /* Charaktereigenschaften: eigene Seite, zweispaltig - alle 20 Werte (5 Gruppen a 4) passen
-       damit locker auf eine Seite statt eng ueber zwei Spalten zu laufen. Die Gruppenaufteilung
-       3/2 ist mit M=56pt/BAR_ROW_H=40pt so bemessen, dass beide Spalten sicher auf eine A4-Seite
-       passen (kein eigenes ensureSpace pro Balken noetig). */
-    var traitNeeded = CHARPROFILE_TRAIT_PAIRS.reduce(function(sum, g){ return sum + 24 + g.pairs.length * CP_PDF_BAR_ROW_H + 10; }, 40);
-    if (y - traitNeeded < M + 28) y = newPage(y);
+    /* Charaktereigenschaften: einspaltige Liste aus 10 Gegensatz-Zeilen (5 Gruppen a 2 Paare) -
+       das eigene ensureSpace pro Gruppe (unten) reicht, damit keine Gruppe ueber eine Seite
+       hinweg aufgerissen wird; ein Seitenumbruch fuer den ganzen Block ist nicht mehr noetig. */
     y = heading("Charaktereigenschaften", y);
     CHARPROFILE_TRAIT_PAIRS.forEach(function(g){
       y = ensureSpace(24 + g.pairs.length * CP_PDF_BAR_ROW_H + 10, y);
