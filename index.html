@@ -2452,8 +2452,6 @@
   .cp-bar-top { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--np-ink-soft); margin-bottom: 4px; }
   .cp-bar-track { height: 8px; border-radius: 999px; background: var(--np-surface-2); overflow: hidden; }
   .cp-bar-fill { height: 100%; border-radius: 999px; background: var(--np-primary); transition: width .4s var(--np-ease); }
-  .cp-bar-row-dominant .cp-bar-top { color: var(--np-ink); font-weight: 700; }
-  .cp-bar-row-dominant .cp-bar-fill { background: var(--np-accent); }
 
   .cp-section { margin-top: 24px; }
   .cp-section-title { font-size: 12.5px; font-weight: 700; color: var(--np-ink-faint); letter-spacing: .04em; text-transform: uppercase; margin-bottom: 10px; }
@@ -2468,6 +2466,16 @@
   .cp-compass-mid { position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--np-border); }
   .cp-compass-fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: var(--np-accent); }
   .cp-compass-ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--np-ink-faint); margin-top: 4px; }
+
+  .cp-pairs { display: flex; flex-direction: column; gap: 16px; margin: 18px 0 4px; }
+  .cp-pair-row {}
+  .cp-pair-ends { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+  .cp-pair-label { font-size: 13px; color: var(--np-ink-faint); transition: color .2s var(--np-ease); }
+  .cp-pair-label-right { text-align: right; }
+  .cp-pair-label.cp-pair-dominant { color: var(--np-ink); font-weight: 700; }
+  .cp-pair-track { position: relative; height: 8px; border-radius: 999px; background: var(--np-surface-2); overflow: hidden; }
+  .cp-pair-mid { position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--np-border); }
+  .cp-pair-fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: var(--np-accent); }
 
   .cp-align-chart { position: relative; margin: 22px 0 4px 30px; max-width: 260px; }
   .cp-align-chart-grid {
@@ -4385,12 +4393,31 @@
     RIS: "Risikobereitschaft", WAH: "Wahrheitsliebe", FRE: "Freiheitsbedürfnis", BIN: "Bindungsbedürfnis", FLX: "Moralische Flexibilität"
   };
   /* Gruppierung der 20 Achsen fuer eine uebersichtliche Darstellung im Ergebnis (5 Gruppen a 4 Achsen). */
-  var CHARPROFILE_TRAIT_GROUPS = [
-    { title: "Bindung & Vertrauen", axes: ["BIN", "VRT", "MIS", "LOY"] },
-    { title: "Moral & Prinzipien", axes: ["GER", "WAH", "VRG", "FLX"] },
-    { title: "Selbstbild & Freiheit", axes: ["UNA", "FRE", "SLE", "IMP"] },
-    { title: "Macht & Umgang mit anderen", axes: ["MAC", "KON", "MAN", "RAC"] },
-    { title: "Empathie & Schutzinstinkt", axes: ["EMP", "BES", "OPF", "RIS"] }
+  /* Statt 20 einzelner Prozent-Balken (bei denen praktisch nie etwas nahe 0 % oder 100 %
+     landet, weil die Auswertung um 50 herum zentriert normalisiert) werden die Achsen als
+     10 Gegensatzpaare dargestellt - jede Zeile zeigt, zu welchem der beiden Pole der
+     Charakter tendiert, statt eine wenig aussagekraeftige Einzelzahl. */
+  var CHARPROFILE_TRAIT_PAIRS = [
+    { title: "Bindung & Vertrauen", pairs: [
+      { left: "MIS", right: "VRT" },
+      { left: "UNA", right: "BIN" }
+    ] },
+    { title: "Moral & Prinzipien", pairs: [
+      { left: "FLX", right: "GER" },
+      { left: "MAN", right: "WAH" }
+    ] },
+    { title: "Selbstbild & Freiheit", pairs: [
+      { left: "SLE", right: "OPF" },
+      { left: "FRE", right: "LOY" }
+    ] },
+    { title: "Macht & Kontrolle", pairs: [
+      { left: "MAC", right: "EMP" },
+      { left: "IMP", right: "KON" }
+    ] },
+    { title: "Konflikt & Schutz", pairs: [
+      { left: "RAC", right: "VRG" },
+      { left: "RIS", right: "BES" }
+    ] }
   ];
 
   /* ---- Pronomen-/Namens-Templating ----
@@ -7428,6 +7455,30 @@
     textBL(doc, x + width, barY - barH - 13, rightLabel, { align: "right" });
     return CP_PDF_COMPASS_ROW_H;
   }
+  function cpPdfPairRow(doc, x, yTop, width, leftLabel, leftVal, rightLabel, rightVal, accentRgb){
+    var v = Math.max(-100, Math.min(100, Math.round(rightVal - leftVal)));
+    var leftDom = leftVal > rightVal, rightDom = rightVal > leftVal;
+    doc.setFont("helvetica", leftDom ? "bold" : "normal"); doc.setFontSize(10);
+    doc.setTextColor.apply(doc, leftDom ? accentRgb : CP_PDF_COL.muted);
+    textBL(doc, x, yTop - 11, leftLabel);
+    doc.setFont("helvetica", rightDom ? "bold" : "normal");
+    doc.setTextColor.apply(doc, rightDom ? accentRgb : CP_PDF_COL.muted);
+    textBL(doc, x + width, yTop - 11, rightLabel, { align: "right" });
+    var barY = yTop - 19, barH = 8;
+    doc.setFillColor.apply(doc, CP_PDF_COL.track);
+    rectBL(doc, x, barY - barH, width, barH, "F");
+    var pct = 0.5 + v / 200;
+    var fx = x + width * Math.min(0.5, pct);
+    var fw = width * Math.abs(pct - 0.5);
+    if (fw > 0) {
+      doc.setFillColor.apply(doc, accentRgb);
+      rectBL(doc, fx, barY - barH, fw, barH, "F");
+    }
+    doc.setDrawColor.apply(doc, CP_PDF_COL.panelBorder);
+    doc.setLineWidth(1);
+    lineBL(doc, x + width / 2, barY - barH - 2, x + width / 2, barY + 2);
+    return CP_PDF_BAR_ROW_H;
+  }
   function cpPdfAlignChart(doc, x, yTop, size, alignment){
     var codes = [["CG", "NG", "LG"], ["CN", "TN", "LN"], ["CE", "NE", "LE"]];
     var cell = size / 3;
@@ -7586,33 +7637,20 @@
        damit locker auf eine Seite statt eng ueber zwei Spalten zu laufen. Die Gruppenaufteilung
        3/2 ist mit M=56pt/BAR_ROW_H=40pt so bemessen, dass beide Spalten sicher auf eine A4-Seite
        passen (kein eigenes ensureSpace pro Balken noetig). */
-    y = newPage(y);
+    var traitNeeded = CHARPROFILE_TRAIT_PAIRS.reduce(function(sum, g){ return sum + 24 + g.pairs.length * CP_PDF_BAR_ROW_H + 10; }, 40);
+    if (y - traitNeeded < M + 28) y = newPage(y);
     y = heading("Charaktereigenschaften", y);
-    var colGutter = 30;
-    var colW = (textWidth - colGutter) / 2;
-    var leftX = M, rightX = M + colW + colGutter;
-    var colTopY = y;
-    function drawTraitColumn(groups, colX){
-      var cy = colTopY;
-      groups.forEach(function(g){
-        doc.setFont("helvetica", "bold"); doc.setFontSize(11.5);
-        doc.setTextColor.apply(doc, CP_PDF_COL.accentText);
-        textBL(doc, colX, cy, g.title);
-        cy -= 24;
-        g.axes.forEach(function(ax){
-          var dominant = (r.dominantTraits || []).some(function(t){ return t.id === ax; });
-          cy -= cpPdfBar(doc, colX, cy, colW, CHARPROFILE_AXIS_LABELS[ax], r.axisScores[ax], dominant ? CP_PDF_COL.accent : CP_PDF_COL.primary, dominant);
-        });
-        cy -= 18;
+    CHARPROFILE_TRAIT_PAIRS.forEach(function(g){
+      y = ensureSpace(24 + g.pairs.length * CP_PDF_BAR_ROW_H + 10, y);
+      doc.setFont("helvetica", "bold"); doc.setFontSize(11.5);
+      doc.setTextColor.apply(doc, CP_PDF_COL.accentText);
+      textBL(doc, M, y, g.title);
+      y -= 24;
+      g.pairs.forEach(function(p){
+        y -= cpPdfPairRow(doc, M, y, textWidth, CHARPROFILE_AXIS_LABELS[p.left], r.axisScores[p.left], CHARPROFILE_AXIS_LABELS[p.right], r.axisScores[p.right], CP_PDF_COL.primary);
       });
-      return cy;
-    }
-    var leftEndY = drawTraitColumn(CHARPROFILE_TRAIT_GROUPS.slice(0, 3), leftX);
-    var rightEndY = drawTraitColumn(CHARPROFILE_TRAIT_GROUPS.slice(3), rightX);
-    doc.setDrawColor.apply(doc, CP_PDF_COL.panelBorder);
-    doc.setLineWidth(0.75);
-    lineBL(doc, rightX - colGutter / 2, Math.min(leftEndY, rightEndY), rightX - colGutter / 2, colTopY + 8);
-    y = Math.min(leftEndY, rightEndY) - 10;
+      y -= 10;
+    });
 
     y = newPage(y);
     /* Innerer Konflikt bekommt wie in der Web-Ansicht eine eigene, farbig hinterlegte Box -
@@ -7682,10 +7720,20 @@
     var r = cpCurrentResult();
     if (!r) { cpState = "intro"; return cpRenderIntro(); }
 
-    function barRow(label, value, dominant){
-      var v = Math.round(value);
-      return '<div class="cp-bar-row' + (dominant ? " cp-bar-row-dominant" : "") + '"><div class="cp-bar-top"><span>' + escapeAttr(label) + '</span><span>' + v + ' %</span></div>' +
-        '<div class="cp-bar-track"><div class="cp-bar-fill" style="width:' + v + '%"></div></div></div>';
+    function pairRow(leftAx, rightAx){
+      var lv = r.axisScores[leftAx], rv = r.axisScores[rightAx];
+      var v = Math.max(-100, Math.min(100, Math.round(rv - lv)));
+      var pct = 50 + v / 2;
+      var barLeft = Math.min(50, pct);
+      var barWidth = Math.abs(pct - 50);
+      var leftDom = lv > rv, rightDom = rv > lv;
+      return '<div class="cp-pair-row">' +
+        '<div class="cp-pair-ends">' +
+          '<span class="cp-pair-label' + (leftDom ? " cp-pair-dominant" : "") + '">' + escapeAttr(CHARPROFILE_AXIS_LABELS[leftAx]) + '</span>' +
+          '<span class="cp-pair-label cp-pair-label-right' + (rightDom ? " cp-pair-dominant" : "") + '">' + escapeAttr(CHARPROFILE_AXIS_LABELS[rightAx]) + '</span>' +
+        '</div>' +
+        '<div class="cp-pair-track"><div class="cp-pair-mid"></div><div class="cp-pair-fill" style="left:' + barLeft + '%;width:' + barWidth + '%;"></div></div>' +
+      '</div>';
     }
     function textSection(title, text){
       if (!text) return "";
@@ -7717,12 +7765,9 @@
       '</div>';
     }
 
-    var dominantIds = (r.dominantTraits || []).map(function(t){ return t.id; });
-    var traitGroupsHtml = CHARPROFILE_TRAIT_GROUPS.map(function(g){
-      var rows = g.axes.map(function(ax){
-        return barRow(CHARPROFILE_AXIS_LABELS[ax], r.axisScores[ax], dominantIds.indexOf(ax) !== -1);
-      }).join("");
-      return '<div class="cp-trait-group"><div class="cp-trait-group-title">' + escapeAttr(g.title) + '</div><div class="cp-bars">' + rows + '</div></div>';
+    var traitPairsHtml = CHARPROFILE_TRAIT_PAIRS.map(function(g){
+      var rows = g.pairs.map(function(p){ return pairRow(p.left, p.right); }).join("");
+      return '<div class="cp-trait-group"><div class="cp-trait-group-title">' + escapeAttr(g.title) + '</div><div class="cp-pairs">' + rows + '</div></div>';
     }).join("");
 
     var secondaryArc = r.archetype.secondary ? (r.archetype.scores || []).filter(function(a){ return a.id === r.archetype.secondary; })[0] : null;
@@ -7796,7 +7841,7 @@
       '</div>' +
       '<div class="cp-section"><div class="cp-section-title">Charakterprofil</div><p class="cp-profile-text">' + escapeAttr(r.profileText) + '</p>' + archetypeSecondaryHtml + '</div>' +
       '<div class="cp-section"><div class="cp-section-title">Archetyp</div><div class="cp-bars">' + archRankHtml + '</div></div>' +
-      '<div class="cp-section"><div class="cp-section-title">Charaktereigenschaften</div>' + traitGroupsHtml + '</div>' +
+      '<div class="cp-section"><div class="cp-section-title">Charaktereigenschaften</div>' + traitPairsHtml + '</div>' +
       '<div class="cp-section"><div class="cp-section-title">Innerer Konflikt</div><div class="cp-conflict-box"><div class="cp-conflict-label">' + escapeAttr(r.innerConflict.label) + ' <span class="cp-conflict-tension">· Spannung ' + Math.round(r.innerConflict.tension) + ' %</span></div><div class="cp-conflict-text">' + escapeAttr(r.innerConflict.text) + '</div></div></div>' +
       textSection("Moralisches Verhalten", r.moralText) +
       textSection("Beziehungen", r.relationshipsText) +
