@@ -1908,6 +1908,8 @@
   .np-btn-primary:hover { background: var(--np-primary-strong); box-shadow: var(--np-shadow-md); transform: translateY(-1px); }
   .np-btn-ghost { background: transparent; color: var(--np-ink); border-color: var(--np-border); }
   .np-btn-ghost:hover { background: var(--np-surface-2); border-color: var(--np-ink-faint); transform: translateY(-1px); }
+  .np-btn-danger { background: transparent; color: var(--bad-text); border-color: var(--bad-text); }
+  .np-btn-danger:hover { background: var(--bad-bg); transform: translateY(-1px); }
   .np-btn:focus-visible { outline: 2px solid var(--np-primary); outline-offset: 2px; }
   .np-btn svg { width: 16px; height: 16px; transition: transform .18s var(--np-ease); }
   .np-btn:hover svg.np-arrow { transform: translateX(3px); }
@@ -2218,6 +2220,21 @@
   }
   .np-dash-mini-card:hover .np-bento-icon { transform: rotate(-8deg) scale(1.06); }
   .np-dash-mini-card:active { transform: translateY(-1px) scale(0.99); }
+  .np-dash-feature-card { justify-content: center; align-items: flex-start; gap: 0; }
+  .np-dash-feature-icon {
+    width: 56px; height: 56px; border-radius: 16px; flex-shrink: 0; margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--np-primary-soft); color: var(--np-primary-text);
+  }
+  .np-dash-feature-icon svg { width: 28px; height: 28px; }
+  .np-dash-feature-card .np-bento-name { font-size: 18px; margin-bottom: 6px; }
+  .np-dash-feature-card .np-bento-desc { font-size: 14px; max-width: 30ch; }
+  .np-dash-feature-cta {
+    display: flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 700;
+    color: var(--np-primary-text); margin-top: 18px;
+  }
+  .np-dash-feature-cta svg { width: 15px; height: 15px; transition: transform .18s var(--np-ease); }
+  .np-dash-mini-card:hover .np-dash-feature-cta svg { transform: translateX(3px); }
   .np-dash-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 16px; }
   .np-dash-row:last-child { margin-bottom: 0; }
   @media (max-width: 900px) { .np-dash-grid { grid-template-columns: 1fr; } .np-dash-row { grid-template-columns: repeat(2,1fr); } }
@@ -2387,8 +2404,15 @@
      Ueberschreibung noetig, siehe Block oben - --np-* ist bereits an :root theme-aware).
      =================================================================== */
   .cp-body { display: flex; flex-direction: column; gap: 4px; }
-  .cp-intro-text { color: var(--np-ink-soft); font-size: 14.5px; max-width: 62ch; line-height: 1.6; }
-  .cp-intro-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .cp-intro-hero { display: flex; align-items: center; gap: 16px; }
+  .cp-intro-icon {
+    width: 52px; height: 52px; border-radius: 15px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--np-primary-soft); color: var(--np-primary-text);
+  }
+  .cp-intro-icon svg { width: 26px; height: 26px; }
+  .cp-intro-text { color: var(--np-ink-soft); font-size: 15.5px; max-width: 46ch; line-height: 1.5; margin: 0; }
+  .cp-intro-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
 
   .cp-progress-wrap { margin: 2px 0 20px; }
   .cp-progress-label { font-size: 12.5px; color: var(--np-ink-faint); margin-bottom: 6px; }
@@ -2443,6 +2467,26 @@
   .cp-compass-fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: var(--np-accent); }
   .cp-compass-ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--np-ink-faint); margin-top: 4px; }
 
+  .cp-align-chart { position: relative; margin: 22px 0 4px 30px; max-width: 260px; }
+  .cp-align-chart-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
+    aspect-ratio: 1; border-radius: var(--np-radius-sm); overflow: hidden;
+    border: 1px solid var(--np-border); gap: 1px; background: var(--np-border);
+  }
+  .cp-align-cell {
+    background: var(--np-surface-2); color: var(--np-ink-faint); font-size: 9.5px; font-weight: 600;
+    line-height: 1.25; display: flex; align-items: center; justify-content: center; text-align: center; padding: 4px;
+  }
+  .cp-align-cell.active { background: var(--np-primary-soft); color: var(--np-primary-text); }
+  .cp-align-chart-dot {
+    position: absolute; width: 14px; height: 14px; border-radius: 50%; background: var(--np-primary);
+    border: 2.5px solid var(--np-surface); box-shadow: 0 0 0 1.5px var(--np-primary), var(--np-shadow-sm);
+    transform: translate(-50%, -50%); pointer-events: none;
+  }
+  .cp-align-chart-axis { position: absolute; display: flex; font-size: 10.5px; font-weight: 700; color: var(--np-ink-faint); }
+  .cp-align-chart-axis-x { left: 0; right: 0; bottom: -20px; justify-content: space-between; }
+  .cp-align-chart-axis-y { top: 0; bottom: 0; left: -28px; width: 22px; flex-direction: column; justify-content: space-between; text-align: center; }
+
   .cp-trait-group { margin-bottom: 18px; }
   .cp-trait-group:last-child { margin-bottom: 0; }
   .cp-trait-group-title { font-size: 12px; font-weight: 700; color: var(--np-accent-text); margin-bottom: 8px; }
@@ -2454,8 +2498,6 @@
   .cp-conflict-label { font-weight: 700; font-size: 13.5px; color: var(--np-accent-text); margin-bottom: 5px; }
   .cp-conflict-tension { font-weight: 500; opacity: .8; text-transform: none; letter-spacing: 0; }
   .cp-conflict-text { font-size: 14px; line-height: 1.55; color: var(--np-ink); }
-
-  .cp-hook { font-style: italic; font-size: 15px; line-height: 1.5; color: var(--np-ink); border-left: 3px solid var(--np-primary); padding-left: 14px; margin: 4px 0; }
 
   .cp-rpg-list { display: flex; flex-direction: column; gap: 8px; }
   .cp-rpg-item { background: var(--np-surface-2); border-radius: 10px; padding: 10px 13px; }
@@ -2475,6 +2517,17 @@
   .cp-history-item.active { border-color: var(--np-primary); background: var(--np-primary-soft); }
   .cp-history-main { font-size: 13.5px; font-weight: 600; }
   .cp-history-meta { font-size: 12px; color: var(--np-ink-faint); white-space: nowrap; }
+  .cp-history-delete {
+    display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; flex: none;
+    border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--np-ink-faint);
+    font-size: 15px; line-height: 1; cursor: pointer; transition: all .15s var(--np-ease);
+  }
+  .cp-history-delete:hover { color: var(--bad-text); background: var(--bad-bg); border-color: var(--bad-text); }
+
+  .cp-answers-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+  .cp-answer-item { padding: 11px 13px; border-radius: 10px; background: var(--np-surface-2); border: 1px solid var(--np-border-soft); }
+  .cp-answer-q { font-size: 13px; font-weight: 600; color: var(--np-ink-soft); margin-bottom: 4px; }
+  .cp-answer-a { font-size: 14px; color: var(--np-ink); line-height: 1.45; }
   .cp-empty-hint { font-size: 13.5px; color: var(--np-ink-faint); padding: 4px 0; }
 
   /* ===================================================================
@@ -3191,9 +3244,13 @@
           </div>
         </div>
         <div class="np-dash-side">
-          <button type="button" class="np-dash-mini-card" data-np-open="charakterprofil">
-            <span class="np-bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1.5 2 4 3 7 3 0 8-3.5 12-7 15-3.5-3-7-7-7-15 3 0 5.5-1 7-3z"/></svg></span>
-            <div><p class="np-bento-name" style="margin-bottom:2px;">Charakterprofil</p><p class="np-bento-desc">Alignment, Archetyp, Charakterzüge.</p></div>
+          <button type="button" class="np-dash-mini-card np-dash-feature-card" data-np-open="charakterprofil">
+            <span class="np-dash-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1.5 2 4 3 7 3 0 8-3.5 12-7 15-3.5-3-7-7-7-15 3 0 5.5-1 7-3z"/></svg></span>
+            <p class="np-bento-name">Charakterprofil</p>
+            <p class="np-bento-desc">Ein Persönlichkeitstest für deinen Charakter.</p>
+            <span class="np-dash-feature-cta">Test starten
+              <svg class="np-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
           </button>
         </div>
       </div>
@@ -3750,13 +3807,16 @@
   })();
 
   /* ===================== Charakterprofil (Seelenprofil, Urban-Fantasy) =====================
-     Datengetriebenes System: 35 Situationsfragen (dritte Person, {{characterName}}-Templating
+     Datengetriebenes System: 39 Situationsfragen (dritte Person, {{characterName}}-Templating
      + Er/Sie-Pronomenpaare per Slash-Notation) ordnen dem Charakter ueber verdeckte Gewichtungen
      Werte auf 20 psychologischen Achsen zu. Daraus werden Alignment (D&D-Raster), primaerer/
-     sekundaerer Archetyp, sichtbare Charakterzuege, ein innerer Konflikt, ein Charakter-Hook und
-     mehrere generierte Ergebnis-Absaetze (Moral/Beziehungen/Uebernatuerliches) berechnet -
-     vollstaendig deterministisch, ohne KI-Abhaengigkeit. UI-frei: evaluateCharacterProfile()
-     nimmt Antwort-IDs + Name/Ansprache entgegen und gibt ein reines Datenobjekt zurueck. */
+     sekundaerer Archetyp, sichtbare Charakterzuege, ein innerer Konflikt und mehrere generierte
+     Ergebnis-Absaetze (Moral/Beziehungen/Uebernatuerliches) berechnet - ohne KI-Abhaengigkeit.
+     Achsenwerte/Alignment/Archetyp sind deterministisch aus den Antworten abgeleitet; die
+     Formulierung der Fliesstext-Absaetze wird pro Auswertung zufaellig aus mehreren gleich-
+     wertigen Varianten gewaehlt (cpPickVariant()), damit sich Ergebnisse nicht wiederholen.
+     UI-frei: evaluateCharacterProfile() nimmt Antwort-IDs + Name/Ansprache entgegen und gibt
+     ein reines Datenobjekt zurueck. */
   var CHARPROFILE_QUESTIONS = [
     /* ===== Alltag & Persönlichkeit (10) ===== */
     {
@@ -4253,6 +4313,66 @@
         { id: "q35_f", text: "{{characterName}} rettet ihn/sie unter einer Bedingung.", weights: { KON: 2, MAN: 1, GER: 1 } },
       ]
     },
+
+    /* ===== Zusaetzliche Situationen (4) - gezielt fuer Achsen ergaenzt, die im uebrigen
+       Fragebogen nur duenn abgedeckt waren (Loyalitaet, Beschuetzerinstinkt, Machthunger,
+       Opferbereitschaft, Rachsucht, Vergebungsbereitschaft, Risikobereitschaft). ===== */
+    {
+      id: "q36", chapter: "grenzsituationen",
+      header: "Verrat aus der eigenen Reihe",
+      scene: "{{characterName}} findet heraus, dass ein enges Gruppenmitglied heimlich Informationen an die Gegenseite weitergegeben hat.",
+      answers: [
+        { id: "q36_a", text: "Er/Sie deckt die Person trotzdem, weil sie zur Gruppe gehört.", weights: { LOY: 3, GER: -2 } },
+        { id: "q36_b", text: "Er/Sie konfrontiert die Person privat, bevor er/sie irgendetwas unternimmt.", weights: { LOY: 1, KON: 1 } },
+        { id: "q36_c", text: "Er/Sie meldet den Verrat sofort.", weights: { GER: 3, LOY: -2 } },
+        { id: "q36_d", text: "Er/Sie nutzt das Wissen, um selbst mehr Kontrolle über die Gruppe zu bekommen.", weights: { MAC: 3, MAN: 2, LOY: -1 } },
+        { id: "q36_e", text: "Er/Sie beschützt die restliche Gruppe, indem er/sie die Person isoliert.", weights: { BES: 2, GER: 1 } },
+        { id: "q36_f", text: "Er/Sie gibt der Person eine zweite Chance, sich zu erklären.", weights: { VRG: 2, EMP: 1 } },
+        { id: "q36_g", text: "Er/Sie lässt es auf sich beruhen, solange niemand ernsthaft geschadet wurde.", weights: { FLX: 1, SLE: 1 } },
+      ]
+    },
+    {
+      id: "q37", chapter: "grenzsituationen",
+      header: "Ein großes Opfer",
+      scene: "Um jemanden zu retten, der {{characterName}} wichtig ist, müsste er/sie auf etwas verzichten, das ihm/ihr selbst sehr viel bedeutet.",
+      answers: [
+        { id: "q37_a", text: "Er/Sie opfert es, ohne zu zögern.", weights: { OPF: 3, SLE: -2, BIN: 1 } },
+        { id: "q37_b", text: "Er/Sie tut es, aber es fällt ihm/ihr sichtbar schwer.", weights: { OPF: 2, SLE: -1 } },
+        { id: "q37_c", text: "Er/Sie sucht zuerst nach einem anderen Weg.", weights: { KON: 1, FLX: 1 } },
+        { id: "q37_d", text: "Er/Sie opfert nur einen Teil davon.", weights: { OPF: 1, SLE: 1 } },
+        { id: "q37_e", text: "Er/Sie lehnt es ab – es gibt Grenzen.", weights: { SLE: 2, OPF: -2 } },
+        { id: "q37_f", text: "Er/Sie stellt eine Bedingung, bevor er/sie sich opfert.", weights: { KON: 2, OPF: 1 } },
+        { id: "q37_g", text: "Er/Sie beschützt die Person auf andere Weise, ohne das Opfer zu bringen.", weights: { BES: 2, FLX: 1 } },
+      ]
+    },
+    {
+      id: "q38", chapter: "moral",
+      header: "Eine ehrliche Entschuldigung",
+      scene: "Eine Person, die {{characterName}} vor Jahren schwer verletzt hat, sucht ihn/sie auf und entschuldigt sich – aufrichtig, ohne Ausflüchte.",
+      answers: [
+        { id: "q38_a", text: "Er/Sie vergibt sofort und lässt die Sache ruhen.", weights: { VRG: 3, RAC: -1 } },
+        { id: "q38_b", text: "Er/Sie hört zu, braucht aber Zeit, bevor er/sie wirklich vergibt.", weights: { VRG: 1, FLX: 1 } },
+        { id: "q38_c", text: "Er/Sie nimmt die Entschuldigung an, vergisst aber nicht, was war.", weights: { VRG: 1, RAC: 1 } },
+        { id: "q38_d", text: "Er/Sie glaubt der Person nicht und bleibt misstrauisch.", weights: { MIS: 2, VRG: -2 } },
+        { id: "q38_e", text: "Er/Sie weist die Entschuldigung zurück.", weights: { RAC: 2, VRG: -3 } },
+        { id: "q38_f", text: "Er/Sie nutzt die Gelegenheit, der Person noch einmal ihre Schuld vor Augen zu führen.", weights: { RAC: 2, MAN: 1, VRG: -1 } },
+        { id: "q38_g", text: "Er/Sie vergibt, verlangt aber eine Wiedergutmachung.", weights: { VRG: 1, GER: 2, KON: 1 } },
+      ]
+    },
+    {
+      id: "q39", chapter: "grenzsituationen",
+      header: "Der unsichere Weg",
+      scene: "{{characterName}} steht vor zwei Wegen: einer ist sicher, aber langsam und umständlich – der andere ist deutlich schneller, aber riskant.",
+      answers: [
+        { id: "q39_a", text: "Er/Sie nimmt ohne zu zögern den riskanten Weg.", weights: { RIS: 3, IMP: 1 } },
+        { id: "q39_b", text: "Er/Sie wägt kurz ab, entscheidet sich dann für den riskanten Weg.", weights: { RIS: 2, KON: 1 } },
+        { id: "q39_c", text: "Er/Sie nimmt den sicheren Weg, auch wenn es länger dauert.", weights: { RIS: -2, SLE: 1 } },
+        { id: "q39_d", text: "Er/Sie geht den sicheren Weg nur, weil andere von ihm/ihr abhängen.", weights: { RIS: -1, BES: 1 } },
+        { id: "q39_e", text: "Er/Sie sucht nach einem dritten Weg.", weights: { FLX: 1, WAH: 1 } },
+        { id: "q39_f", text: "Er/Sie lässt den Zufall entscheiden.", weights: { FLX: 1, RIS: 1 } },
+        { id: "q39_g", text: "Er/Sie testet den riskanten Weg erst ein kleines Stück, bevor er/sie sich entscheidet.", weights: { KON: 1, RIS: 1 } },
+      ]
+    },
   ];
   var CHARPROFILE_AXES = ["EMP","LOY","GER","VRT","MIS","BES","KON","UNA","MAC","SLE","OPF","RAC","VRG","MAN","IMP","RIS","WAH","FRE","BIN","FLX"];
   var CHARPROFILE_AXIS_LABELS = {
@@ -4300,140 +4420,120 @@
   };
 
   var CHARPROFILE_ARCHETYPES = [
-    { id: "beschuetzer",   label: "Der Beschützer",   description: "{{characterName}} stellt sich instinktiv vor Menschen, die ihm/ihr wichtig sind – oft bevor er/sie überhaupt nachdenkt.", weights: { BES: 0.45, EMP: 0.30, LOY: 0.25 } },
-    { id: "rebell",        label: "Der Rebell",        description: "Autorität überzeugt {{characterName}} nicht automatisch – er/sie folgt lieber dem eigenen Kompass.", weights: { FRE: 0.40, IMP: 0.30, FLX: 0.30 } },
-    { id: "idealist",      label: "Der Idealist",      description: "{{characterName}} glaubt daran, dass es eine richtige Entscheidung gibt, und sucht sie auch dann, wenn es unbequem ist.", weights: { GER: 0.40, WAH: 0.30, VRG: 0.30 } },
-    { id: "opportunist",   label: "Der Opportunist",   description: "{{characterName}} erkennt Gelegenheiten schneller als die meisten – und nutzt sie auch.", weights: { MAC: 0.35, MAN: 0.35, FLX: 0.30 } },
-    { id: "manipulator",   label: "Der Manipulator",   description: "{{characterName}} versteht, wie Menschen ticken, und setzt dieses Wissen gezielt ein.", weights: { MAN: 0.50, KON: 0.30, WAH: -0.20 } },
-    { id: "richter",       label: "Der Richter",       description: "{{characterName}} will, dass Dinge fair zugehen – und ist bereit, das durchzusetzen.", weights: { GER: 0.45, WAH: 0.25, VRG: -0.30 } },
-    { id: "ueberlebende",  label: "Der Überlebende",   description: "Vorsicht und Selbsterhaltung stehen für {{characterName}} selten im Widerspruch zum eigenen Handeln.", weights: { SLE: 0.45, MIS: 0.30, RIS: -0.25 } },
-    { id: "eroberer",      label: "Der Eroberer",      description: "{{characterName}} will mehr Einfluss – und scheut sich nicht, dafür Risiken einzugehen.", weights: { MAC: 0.45, KON: 0.30, RIS: 0.25 } },
-    { id: "maertyrer",     label: "Der Märtyrer",      description: "{{characterName}} gibt mehr von sich selbst, als andere erwarten würden, auch wenn es ihn/sie etwas kostet.", weights: { OPF: 0.50, SLE: -0.30, LOY: 0.20 } },
-    { id: "trickster",     label: "Der Trickster",     description: "Regeln und feste Pläne langweilen {{characterName}} – er/sie improvisiert lieber.", weights: { MAN: 0.35, IMP: 0.35, FRE: 0.30 } },
-    { id: "diplomat",      label: "Der Diplomat",      description: "{{characterName}} sucht nach der Lösung, mit der möglichst viele leben können.", weights: { EMP: 0.30, GER: 0.30, IMP: -0.20, VRG: 0.20 } },
-    { id: "einzelgaenger", label: "Der Einzelgänger",  description: "{{characterName}} kommt gut allein zurecht – und zieht das oft auch vor.", weights: { UNA: 0.45, BIN: -0.30, FRE: 0.25 } },
-    { id: "waechter",      label: "Der Wächter",       description: "{{characterName}} übernimmt Verantwortung, ohne dass man ihn/sie darum bitten muss.", weights: { GER: 0.35, LOY: 0.30, BES: 0.35 } },
-    { id: "suchende",      label: "Der Suchende",      description: "{{characterName}} will verstehen, wie Dinge wirklich sind, auch wenn das Risiken birgt.", weights: { WAH: 0.40, RIS: 0.30, FRE: 0.30 } },
-    { id: "stratege",      label: "Der Stratege",      description: "{{characterName}} denkt lieber zwei Schritte voraus, als spontan zu reagieren.", weights: { KON: 0.35, MIS: 0.30, IMP: -0.35 } }
+    { id: "beschuetzer",   label: "Der Beschützer",   description: ["{{characterName}} stellt sich instinktiv vor Menschen, die ihm/ihr wichtig sind – oft bevor er/sie überhaupt nachdenkt.", "Wenn jemand, der ihm/ihr wichtig ist, in Gefahr ist, reagiert {{characterName}} zuerst und denkt später nach."], weights: { BES: 0.45, EMP: 0.30, LOY: 0.25 } },
+    { id: "rebell",        label: "Der Rebell",        description: ["Autorität überzeugt {{characterName}} nicht automatisch – er/sie folgt lieber dem eigenen Kompass.", "{{characterName}} hinterfragt Autorität grundsätzlich – Anweisungen befolgt er/sie nur, wenn sie ihm/ihr auch selbst einleuchten."], weights: { FRE: 0.40, IMP: 0.30, FLX: 0.30 } },
+    { id: "idealist",      label: "Der Idealist",      description: ["{{characterName}} glaubt daran, dass es eine richtige Entscheidung gibt, und sucht sie auch dann, wenn es unbequem ist.", "Für {{characterName}} gibt es fast immer eine richtige Antwort – und er/sie sucht danach, auch wenn sie unbequem ist."], weights: { GER: 0.40, WAH: 0.30, VRG: 0.30 } },
+    { id: "opportunist",   label: "Der Opportunist",   description: ["{{characterName}} erkennt Gelegenheiten schneller als die meisten – und nutzt sie auch.", "{{characterName}} hat ein Gespür dafür, wann sich eine Situation zu seinem/ihrem Vorteil nutzen lässt."], weights: { MAC: 0.35, MAN: 0.35, FLX: 0.30 } },
+    { id: "manipulator",   label: "Der Manipulator",   description: ["{{characterName}} versteht, wie Menschen ticken, und setzt dieses Wissen gezielt ein.", "{{characterName}} durchschaut Menschen schnell – und nutzt das gezielt, um zu bekommen, was er/sie will."], weights: { MAN: 0.50, KON: 0.30, WAH: -0.20 } },
+    { id: "richter",       label: "Der Richter",       description: ["{{characterName}} will, dass Dinge fair zugehen – und ist bereit, das durchzusetzen.", "Fairness ist {{characterName}} wichtig genug, um notfalls selbst dafür zu sorgen."], weights: { GER: 0.45, WAH: 0.25, VRG: -0.30 } },
+    { id: "ueberlebende",  label: "Der Überlebende",   description: ["Vorsicht und Selbsterhaltung stehen für {{characterName}} selten im Widerspruch zum eigenen Handeln.", "{{characterName}} denkt zuerst an die eigene Sicherheit – das bestimmt fast jede Entscheidung."], weights: { SLE: 0.45, MIS: 0.30, RIS: -0.25 } },
+    { id: "eroberer",      label: "Der Eroberer",      description: ["{{characterName}} will mehr Einfluss – und scheut sich nicht, dafür Risiken einzugehen.", "{{characterName}} strebt nach mehr Einfluss und geht dafür bewusst Risiken ein."], weights: { MAC: 0.45, KON: 0.30, RIS: 0.25 } },
+    { id: "maertyrer",     label: "Der Märtyrer",      description: ["{{characterName}} gibt mehr von sich selbst, als andere erwarten würden, auch wenn es ihn/sie etwas kostet.", "{{characterName}} gibt für andere mehr, als vernünftig wäre – auch auf eigene Kosten."], weights: { OPF: 0.50, SLE: -0.30, LOY: 0.20 } },
+    { id: "trickster",     label: "Der Trickster",     description: ["Regeln und feste Pläne langweilen {{characterName}} – er/sie improvisiert lieber.", "{{characterName}} hält sich nicht gern an starre Pläne – improvisieren macht ihm/ihr mehr Spaß."], weights: { MAN: 0.35, IMP: 0.35, FRE: 0.30 } },
+    { id: "diplomat",      label: "Der Diplomat",      description: ["{{characterName}} sucht nach der Lösung, mit der möglichst viele leben können.", "{{characterName}} vermittelt lieber, als eine Seite gewinnen zu lassen – ein Kompromiss ist ihm/ihr oft lieber als ein klarer Sieger."], weights: { EMP: 0.30, GER: 0.30, IMP: -0.20, VRG: 0.20 } },
+    { id: "einzelgaenger", label: "Der Einzelgänger",  description: ["{{characterName}} kommt gut allein zurecht – und zieht das oft auch vor.", "{{characterName}} braucht selten andere, um zurechtzukommen – meistens ist ihm/ihr das auch lieber so."], weights: { UNA: 0.45, BIN: -0.30, FRE: 0.25 } },
+    { id: "waechter",      label: "Der Wächter",       description: ["{{characterName}} übernimmt Verantwortung, ohne dass man ihn/sie darum bitten muss.", "{{characterName}} übernimmt von sich aus Verantwortung, wenn sie sonst niemand übernimmt."], weights: { GER: 0.35, LOY: 0.30, BES: 0.35 } },
+    { id: "suchende",      label: "Der Suchende",      description: ["{{characterName}} will verstehen, wie Dinge wirklich sind, auch wenn das Risiken birgt.", "{{characterName}} will die Wahrheit hinter den Dingen kennen, selbst wenn das Risiken mit sich bringt."], weights: { WAH: 0.40, RIS: 0.30, FRE: 0.30 } },
+    { id: "stratege",      label: "Der Stratege",      description: ["{{characterName}} denkt lieber zwei Schritte voraus, als spontan zu reagieren.", "{{characterName}} plant lieber im Voraus, als sich von der Situation überraschen zu lassen."], weights: { KON: 0.35, MIS: 0.30, IMP: -0.35 } }
   ];
 
   var CHARPROFILE_CONFLICT_THRESHOLD = 55;
   var CHARPROFILE_CONFLICTS = [
     { id: "loyalitaet_vs_gerechtigkeit", label: "Loyalität vs. Gerechtigkeit", a: "LOY", b: "GER",
       texts: {
-        lawful: "{{characterName}} hält sich an das, was fair ist – auch wenn es bedeutet, Menschen zur Rechenschaft zu ziehen, die ihm/ihr nahestehen. Erst wenn Regeln eindeutig zu Unrecht werden, weicht er/sie davon ab.",
-        neutral: "Zwischen dem, was {{characterName}} den eigenen Leuten schuldet, und dem, was gerecht wäre, gibt es keine feste Regel – er/sie entscheidet von Fall zu Fall, und das zerreißt ihn/sie manchmal.",
-        chaotic: "Wenn es hart auf hart kommt, wählt {{characterName}} die Menschen, die ihm/ihr wichtig sind – Regeln und abstrakte Gerechtigkeit wiegen leichter als ein Versprechen, das er/sie jemandem gegeben hat."
-      },
-      hooks: {
-        lawful: "Würde {{characterName}} jemanden, den er/sie liebt, wirklich zur Rechenschaft ziehen – oder nur so lange, bis es wirklich zählt?",
-        neutral: "Wie oft hat {{characterName}} schon gewusst, was richtig wäre, und trotzdem für jemanden gelogen, der ihm/ihr wichtig ist?",
-        chaotic: "Was würde {{characterName}} opfern, um jemanden zu beschützen, den er/sie eigentlich nicht mehr lieben sollte?"
+        lawful: ["{{characterName}} hält sich an das, was fair ist – auch wenn es bedeutet, Menschen zur Rechenschaft zu ziehen, die ihm/ihr nahestehen. Erst wenn Regeln eindeutig zu Unrecht werden, weicht er/sie davon ab.",
+                  "{{characterName}} zieht auch nahestehende Menschen zur Verantwortung, wenn es fair ist – Ausnahmen macht er/sie nur, wenn Regeln selbst ungerecht werden."],
+        neutral: ["Zwischen dem, was {{characterName}} den eigenen Leuten schuldet, und dem, was gerecht wäre, gibt es keine feste Regel – er/sie entscheidet von Fall zu Fall, und das zerreißt ihn/sie manchmal.",
+                   "Was {{characterName}} den eigenen Leuten schuldet und was gerecht wäre, bringt er/sie nicht in eine feste Reihenfolge – es hängt vom Einzelfall ab."],
+        chaotic: ["Wenn es hart auf hart kommt, wählt {{characterName}} die Menschen, die ihm/ihr wichtig sind – Regeln und abstrakte Gerechtigkeit wiegen leichter als ein Versprechen, das er/sie jemandem gegeben hat.",
+                   "Steht es zwischen abstrakter Gerechtigkeit und einem nahestehenden Menschen, entscheidet sich {{characterName}} fast immer für den Menschen."]
       } },
     { id: "freiheit_vs_sicherheit", label: "Freiheit vs. Sicherheit", a: "FRE", b: "SLE",
       texts: {
-        lawful: "{{characterName}} gibt ein Stück Freiheit auf, wenn es ihn/sie und die Menschen um ihn/sie sicherer macht – Kontrolle über die eigene Situation ist wichtiger als völlige Unabhängigkeit.",
-        neutral: "{{characterName}} will frei entscheiden können, aber nicht um den Preis, ständig in Gefahr zu sein – zwischen beidem sucht er/sie eine Balance, die selten ganz aufgeht.",
-        chaotic: "{{characterName}} geht lieber ein Risiko ein, als sich einschränken zu lassen – Sicherheit, die die eigene Freiheit kostet, fühlt sich für ihn/sie nicht wie Sicherheit an."
-      },
-      hooks: {
-        lawful: "Wie viel von sich selbst würde {{characterName}} aufgeben, damit die Menschen, die er/sie liebt, sicher sind?",
-        neutral: "Gäbe es einen Ort, an dem {{characterName}} wirklich sicher wäre – würde er/sie bleiben, oder würde es ihn/sie ersticken?",
-        chaotic: "Was würde es kosten, {{characterName}} wirklich einzusperren – und würde es überhaupt funktionieren?"
+        lawful: ["{{characterName}} gibt ein Stück Freiheit auf, wenn es ihn/sie und die Menschen um ihn/sie sicherer macht – Kontrolle über die eigene Situation ist wichtiger als völlige Unabhängigkeit.",
+                  "{{characterName}} verzichtet bereitwillig auf ein Stück Freiheit, wenn es echte Sicherheit bringt – unkontrollierte Unabhängigkeit ist ihm/ihr weniger wichtig."],
+        neutral: ["{{characterName}} will frei entscheiden können, aber nicht um den Preis, ständig in Gefahr zu sein – zwischen beidem sucht er/sie eine Balance, die selten ganz aufgeht.",
+                   "{{characterName}} balanciert ständig zwischen Freiheit und Sicherheit, ohne dass eine Seite dauerhaft gewinnt."],
+        chaotic: ["{{characterName}} geht lieber ein Risiko ein, als sich einschränken zu lassen – Sicherheit, die die eigene Freiheit kostet, fühlt sich für ihn/sie nicht wie Sicherheit an.",
+                   "Sicherheit, die {{characterName}} einschränkt, fühlt sich für ihn/sie nicht wie Sicherheit an – er/sie riskiert lieber etwas."]
       } },
     { id: "liebe_vs_pflicht", label: "Liebe vs. Pflicht", a: "BIN", b: "GER",
       texts: {
-        lawful: "{{characterName}} hält sich an das, was richtig ist, auch wenn es bedeutet, jemanden zu enttäuschen, den er/sie liebt – Pflicht wiegt am Ende schwerer als Gefühl.",
-        neutral: "Zwischen dem, was {{characterName}} für richtig hält, und dem, was er/sie für geliebte Menschen tun würde, gibt es keine feste Regel – es hängt davon ab, wer betroffen ist.",
-        chaotic: "Wenn Liebe und Pflicht sich widersprechen, wählt {{characterName}} fast immer die Liebe – abstrakte Prinzipien wiegen weniger als ein Mensch, der ihm/ihr wirklich wichtig ist."
-      },
-      hooks: {
-        lawful: "Gibt es jemanden, dem zuliebe {{characterName}} wirklich von dem abweichen würde, was er/sie für richtig hält?",
-        neutral: "Wie oft war {{characterName}} schon zwischen dem, was richtig wäre, und dem, was er/sie für jemanden tun wollte, hin- und hergerissen?",
-        chaotic: "Was bleibt von den Prinzipien von {{characterName}}, wenn ihre Einhaltung den Verlust von jemandem bedeutet, der ihm/ihr wichtig ist?"
+        lawful: ["{{characterName}} hält sich an das, was richtig ist, auch wenn es bedeutet, jemanden zu enttäuschen, den er/sie liebt – Pflicht wiegt am Ende schwerer als Gefühl.",
+                  "Pflicht wiegt für {{characterName}} schwerer als Gefühl – selbst wenn es bedeutet, jemanden zu enttäuschen, den er/sie liebt."],
+        neutral: ["Zwischen dem, was {{characterName}} für richtig hält, und dem, was er/sie für geliebte Menschen tun würde, gibt es keine feste Regel – es hängt davon ab, wer betroffen ist.",
+                   "{{characterName}} hat keine feste Regel dafür, ob Pflicht oder Liebe gewinnt – es kommt darauf an, wer betroffen ist."],
+        chaotic: ["Wenn Liebe und Pflicht sich widersprechen, wählt {{characterName}} fast immer die Liebe – abstrakte Prinzipien wiegen weniger als ein Mensch, der ihm/ihr wirklich wichtig ist.",
+                   "Stehen Liebe und Pflicht gegeneinander, entscheidet sich {{characterName}} fast immer für den Menschen, nicht das Prinzip."]
       } },
     { id: "wahrheit_vs_schutz", label: "Wahrheit vs. Schutz", a: "WAH", b: "EMP",
       texts: {
-        lawful: "Für {{characterName}} zählt am Ende die Wahrheit – auch wenn sie wehtut, hält er/sie Verschweigen für die riskantere Lüge.",
-        neutral: "{{characterName}} wägt von Fall zu Fall ab, ob die Wahrheit gerade hilft oder nur verletzt – eine feste Regel dafür gibt es nicht.",
-        chaotic: "Wenn es darum geht, jemanden zu schützen, den {{characterName}} liebt, ist ihm/ihr die Wahrheit manchmal egal – er/sie sagt, was in dem Moment schützt, nicht was formal richtig wäre."
-      },
-      hooks: {
-        lawful: "Gibt es eine Wahrheit, die {{characterName}} nie aussprechen würde, egal wie sehr man ihn/sie danach fragt?",
-        neutral: "Wie weit würde {{characterName}} gehen, wenn niemand jemals erfahren würde, was er/sie getan hat?",
-        chaotic: "Wen würde {{characterName}} zuletzt anlügen – und wen zuerst?"
+        lawful: ["Für {{characterName}} zählt am Ende die Wahrheit – auch wenn sie wehtut, hält er/sie Verschweigen für die riskantere Lüge.",
+                  "{{characterName}} hält Verschweigen für riskanter als die Wahrheit – selbst wenn sie wehtut."],
+        neutral: ["{{characterName}} wägt von Fall zu Fall ab, ob die Wahrheit gerade hilft oder nur verletzt – eine feste Regel dafür gibt es nicht.",
+                   "Ob {{characterName}} die Wahrheit sagt, hängt davon ab, ob sie im Moment hilft oder nur verletzt."],
+        chaotic: ["Wenn es darum geht, jemanden zu schützen, den {{characterName}} liebt, ist ihm/ihr die Wahrheit manchmal egal – er/sie sagt, was in dem Moment schützt, nicht was formal richtig wäre.",
+                   "Um jemanden zu schützen, den er/sie liebt, nimmt es {{characterName}} mit der Wahrheit nicht so genau."]
       } },
     { id: "rache_vs_vergebung", label: "Rache vs. Vergebung", a: "RAC", b: "VRG",
       texts: {
-        lawful: "{{characterName}} gibt Menschen eine Chance, ihre Fehler wiedergutzumachen – aber nur, solange sie sich wirklich bewegen, nicht aus reiner Nachsicht.",
-        neutral: "Ob {{characterName}} vergibt oder nicht, hängt stark davon ab, wer vor ihm/ihr steht und was passiert ist – ein Prinzip dafür gibt es nicht.",
-        chaotic: "Etwas in {{characterName}} vergisst nicht so leicht – er/sie kann vergeben, aber ein Teil von ihm/ihr merkt sich genau, wer ihm/ihr wehgetan hat."
-      },
-      hooks: {
-        lawful: "Kann {{characterName}} jemandem wirklich vergeben, der ihm/ihr nie wirklich wehgetan hat – oder ist das zu einfach?",
-        neutral: "Was müsste passieren, damit aus der Vergebung von {{characterName}} wieder Rache wird?",
-        chaotic: "Wie lange würde {{characterName}} auf die richtige Gelegenheit warten, um es jemandem heimzuzahlen?"
+        lawful: ["{{characterName}} gibt Menschen eine Chance, ihre Fehler wiedergutzumachen – aber nur, solange sie sich wirklich bewegen, nicht aus reiner Nachsicht.",
+                  "{{characterName}} lässt Menschen ihre Fehler wiedergutmachen – solange echte Bemühung erkennbar ist."],
+        neutral: ["Ob {{characterName}} vergibt oder nicht, hängt stark davon ab, wer vor ihm/ihr steht und was passiert ist – ein Prinzip dafür gibt es nicht.",
+                   "Ob {{characterName}} vergibt, entscheidet sich von Fall zu Fall – eine feste Haltung dazu hat er/sie nicht."],
+        chaotic: ["Etwas in {{characterName}} vergisst nicht so leicht – er/sie kann vergeben, aber ein Teil von ihm/ihr merkt sich genau, wer ihm/ihr wehgetan hat.",
+                   "{{characterName}} vergibt vielleicht nach außen, vergisst aber selten wirklich, wer ihm/ihr wehgetan hat."]
       } },
     { id: "macht_vs_moral", label: "Macht vs. Moral", a: "MAC", b: "GER",
       texts: {
-        lawful: "{{characterName}} traut sich Macht nur zu, wenn er/sie sie an klare Prinzipien binden kann – unkontrollierter Einfluss macht ihm/ihr mehr Sorgen als Machtlosigkeit.",
-        neutral: "Macht reizt {{characterName}}, aber er/sie ist sich nicht sicher, was sie mit ihm/ihr machen würde – er/sie beobachtet sich selbst dabei genau.",
-        chaotic: "Wenn sich die Gelegenheit bietet, greift {{characterName}} zu – was das langfristig mit den eigenen Prinzipien macht, klärt er/sie später."
-      },
-      hooks: {
-        lawful: "Welche Macht würde {{characterName}} ablehnen, selbst wenn sie ihm/ihr helfen würde, das Richtige zu tun?",
-        neutral: "Was bleibt von den Prinzipien von {{characterName}}, wenn ihre Einhaltung den Verlust eines geliebten Menschen bedeutet?",
-        chaotic: "Wie weit würde {{characterName}} für Kontrolle über das eigene Leben gehen – und über das von anderen?"
+        lawful: ["{{characterName}} traut sich Macht nur zu, wenn er/sie sie an klare Prinzipien binden kann – unkontrollierter Einfluss macht ihm/ihr mehr Sorgen als Machtlosigkeit.",
+                  "{{characterName}} nimmt Macht nur an, wenn er/sie sie an klare Prinzipien binden kann."],
+        neutral: ["Macht reizt {{characterName}}, aber er/sie ist sich nicht sicher, was sie mit ihm/ihr machen würde – er/sie beobachtet sich selbst dabei genau.",
+                   "Macht reizt {{characterName}}, gleichzeitig beobachtet er/sie genau, was sie mit ihm/ihr machen würde."],
+        chaotic: ["Wenn sich die Gelegenheit bietet, greift {{characterName}} zu – was das langfristig mit den eigenen Prinzipien macht, klärt er/sie später.",
+                   "Bietet sich {{characterName}} die Gelegenheit zu mehr Macht, greift er/sie zu – die Konsequenzen für die eigenen Prinzipien klärt er/sie später."]
       } },
     { id: "selbsterhaltung_vs_selbstlosigkeit", label: "Selbsterhaltung vs. Selbstlosigkeit", a: "SLE", b: "OPF",
       texts: {
-        lawful: "{{characterName}} hilft gern, aber nicht grenzenlos – er/sie hat gelernt, dass er/sie niemandem etwas nützt, wenn er/sie selbst zusammenbricht.",
-        neutral: "Wie viel {{characterName}} von sich selbst für andere aufgibt, entscheidet sich im Moment – mal zu viel, mal zu wenig, eine feste Linie gibt es nicht.",
-        chaotic: "Wenn es darauf ankommt, stellt {{characterName}} sich selbst zuletzt an – selbst wenn es ihn/sie mehr kostet, als vernünftig wäre."
-      },
-      hooks: {
-        lawful: "Wo ist die Grenze, an der {{characterName}} aufhört, sich für andere aufzuopfern?",
-        neutral: "Für wen würde sich {{characterName}} wirklich in Gefahr bringen – und für wen nicht mehr?",
-        chaotic: "Was würde {{characterName}} wirklich opfern, um jemanden zu retten, der ihn/sie vielleicht nicht einmal retten würde?"
+        lawful: ["{{characterName}} hilft gern, aber nicht grenzenlos – er/sie hat gelernt, dass er/sie niemandem etwas nützt, wenn er/sie selbst zusammenbricht.",
+                  "{{characterName}} hilft gern, zieht aber eine Grenze, bevor er/sie selbst daran zerbricht."],
+        neutral: ["Wie viel {{characterName}} von sich selbst für andere aufgibt, entscheidet sich im Moment – mal zu viel, mal zu wenig, eine feste Linie gibt es nicht.",
+                   "Wie viel {{characterName}} von sich selbst für andere gibt, entscheidet sich im Moment, nicht nach einer festen Regel."],
+        chaotic: ["Wenn es darauf ankommt, stellt {{characterName}} sich selbst zuletzt an – selbst wenn es ihn/sie mehr kostet, als vernünftig wäre.",
+                   "{{characterName}} stellt die eigenen Bedürfnisse zuletzt an, selbst wenn es ihn/sie mehr kostet, als vernünftig wäre."]
       } },
     { id: "ordnung_vs_freiheit", label: "Ordnung vs. Freiheit", a: "GER", b: "FRE",
       texts: {
-        lawful: "Regeln geben {{characterName}} Halt, auch wenn sie manchmal einengen – er/sie hält geordnete Strukturen für die bessere Grundlage als völlige Freiheit.",
-        neutral: "Ob sich {{characterName}} an Regeln hält, hängt stark davon ab, wie sinnvoll sie ihm/ihr gerade erscheinen – eine grundsätzliche Haltung dazu gibt es nicht.",
-        chaotic: "Regeln fühlen sich für {{characterName}} schnell wie Fesseln an – er/sie vertraut eher dem eigenen Urteil als einer Struktur, die andere vorgeben."
-      },
-      hooks: {
-        lawful: "Welche Regel würde {{characterName}} niemals brechen, egal was auf dem Spiel steht?",
-        neutral: "Wann hat {{characterName}} zuletzt eine Regel befolgt, obwohl er/sie sie für falsch hielt – und warum?",
-        chaotic: "Welche Regel hat {{characterName}} zuletzt gebrochen, ohne es auch nur kurz zu bereuen?"
+        lawful: ["Regeln geben {{characterName}} Halt, auch wenn sie manchmal einengen – er/sie hält geordnete Strukturen für die bessere Grundlage als völlige Freiheit.",
+                  "Klare Strukturen geben {{characterName}} Halt – auch wenn sie ihn/sie manchmal einengen."],
+        neutral: ["Ob sich {{characterName}} an Regeln hält, hängt stark davon ab, wie sinnvoll sie ihm/ihr gerade erscheinen – eine grundsätzliche Haltung dazu gibt es nicht.",
+                   "Ob sich {{characterName}} an Regeln hält, hängt davon ab, wie sinnvoll sie ihm/ihr gerade erscheinen."],
+        chaotic: ["Regeln fühlen sich für {{characterName}} schnell wie Fesseln an – er/sie vertraut eher dem eigenen Urteil als einer Struktur, die andere vorgeben.",
+                   "{{characterName}} vertraut lieber dem eigenen Urteil als einer Struktur, die jemand anderes vorgibt."]
       } },
     { id: "vertrauen_vs_misstrauen", label: "Vertrauen vs. Misstrauen", a: "VRT", b: "MIS",
       texts: {
-        lawful: "{{characterName}} gibt Vertrauen nicht leichtfertig, aber wenn er/sie es einmal gibt, hält er/sie bewusst daran fest – auch wenn ein Teil von ihm/ihr immer mitdenkt, was passieren könnte.",
-        neutral: "{{characterName}} schwankt zwischen dem Wunsch, jemandem wirklich zu vertrauen, und der Gewissheit, schon einmal enttäuscht worden zu sein – beides ist gleichzeitig wahr.",
-        chaotic: "Selbst wenn {{characterName}} jemandem nah ist, behält er/sie einen Teil von sich zurück – ganz loslassen fällt ihm/ihr schwer, egal wie sehr er/sie es will."
-      },
-      hooks: {
-        lawful: "Wem hat {{characterName}} zuletzt wirklich vollständig vertraut – ohne im Hinterkopf ein Sicherheitsnetz zu behalten?",
-        neutral: "Was müsste passieren, damit das Vertrauen von {{characterName}} zu echtem Misstrauen kippt – und umgekehrt?",
-        chaotic: "Wie lange dauert es, bis {{characterName}} bei jemandem Neuem wieder anfängt, nach Anzeichen von Täuschung zu suchen?"
+        lawful: ["{{characterName}} gibt Vertrauen nicht leichtfertig, aber wenn er/sie es einmal gibt, hält er/sie bewusst daran fest – auch wenn ein Teil von ihm/ihr immer mitdenkt, was passieren könnte.",
+                  "Hat {{characterName}} einmal vertraut, hält er/sie bewusst daran fest – auch wenn ein Teil von ihm/ihr wachsam bleibt."],
+        neutral: ["{{characterName}} schwankt zwischen dem Wunsch, jemandem wirklich zu vertrauen, und der Gewissheit, schon einmal enttäuscht worden zu sein – beides ist gleichzeitig wahr.",
+                   "{{characterName}} schwankt zwischen dem Wunsch zu vertrauen und der Erinnerung an frühere Enttäuschungen."],
+        chaotic: ["Selbst wenn {{characterName}} jemandem nah ist, behält er/sie einen Teil von sich zurück – ganz loslassen fällt ihm/ihr schwer, egal wie sehr er/sie es will.",
+                   "Selbst Menschen, die {{characterName}} nahestehen, lässt er/sie nie ganz an sich heran."]
       } },
     { id: "liebe_vs_unabhaengigkeit", label: "Liebe vs. Unabhängigkeit", a: "BIN", b: "UNA",
       texts: {
-        lawful: "{{characterName}} lässt sich auf Nähe ein, achtet dabei aber genau darauf, sich selbst treu zu bleiben – Liebe darf ihn/sie verändern, aber nicht auflösen.",
-        neutral: "{{characterName}} will gleichzeitig gehalten werden und frei bleiben – und merkt oft erst im Nachhinein, wenn eines der beiden zu kurz gekommen ist.",
-        chaotic: "Sobald eine Beziehung anfängt, sich wie eine Bindung statt wie eine Wahl anzufühlen, ist ein Teil von {{characterName}} schon auf dem Sprung."
-      },
-      hooks: {
-        lawful: "Wie viel von der eigenen Freiheit würde {{characterName}} für jemanden aufgeben, den er/sie liebt – und wo wäre die Grenze?",
-        neutral: "Gab es schon einmal einen Moment, in dem {{characterName}} nicht wusste, ob er/sie sich nach mehr Nähe oder mehr Freiheit sehnt?",
-        chaotic: "Was würde es brauchen, damit {{characterName}} sich wirklich auf jemanden einlässt, ohne innerlich einen Fluchtweg offenzuhalten?"
+        lawful: ["{{characterName}} lässt sich auf Nähe ein, achtet dabei aber genau darauf, sich selbst treu zu bleiben – Liebe darf ihn/sie verändern, aber nicht auflösen.",
+                  "{{characterName}} lässt Nähe zu, bleibt sich dabei aber bewusst treu."],
+        neutral: ["{{characterName}} will gleichzeitig gehalten werden und frei bleiben – und merkt oft erst im Nachhinein, wenn eines der beiden zu kurz gekommen ist.",
+                   "{{characterName}} will gleichzeitig gehalten werden und frei bleiben – meist merkt er/sie erst später, wenn eines zu kurz kam."],
+        chaotic: ["Sobald eine Beziehung anfängt, sich wie eine Bindung statt wie eine Wahl anzufühlen, ist ein Teil von {{characterName}} schon auf dem Sprung.",
+                   "Fühlt sich eine Beziehung für {{characterName}} wie eine Bindung statt wie eine freie Wahl an, ist ein Teil von ihm/ihr schon auf dem Sprung."]
       } }
   ];
   var CHARPROFILE_CONFLICT_FALLBACK = {
     label: "Ein ruhiger Kern",
-    text: "{{characterName}} wirkt in sich ruhend – kein Konflikt dominiert sein/ihr Handeln so stark wie ein klarer innerer Kompass.",
-    hook: "Was würde es brauchen, damit {{characterName}} wirklich ins Wanken gerät?"
+    text: ["{{characterName}} wirkt in sich ruhend – kein Konflikt dominiert sein/ihr Handeln so stark wie ein klarer innerer Kompass.",
+           "Kein innerer Konflikt bestimmt {{characterName}}s Handeln besonders stark – er/sie wirkt in sich gefestigt."]
   };
 
   var CHARPROFILE_RPG_TRAITS = [
@@ -4482,64 +4582,101 @@
      Reine Textbaustein-Auswahl anhand von Achsen-Schwellenwerten - deterministisch, keine
      KI. Jede Funktion bekommt axes (0..100 je Achse) + name/gender und liefert einen
      fertigen, bereits pronomen-aufgelösten Absatz zurueck. */
+  /* Jeder Textbaustein kann statt eines einzelnen Strings eine Liste von gleichwertigen
+     Formulierungen sein - cpPickVariant() waehlt bei der Auswertung zufaellig eine davon,
+     damit sich Ergebnistexte zwischen Testlaeufen abwechseln statt sich zu wiederholen. */
+  function cpPickVariant(x){
+    return Array.isArray(x) ? x[Math.floor(Math.random() * x.length)] : x;
+  }
   function cpPick(v, hi, lo, hiText, midText, loText){
-    if (v >= hi) return hiText;
-    if (v <= lo) return loText;
-    return midText;
+    var bucket = v >= hi ? hiText : (v <= lo ? loText : midText);
+    return cpPickVariant(bucket);
   }
 
   function cpMoralParagraph(axes, name, gender){
     var s1 = cpPick(axes.FLX, 65, 35,
-      "Moral ist für {{characterName}} kein festes Regelwerk, sondern etwas, das er/sie von Fall zu Fall neu abwägt – was in einer Situation richtig war, kann in der nächsten falsch sein.",
-      "{{characterName}} hat klare Prinzipien, ist aber bereit, sie zu hinterfragen, wenn die Situation es wirklich verlangt.",
-      "{{characterName}} hält an klaren moralischen Linien fest, auch wenn es unbequem ist – Ausnahmen macht er/sie nur selten.");
+      ["Moral ist für {{characterName}} kein festes Regelwerk, sondern etwas, das er/sie von Fall zu Fall neu abwägt – was in einer Situation richtig war, kann in der nächsten falsch sein.",
+       "Für {{characterName}} gibt es kaum eine Regel, die in jeder Situation gilt – er/sie entscheidet lieber im Moment, was gerade richtig ist."],
+      ["{{characterName}} hat klare Prinzipien, ist aber bereit, sie zu hinterfragen, wenn die Situation es wirklich verlangt.",
+       "{{characterName}} folgt festen Grundsätzen, macht aber Ausnahmen, wenn die Umstände es wirklich rechtfertigen."],
+      ["{{characterName}} hält an klaren moralischen Linien fest, auch wenn es unbequem ist – Ausnahmen macht er/sie nur selten.",
+       "Für {{characterName}} gelten dieselben Maßstäbe in jeder Situation – er/sie biegt sie nicht, nur weil es gerade bequemer wäre."]);
     var s2 = cpPick(axes.GER, 65, 35,
-      "In Grenzsituationen fragt er/sie zuerst, was fair ist, nicht, was für ihn/sie selbst am einfachsten wäre.",
-      "In Grenzsituationen wägt er/sie zwischen Fairness und dem eigenen Vorteil ab, ohne dass eines davon automatisch gewinnt.",
-      "In Grenzsituationen zählt für ihn/sie am Ende eher, was funktioniert, als was formal gerecht wäre.");
+      ["In Grenzsituationen fragt er/sie zuerst, was fair ist, nicht, was für ihn/sie selbst am einfachsten wäre.",
+       "Wenn es hart auf hart kommt, ist ihm/ihr wichtiger, was gerecht ist, als was ihm/ihr selbst nützt."],
+      ["In Grenzsituationen wägt er/sie zwischen Fairness und dem eigenen Vorteil ab, ohne dass eines davon automatisch gewinnt.",
+       "In schwierigen Momenten sucht er/sie einen Mittelweg zwischen dem, was fair ist, und dem, was ihm/ihr selbst hilft."],
+      ["In Grenzsituationen zählt für ihn/sie am Ende eher, was funktioniert, als was formal gerecht wäre.",
+       "Wenn es darauf ankommt, zählt für ihn/sie vor allem das Ergebnis – ob es formal gerecht war, ist zweitrangig."]);
     return [s1, s2].map(function(t){ return cpApplyTemplate(t, name, gender); }).join(" ");
   }
 
   function cpRelationshipsParagraph(axes, name, gender){
     var love = cpPick(axes.BIN, 65, 35,
-      "In Beziehungen gibt sich {{characterName}} schnell und ganz hin – Nähe ist für ihn/sie kein Risiko, sondern ein Bedürfnis.",
-      "{{characterName}} lässt Nähe zu, behält sich aber immer einen Rückzugsweg offen.",
-      "{{characterName}} tut sich schwer damit, sich wirklich auf jemanden einzulassen – Unabhängigkeit fühlt sich sicherer an als Bindung.");
+      ["In Beziehungen gibt sich {{characterName}} schnell und ganz hin – Nähe ist für ihn/sie kein Risiko, sondern ein Bedürfnis.",
+       "{{characterName}} öffnet sich in Beziehungen schnell – er/sie sucht Nähe, statt sie auf Abstand zu halten."],
+      ["{{characterName}} lässt Nähe zu, behält sich aber immer einen Rückzugsweg offen.",
+       "{{characterName}} lässt sich auf Nähe ein, hält sich aber innerlich immer ein Hintertürchen offen."],
+      ["{{characterName}} tut sich schwer damit, sich wirklich auf jemanden einzulassen – Unabhängigkeit fühlt sich sicherer an als Bindung.",
+       "Sich wirklich auf jemanden einzulassen fällt {{characterName}} schwer – allein zurechtzukommen fühlt sich sicherer an."]);
     var friendship = cpPick(axes.LOY, 65, 35,
-      "Freundschaft bedeutet ihm/ihr, für die eigenen Leute da zu sein, auch wenn es unbequem wird.",
-      "Er/Sie ist loyal, solange die Freundschaft auf Gegenseitigkeit beruht – bedingungslos ist sie selten.",
-      "Freundschaften sind ihm/ihr wichtig, aber er/sie stellt eigene Prinzipien nicht automatisch hinter sie zurück.");
-    var trust = axes.VRT >= axes.MIS
-      ? "Vertrauen gibt er/sie nicht leichtfertig, aber wenn er/sie es tut, dann meint er/sie es ernst."
-      : "Er/Sie beobachtet Menschen lange, bevor er/sie ihnen wirklich vertraut – Misstrauen ist sein/ihr Standardzustand, nicht die Ausnahme.";
+      ["Freundschaft bedeutet ihm/ihr, für die eigenen Leute da zu sein, auch wenn es unbequem wird.",
+       "Für {{characterName}} heißt Freundschaft, auch dann da zu sein, wenn es unbequem wird."],
+      ["Er/Sie ist loyal, solange die Freundschaft auf Gegenseitigkeit beruht – bedingungslos ist sie selten.",
+       "Loyalität ist ihm/ihr wichtig, solange sie erwidert wird – auf Dauer einseitig gibt er/sie sie nicht."],
+      ["Freundschaften sind ihm/ihr wichtig, aber er/sie stellt sie nicht über die eigenen Prinzipien.",
+       "Freundschaften zählen für {{characterName}}, aber sie gehen nicht automatisch vor den eigenen Prinzipien."]);
+    var trust = cpPickVariant(axes.VRT >= axes.MIS
+      ? ["Vertrauen gibt er/sie nicht leichtfertig, aber wenn er/sie es tut, dann meint er/sie es ernst.",
+         "Er/Sie vertraut nicht auf den ersten Blick, aber wenn es einmal da ist, ist es echt."]
+      : ["Er/Sie beobachtet Menschen lange, bevor er/sie ihnen wirklich vertraut – Misstrauen ist sein/ihr Standardzustand, nicht die Ausnahme.",
+         "{{characterName}} braucht viel Zeit, bevor er/sie jemandem wirklich vertraut – im Zweifel ist er/sie erst einmal vorsichtig."]);
     var betrayal = cpPick(axes.RAC, 60, axes.VRG >= 60 ? 999 : -1,
-      "Verrat vergisst er/sie nicht – ein Teil von ihm/ihr merkt sich genau, wer ihm/ihr wehgetan hat.",
-      "Auf Verrat reagiert er/sie zwiegespalten: verletzt, aber offen dafür, dass sich die Sache wieder einrenkt.",
-      "Er/Sie kann überraschend leicht vergeben, wenn die Reue echt wirkt.");
+      ["Verrat vergisst er/sie nicht – ein Teil von ihm/ihr merkt sich genau, wer ihm/ihr wehgetan hat.",
+       "Verrat verzeiht er/sie vielleicht irgendwann, vergisst ihn aber nie ganz."],
+      ["Auf Verrat reagiert er/sie zwiegespalten: verletzt, aber offen dafür, dass sich die Sache wieder einrenkt.",
+       "Verrat trifft ihn/sie, aber er/sie gibt der Sache meist noch eine Chance, sich wieder einzurenken."],
+      ["Er/Sie kann überraschend leicht vergeben, wenn die Reue echt wirkt.",
+       "Wirkt die Reue echt, vergibt {{characterName}} erstaunlich schnell."]);
     var loss = cpPick(axes.OPF, 65, 35,
-      "Verlust bringt eine Seite in ihm/ihr hervor, die bereit ist, fast alles zu geben, um noch zu retten, was zu retten ist.",
-      "Mit Verlust geht er/sie gefasst um, ohne sich völlig aufzugeben.",
-      "Verlust lässt ihn/sie zuerst an sich selbst denken – Selbstschutz kommt vor Selbstaufopferung.");
+      ["Verlust bringt eine Seite in ihm/ihr hervor, die bereit ist, fast alles zu geben, um noch zu retten, was zu retten ist.",
+       "Bei Verlust zeigt sich eine Seite von {{characterName}}, die fast alles riskiert, um zu retten, was noch zu retten ist."],
+      ["Mit Verlust geht er/sie gefasst um, ohne sich völlig aufzugeben.",
+       "{{characterName}} lässt sich von Verlust nicht aus der Bahn werfen, auch wenn er/sie ihn spürt."],
+      ["Verlust lässt ihn/sie zuerst an sich selbst denken – Selbstschutz kommt vor Selbstaufopferung.",
+       "Bei Verlust denkt {{characterName}} zuerst an sich selbst – Selbstschutz geht vor Aufopferung."]);
     return [love, friendship, trust, betrayal, loss].map(function(t){ return cpApplyTemplate(t, name, gender); }).join(" ");
   }
 
   function cpSupernaturalParagraph(axes, name, gender){
     var trustSupernatural = cpPick(axes.MIS, 65, 35,
-      "Übernatürlichen Wesen begegnet er/sie erst einmal mit Misstrauen, egal wie freundlich sie auftreten.",
-      "Er/Sie gibt übernatürlichen Wesen eine Chance, bleibt aber wachsam.",
-      "Vampire, Werwölfe und andere übernatürliche Wesen beurteilt er/sie nach ihrem Verhalten, nicht nach dem, was sie sind.");
+      ["Übernatürlichen Wesen begegnet er/sie erst einmal mit Misstrauen, egal wie freundlich sie auftreten.",
+       "Egal wie freundlich ein übernatürliches Wesen wirkt – {{characterName}} bleibt erst einmal skeptisch."],
+      ["Er/Sie gibt übernatürlichen Wesen eine Chance, bleibt aber wachsam.",
+       "{{characterName}} begegnet übernatürlichen Wesen offen, behält sie aber im Auge."],
+      ["Vampire, Werwölfe und andere übernatürliche Wesen beurteilt er/sie nach ihrem Verhalten, nicht nach dem, was sie sind.",
+       "Was jemand ist, zählt für {{characterName}} weniger als das, was er/sie tut – auch bei Vampiren oder Werwölfen."]);
     var curiosity = cpPick(axes.RIS, 65, 35,
-      "Eigene übernatürliche Kräfte reizen ihn/sie – er/sie würde ihre Grenzen austesten, auch auf eigene Gefahr.",
-      "Mit übernatürlichen Fähigkeiten geht er/sie vorsichtig um, testet sie aber trotzdem aus.",
-      "Er/Sie geht mit übernatürlichen Kräften – eigenen wie fremden – lieber zurückhaltend um.");
+      ["Eigene übernatürliche Kräfte reizen ihn/sie – er/sie würde ihre Grenzen austesten, auch auf eigene Gefahr.",
+       "{{characterName}} würde die Grenzen eigener übernatürlicher Kräfte austesten, auch wenn es riskant wird."],
+      ["Mit übernatürlichen Fähigkeiten geht er/sie vorsichtig um, testet sie aber trotzdem aus.",
+       "Er/Sie testet übernatürliche Fähigkeiten durchaus aus, aber mit Vorsicht."],
+      ["Er/Sie geht mit übernatürlichen Kräften – eigenen wie fremden – lieber zurückhaltend um.",
+       "Übernatürliche Kräfte, ob eigene oder fremde, sind {{characterName}} eher unheimlich als verlockend."]);
     var powerUse = cpPick(axes.MAC, 60, 30,
-      "Macht, die er/sie über andere hätte, würde er/sie kaum ablehnen können.",
-      "Macht würde er/sie einsetzen, wenn es wirklich nötig ist – nicht aus Prinzip, aber auch nicht leichtfertig.",
-      "Macht über andere Menschen ist ihm/ihr unangenehm, selbst wenn sie ihm/ihr angeboten würde.");
+      ["Macht, die er/sie über andere hätte, würde er/sie kaum ablehnen können.",
+       "Böte sich {{characterName}} Macht über andere, würde er/sie nur schwer nein sagen."],
+      ["Macht würde er/sie einsetzen, wenn es wirklich nötig ist – nicht aus Prinzip, aber auch nicht leichtfertig.",
+       "Macht nutzt {{characterName}} nur, wenn es wirklich nötig ist – weder aus Prinzip dagegen noch leichtfertig dafür."],
+      ["Macht über andere Menschen ist ihm/ihr unangenehm, selbst wenn sie ihm/ihr angeboten würde.",
+       "Selbst angeboten wäre ihm/ihr Macht über andere unangenehm."]);
     var enemies = cpPick(axes.RAC, 60, axes.GER >= 60 ? 999 : -1,
-      "Feinden gegenüber kennt er/sie wenig Gnade, besonders wenn sie es verdient haben.",
-      "Mit Feinden verfährt er/sie nach klaren Regeln – Konsequenzen ja, aber Rache um ihrer selbst willen nicht.",
-      "Selbst seinen/ihren größten Feind würde er/sie eher schonen als vernichten, wenn er/sie es vermeiden kann.");
+      ["Feinden gegenüber kennt er/sie wenig Gnade, besonders wenn sie es verdient haben.",
+       "Mit Feinden geht {{characterName}} hart um, vor allem wenn sie es sich selbst zuzuschreiben haben."],
+      ["Mit Feinden verfährt er/sie nach klaren Regeln – Konsequenzen ja, aber Rache um ihrer selbst willen nicht.",
+       "{{characterName}} zieht Feinde zur Rechenschaft, aber Rache aus reinem Prinzip ist nicht seine/ihre Sache."],
+      ["Selbst seinen/ihren größten Feind würde er/sie eher schonen als vernichten, wenn er/sie es vermeiden kann.",
+       "Wenn es sich vermeiden lässt, schont {{characterName}} sogar den größten Feind, statt ihn zu vernichten."]);
     return [trustSupernatural, curiosity, powerUse, enemies].map(function(t){ return cpApplyTemplate(t, name, gender); }).join(" ");
   }
 
@@ -4593,7 +4730,7 @@
     var orderGroup = orderBand > 0 ? "lawful" : (orderBand < 0 ? "chaotic" : "neutral");
 
     var archetypeScores = CHARPROFILE_ARCHETYPES.map(function(arc){
-      return { id: arc.id, label: arc.label, description: cpApplyTemplate(arc.description, name, gender),
+      return { id: arc.id, label: arc.label, description: cpApplyTemplate(cpPickVariant(arc.description), name, gender),
         score: charprofileWeightedScore(arc.weights, axes, 0, 100) };
     }).sort(function(a, b){ return b.score - a.score; });
     var primaryArchetype = archetypeScores[0];
@@ -4617,12 +4754,10 @@
     var innerConflict;
     if (bestConflict && bestTension >= CHARPROFILE_CONFLICT_THRESHOLD) {
       innerConflict = { id: bestConflict.id, label: bestConflict.label, tension: bestTension,
-        text: cpApplyTemplate(bestConflict.texts[orderGroup], name, gender),
-        hook: cpApplyTemplate(bestConflict.hooks[orderGroup], name, gender) };
+        text: cpApplyTemplate(cpPickVariant(bestConflict.texts[orderGroup]), name, gender) };
     } else {
       innerConflict = { id: "ruhiger_kern", label: CHARPROFILE_CONFLICT_FALLBACK.label, tension: bestTension,
-        text: cpApplyTemplate(CHARPROFILE_CONFLICT_FALLBACK.text, name, gender),
-        hook: cpApplyTemplate(CHARPROFILE_CONFLICT_FALLBACK.hook, name, gender) };
+        text: cpApplyTemplate(cpPickVariant(CHARPROFILE_CONFLICT_FALLBACK.text), name, gender) };
     }
 
     var top = dominantTraits[0];
@@ -4656,7 +4791,6 @@
       moralText: moralText,
       relationshipsText: relationshipsText,
       supernaturalText: supernaturalText,
-      hook: innerConflict.hook,
       rpgTraits: rpgTraits
     };
   }
@@ -6956,6 +7090,7 @@
   var cpViewingResultId = null; // welches Ergebnis aus cpResults angezeigt wird (null = neuestes)
   var cpLoadedForCharId = null; // gegen welchen Charakter cpResults/cpDraft zuletzt geladen wurden
   var cpShowHistory = false;
+  var cpShowAnswers = false;
   var cpLoading = false;
 
   function cpDraftKey(charId){ return "charakterbogen:charprofile:draft:" + charId; }
@@ -6984,6 +7119,7 @@
     cpViewingResultId = null;
     cpLoadedForCharId = null;
     cpShowHistory = false;
+    cpShowAnswers = false;
     cpLoading = false;
     if (cpBodyEl) cpBodyEl.innerHTML = "";
   }
@@ -7037,7 +7173,10 @@
       ? '<button type="button" class="np-btn np-btn-ghost" id="cpBackToResultBtn">Letztes Ergebnis ansehen</button>'
       : "";
     cpBodyEl.innerHTML =
-      '<p class="cp-intro-text">Ein atmosphärisches Charakterprofil: ' + CHARPROFILE_QUESTIONS.length + ' Situationen aus dem Leben deines Charakters – Alltag, Beziehungen, Freundschaft, das Übernatürliche, Grenzsituationen. Jede mit mehreren möglichen Reaktionen. Am Ende entsteht daraus ein ausführliches Profil mit Alignment, Archetyp und allen Charakterzügen, berechnet aus den Antworten, nicht aus einer sichtbaren Punkteskala.</p>' +
+      '<div class="cp-intro-hero">' +
+        '<span class="cp-intro-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1.5 2 4 3 7 3 0 8-3.5 12-7 15-3.5-3-7-7-7-15 3 0 5.5-1 7-3z"/></svg></span>' +
+        '<p class="cp-intro-text">Ein Persönlichkeitstest für deinen Charakter – wer er wirklich ist, jenseits der Attributwerte.</p>' +
+      '</div>' +
       '<div class="cp-intro-actions">' +
         '<button type="button" class="np-btn np-btn-primary" id="cpStartBtn">' + (hasHistory ? "Neues Profil erstellen" : "Profil erstellen") + '</button>' +
         resumeHtml + backHtml +
@@ -7092,6 +7231,7 @@
       cpDraft = { name: name, gender: selectedGender, index: 0, answers: {} };
       cpSaveDraft(charId, cpDraft);
       cpShowHistory = false;
+      cpShowAnswers = false;
       cpState = "quiz";
       cpRender();
     });
@@ -7174,7 +7314,6 @@
       moralText: result.moralText,
       relationshipsText: result.relationshipsText,
       supernaturalText: result.supernaturalText,
-      hook: result.hook,
       rpgTraits: result.rpgTraits
     }).then(function(){
       cpClearDraft(charId);
@@ -7185,6 +7324,7 @@
       cpResults = snap.docs.map(function(d){ var data = d.data(); data.id = d.id; return data; });
       cpViewingResultId = null;
       cpShowHistory = false;
+      cpShowAnswers = false;
       cpState = "result";
       cpRender();
     }).catch(function(err){
@@ -7263,6 +7403,35 @@
     textBL(doc, x, barY - barH - 13, leftLabel);
     textBL(doc, x + width, barY - barH - 13, rightLabel, { align: "right" });
     return CP_PDF_COMPASS_ROW_H;
+  }
+  function cpPdfAlignChart(doc, x, yTop, size, alignment){
+    var codes = [["CG", "NG", "LG"], ["CN", "TN", "LN"], ["CE", "NE", "LE"]];
+    var cell = size / 3;
+    doc.setDrawColor.apply(doc, CP_PDF_COL.panelBorder);
+    doc.setLineWidth(1);
+    for (var r = 0; r < 3; r++){
+      for (var c = 0; c < 3; c++){
+        var code = codes[r][c];
+        var cellX = x + c * cell, cellTopBL = yTop - r * cell;
+        var active = code === alignment.code;
+        doc.setFillColor.apply(doc, active ? CP_PDF_COL.accentSoft : CP_PDF_COL.panelFill);
+        rectBL(doc, cellX, cellTopBL - cell, cell, cell, "FD");
+        doc.setFont("helvetica", active ? "bold" : "normal"); doc.setFontSize(6.5);
+        doc.setTextColor.apply(doc, active ? CP_PDF_COL.accentText : CP_PDF_COL.muted);
+        var lines = doc.splitTextToSize(CHARPROFILE_ALIGN_LABEL[code], cell - 8);
+        var ly = cellTopBL - cell / 2 + (lines.length - 1) * 3.5;
+        lines.forEach(function(line){ textBL(doc, cellX + cell / 2, ly, line, { align: "center" }); ly -= 7; });
+      }
+    }
+    var xPct = Math.max(2, Math.min(98, (alignment.ordnung + 100) / 2));
+    var yPct = Math.max(2, Math.min(98, (100 - alignment.moral) / 2));
+    var dotX = x + size * xPct / 100;
+    var dotYBL = yTop - size * yPct / 100;
+    doc.setFillColor.apply(doc, CP_PDF_COL.primary);
+    doc.setDrawColor(255, 255, 255);
+    doc.setLineWidth(1.5);
+    doc.circle(dotX, Y(dotYBL), 5, "FD");
+    return size;
   }
   function cpPdfChip(doc, x, yTop, text, textRgb){
     doc.setFont("helvetica", "bold"); doc.setFontSize(9.5);
@@ -7365,17 +7534,26 @@
     cpPdfCompass(doc, compassX, compassY, compassW, "Moral", r.alignment.moral, "Böse", "Gut", CP_PDF_COL.accent);
     y = panelTop - panelH - 34;
 
+    /* Alignment-Chart: klassisches 3x3-Raster (wie das D&D-Alignment-Raster), Punkt markiert
+       die tatsaechliche, kontinuierliche Position statt nur die grobe 9-Felder-Einordnung. */
+    var chartSize = 150;
+    y = ensureSpace(chartSize + 50, y);
+    y = heading("Alignment-Chart", y);
+    cpPdfAlignChart(doc, M + (textWidth - chartSize) / 2, y, chartSize, r.alignment);
+    y -= chartSize + 24;
+
     y = heading("Charakterprofil", y, true);
     y = paragraph(r.profileText, y, { indent: 12 });
     if (secondaryArc) y = paragraph("Sekundär: " + secondaryArc.label + ". " + secondaryArc.description, y, { indent: 12, style: "italic" });
 
-    var archScores = (r.archetype.scores || []).slice(0, 5);
+    var primaryArcScore = (r.archetype.scores || []).filter(function(a){ return a.id === r.archetype.primary; })[0];
+    var archScores = [primaryArcScore, secondaryArc].filter(Boolean);
     var archNeeded = 40 + archScores.length * CP_PDF_BAR_ROW_H;
     if (y - archNeeded < M + 28) y = newPage(y);
-    y = heading("Archetyp-Übereinstimmung", y);
+    y = heading("Archetyp", y);
     archScores.forEach(function(a, i){
-      var tag = a.id === r.archetype.primary ? " (primär)" : (r.archetype.secondary && a.id === r.archetype.secondary ? " (sekundär)" : "");
-      y -= cpPdfBar(doc, M, y, textWidth, (i + 1) + ". " + a.label + tag, a.score, CP_PDF_COL.primary, i === 0);
+      var tag = i === 0 ? "" : " (sekundär)";
+      y -= cpPdfBar(doc, M, y, textWidth, a.label + tag, a.score, CP_PDF_COL.primary, i === 0);
     });
     y -= 10;
 
@@ -7439,19 +7617,6 @@
     y = heading("Übernatürliches Verhalten", y, true);
     y = paragraph(r.supernaturalText, y, { indent: 12 });
 
-    /* Charakter-Hook als Zitat mit Akzentlinie, wie die Sprechblasen-Optik der Web-Ansicht. */
-    var hookLines = doc.splitTextToSize("„" + r.hook + "“", textWidth - 44);
-    var hookH = hookLines.length * 18;
-    y = ensureSpace(hookH + 60, y);
-    y = heading("Charakter-Hook", y, true);
-    doc.setFillColor.apply(doc, CP_PDF_COL.primary);
-    rectBL(doc, M, y - hookH + 4, 3, hookH, "F");
-    doc.setFont("times", "italic"); doc.setFontSize(12.5);
-    doc.setTextColor.apply(doc, COL_TEXT);
-    var hy = y;
-    hookLines.forEach(function(line){ textBL(doc, M + 22, hy, line); hy -= 18; });
-    y = hy - 20;
-
     if (isCharprofileRpgTraitsEnabled() && r.rpgTraits && r.rpgTraits.length) {
       y = heading("RPG-Auswirkungen", y);
       r.rpgTraits.forEach(function(rt){
@@ -7466,6 +7631,26 @@
 
     footer(doc, "Seite " + doc.internal.getNumberOfPages() + " – " + pageLabel);
     return doc;
+  }
+
+  function cpDeleteResult(id){
+    var target = cpResults.filter(function(x){ return x.id === id; })[0];
+    var label = target ? ((target.characterName ? target.characterName + " – " : "") + target.archetype.displayName) : "Testergebnis";
+    if (!window.confirm('"' + label + '" wirklich unwiderruflich löschen?')) return;
+    var charId = viewedCharacterId();
+    charsColRef().doc(charId).collection("characterProfiles").doc(id).delete().then(function(){
+      cpResults = cpResults.filter(function(x){ return x.id !== id; });
+      if (cpViewingResultId === id) cpViewingResultId = null;
+      cpShowAnswers = false;
+      if (!cpResults.length) {
+        cpShowHistory = false;
+        cpState = "intro";
+      }
+      cpRender();
+    }).catch(function(err){
+      console.error(err);
+      showStatus("Löschen fehlgeschlagen.");
+    });
   }
 
   function cpRenderResult(){
@@ -7492,6 +7677,20 @@
         '<div class="cp-compass-ends"><span>' + escapeAttr(leftLabel) + '</span><span>' + escapeAttr(rightLabel) + '</span></div>' +
       '</div>';
     }
+    function alignChartHtml(alignment){
+      var codes = ["CG", "NG", "LG", "CN", "TN", "LN", "CE", "NE", "LE"];
+      var cellsHtml = codes.map(function(code){
+        return '<div class="cp-align-cell' + (code === alignment.code ? " active" : "") + '">' + escapeAttr(CHARPROFILE_ALIGN_LABEL[code]) + '</div>';
+      }).join("");
+      var x = Math.max(2, Math.min(98, (alignment.ordnung + 100) / 2));
+      var y = Math.max(2, Math.min(98, (100 - alignment.moral) / 2));
+      return '<div class="cp-align-chart">' +
+        '<div class="cp-align-chart-grid">' + cellsHtml + '</div>' +
+        '<div class="cp-align-chart-dot" style="left:' + x + '%;top:' + y + '%;"></div>' +
+        '<div class="cp-align-chart-axis cp-align-chart-axis-x"><span>Chaotisch</span><span>Rechtschaffen</span></div>' +
+        '<div class="cp-align-chart-axis cp-align-chart-axis-y"><span>Gut</span><span>Böse</span></div>' +
+      '</div>';
+    }
 
     var dominantIds = (r.dominantTraits || []).map(function(t){ return t.id; });
     var traitGroupsHtml = CHARPROFILE_TRAIT_GROUPS.map(function(g){
@@ -7506,10 +7705,11 @@
       ? ('<p class="cp-profile-text" style="margin-top:10px;"><b>Sekundär: ' + escapeAttr(secondaryArc.label) + '.</b> ' + escapeAttr(secondaryArc.description) + '</p>')
       : "";
 
-    var archRankHtml = (r.archetype.scores || []).slice(0, 5).map(function(a, i){
-      var tag = a.id === r.archetype.primary ? " (primär)" : (r.archetype.secondary && a.id === r.archetype.secondary ? " (sekundär)" : "");
+    var primaryArc = (r.archetype.scores || []).filter(function(a){ return a.id === r.archetype.primary; })[0];
+    var archRankHtml = [primaryArc, secondaryArc].filter(Boolean).map(function(a, i){
+      var tag = i === 0 ? "" : " (sekundär)";
       var v = Math.round(a.score);
-      return '<div class="cp-archrank-item"><div class="cp-bar-top"><span>' + (i + 1) + '. ' + escapeAttr(a.label) + escapeAttr(tag) + '</span><span>' + v + ' %</span></div>' +
+      return '<div class="cp-archrank-item"><div class="cp-bar-top"><span>' + escapeAttr(a.label) + escapeAttr(tag) + '</span><span>' + v + ' %</span></div>' +
         '<div class="cp-bar-track"><div class="cp-bar-fill" style="width:' + v + '%"></div></div></div>';
     }).join("");
 
@@ -7526,11 +7726,28 @@
       historyHtml = '<div class="cp-section"><div class="cp-section-title">Verlauf (' + cpResults.length + ')</div><div class="cp-history-list">' +
         cpResults.map(function(res){
           var active = res.id === currentId;
-          return '<button type="button" class="cp-history-item' + (active ? " active" : "") + '" data-result-id="' + escapeAttr(res.id) + '">' +
+          return '<div class="cp-history-item' + (active ? " active" : "") + '" data-result-id="' + escapeAttr(res.id) + '" role="button" tabindex="0">' +
             '<span class="cp-history-main">' + escapeAttr((res.characterName ? res.characterName + " · " : "") + res.alignment.label + " · " + res.archetype.primaryLabel) + '</span>' +
-            '<span class="cp-history-meta">' + escapeAttr(formatUpdatedAt(res.createdAt)) + '</span></button>';
+            '<span class="cp-history-meta">' + escapeAttr(formatUpdatedAt(res.createdAt)) + '</span>' +
+            '<button type="button" class="cp-history-delete" data-delete-id="' + escapeAttr(res.id) + '" title="Testergebnis löschen" aria-label="Testergebnis löschen">✕</button></div>';
         }).join("") +
       '</div></div>';
+    }
+
+    var answersHtml = "";
+    if (cpShowAnswers) {
+      var answerLookup = {};
+      CHARPROFILE_QUESTIONS.forEach(function(q){
+        q.answers.forEach(function(a){ answerLookup[a.id] = { question: q, answer: a }; });
+      });
+      var answerRows = (r.answers || []).map(function(aid, i){
+        var entry = answerLookup[aid];
+        if (!entry) return "";
+        var qHeader = cpApplyTemplate(entry.question.header, r.characterName, r.gender);
+        var aText = cpApplyTemplate(entry.answer.text, r.characterName, r.gender);
+        return '<div class="cp-answer-item"><div class="cp-answer-q">' + (i + 1) + '. ' + escapeAttr(qHeader) + '</div><div class="cp-answer-a">' + escapeAttr(aText) + '</div></div>';
+      }).join("");
+      answersHtml = '<div class="cp-section"><div class="cp-section-title">Deine Antworten (' + (r.answers || []).length + ')</div><div class="cp-answers-list">' + answerRows + '</div></div>';
     }
 
     cpBodyEl.innerHTML =
@@ -7550,20 +7767,22 @@
           compassRow("Ordnung", r.alignment.ordnung, "Chaotisch", "Rechtschaffen") +
           compassRow("Moral", r.alignment.moral, "Böse", "Gut") +
         '</div>' +
+        alignChartHtml(r.alignment) +
       '</div>' +
       '<div class="cp-section"><div class="cp-section-title">Charakterprofil</div><p class="cp-profile-text">' + escapeAttr(r.profileText) + '</p>' + archetypeSecondaryHtml + '</div>' +
-      '<div class="cp-section"><div class="cp-section-title">Archetyp-Übereinstimmung</div><div class="cp-bars">' + archRankHtml + '</div></div>' +
+      '<div class="cp-section"><div class="cp-section-title">Archetyp</div><div class="cp-bars">' + archRankHtml + '</div></div>' +
       '<div class="cp-section"><div class="cp-section-title">Charaktereigenschaften</div>' + traitGroupsHtml + '</div>' +
       '<div class="cp-section"><div class="cp-section-title">Innerer Konflikt</div><div class="cp-conflict-box"><div class="cp-conflict-label">' + escapeAttr(r.innerConflict.label) + ' <span class="cp-conflict-tension">· Spannung ' + Math.round(r.innerConflict.tension) + ' %</span></div><div class="cp-conflict-text">' + escapeAttr(r.innerConflict.text) + '</div></div></div>' +
       textSection("Moralisches Verhalten", r.moralText) +
       textSection("Beziehungen", r.relationshipsText) +
       textSection("Übernatürliches Verhalten", r.supernaturalText) +
-      '<div class="cp-section"><div class="cp-section-title">Charakter-Hook</div><p class="cp-hook">„' + escapeAttr(r.hook) + '“</p></div>' +
-      rpgHtml + historyHtml +
+      rpgHtml + answersHtml + historyHtml +
       '<div class="cp-actions">' +
         '<button type="button" class="np-btn np-btn-primary" id="cpRetakeBtn">Neues Profil erstellen</button>' +
         '<button type="button" class="np-btn np-btn-ghost" id="cpDownloadPdfBtn">PDF herunterladen</button>' +
+        '<button type="button" class="np-btn np-btn-ghost" id="cpAnswersBtn">' + (cpShowAnswers ? "Antworten ausblenden" : "Antworten ansehen") + '</button>' +
         (cpResults.length > 1 ? ('<button type="button" class="np-btn np-btn-ghost" id="cpHistoryBtn">' + (cpShowHistory ? "Verlauf ausblenden" : "Verlauf anzeigen") + '</button>') : "") +
+        '<button type="button" class="np-btn np-btn-danger" id="cpDeleteBtn">Testergebnis löschen</button>' +
       '</div>';
 
     document.getElementById("cpRetakeBtn").addEventListener("click", function(){ cpState = "setup"; cpRender(); });
@@ -7604,10 +7823,20 @@
       }
       btn.disabled = false;
     });
+    document.getElementById("cpAnswersBtn").addEventListener("click", function(){ cpShowAnswers = !cpShowAnswers; cpRenderResult(); });
+    document.getElementById("cpDeleteBtn").addEventListener("click", function(){ cpDeleteResult(r.id); });
     var historyBtn = document.getElementById("cpHistoryBtn");
     if (historyBtn) historyBtn.addEventListener("click", function(){ cpShowHistory = !cpShowHistory; cpRenderResult(); });
-    cpBodyEl.querySelectorAll(".cp-history-item").forEach(function(btn){
-      btn.addEventListener("click", function(){ cpViewingResultId = btn.dataset.resultId; cpRenderResult(); });
+    cpBodyEl.querySelectorAll(".cp-history-item").forEach(function(item){
+      function selectItem(){ cpViewingResultId = item.dataset.resultId; cpShowAnswers = false; cpRenderResult(); }
+      item.addEventListener("click", selectItem);
+      item.addEventListener("keydown", function(e){
+        if (e.target !== item) return;
+        if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") { e.preventDefault(); selectItem(); }
+      });
+    });
+    cpBodyEl.querySelectorAll(".cp-history-delete").forEach(function(btn){
+      btn.addEventListener("click", function(e){ e.stopPropagation(); cpDeleteResult(btn.dataset.deleteId); });
     });
   }
 
