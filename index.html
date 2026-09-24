@@ -337,6 +337,8 @@
     transition: background 0.15s ease, box-shadow 0.15s ease;
   }
   .sheet-view-bar button:hover { background: #fff; box-shadow: var(--shadow-sm); }
+  .sheet-view-bar button.editing { background: var(--accent); color: var(--accent-ink); border-color: var(--accent-strong); }
+  .sheet-view-bar button.editing:hover { background: var(--accent-strong); color: #fff; }
   .sheet-view-title { font-family: 'Poppins', system-ui, sans-serif; font-size: 19px; font-weight: 600; color: var(--accent-strong); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sheet-view-dl-btn {
     margin-left: auto; flex-shrink: 0;
@@ -3180,6 +3182,7 @@
     <span class="sheet-view-title" id="sheetViewTitle"></span>
     <button type="button" class="np-theme-toggle np-luck-badge" data-np-luck-badge title="Glückspunkte" aria-label="Glückspunkte">🍀 <span class="np-luck-frac">0/0</span></button>
     <button type="button" class="np-theme-toggle np-notif-bell" data-np-online-btn title="Online-Spieler" aria-label="Online-Spieler"><svg class="people-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M9 13c-4 0-7 2.5-7 6v1h14v-1c0-3.5-3-6-7-6z"/><circle cx="17" cy="8" r="3"/><path d="M17 13c-1 0-2 .15-2.85.55C15.9 15 17 17 17 19.2V20h6v-1c0-3-2.7-6-6-6z"/></svg><span class="np-notif-badge np-online-count">0</span></button>
+    <button type="button" id="sheetViewEditBtn">✎ Bearbeiten</button>
     <button type="button" id="sheetViewDlBtn" class="sheet-view-dl-btn" title="Als PDF herunterladen" aria-label="Als PDF herunterladen">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
     </button>
@@ -7073,6 +7076,7 @@
   }
   sheetViewBackBtn.addEventListener("click", closeCharacterPreview);
   document.getElementById("sheetViewDlBtn").addEventListener("click", function(){ dlBtn.click(); });
+  document.getElementById("sheetViewEditBtn").addEventListener("click", function(){ editToggleBtn.click(); });
 
   /* ===================== Charakterprofil (UI) =====================
      Verbindet den UI-freien Auswertungskern (CHARPROFILE_* / evaluateCharacterProfile(),
@@ -9670,6 +9674,11 @@
       mirrorBtn.textContent = editing ? "✓ Fertig" : "✎ Bearbeiten";
       mirrorBtn.classList.toggle("np-btn-primary", editing);
       mirrorBtn.classList.toggle("np-btn-ghost", !editing);
+    }
+    var sheetViewMirrorBtn = document.getElementById("sheetViewEditBtn");
+    if (sheetViewMirrorBtn){
+      sheetViewMirrorBtn.textContent = editing ? "✓ Fertig" : "✎ Bearbeiten";
+      sheetViewMirrorBtn.classList.toggle("editing", editing);
     }
     document.body.classList.toggle("is-editing", editing);
     applyEditModeToDom();
