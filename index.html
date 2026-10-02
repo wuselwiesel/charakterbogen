@@ -747,6 +747,12 @@
   }
   .note-box.budget-complete { background: var(--ok-bg); border-color: var(--ok-text); color: var(--ok-text); }
   .note-box.luck-note { background: var(--hint-bg); border-color: var(--hint-border); color: var(--hint-text); margin-top: 8px; }
+  .luck-details { margin-top: 6px; }
+  .luck-details summary { cursor: pointer; font-size: 12px; font-weight: 600; }
+  .luck-table { border-collapse: collapse; margin-top: 8px; font-size: 12px; }
+  .luck-table th, .luck-table td { padding: 3px 12px 3px 0; text-align: left; font-weight: 500; }
+  .luck-table th { font-weight: 700; opacity: .8; }
+  .luck-table tr.current td { font-weight: 800; }
 
   .tooltip-anchor { position: relative; overflow: visible !important; }
   .attr-tooltip {
@@ -2209,6 +2215,9 @@
   .np-dash-char-card { background: var(--np-surface); border: 1px solid var(--np-border); border-radius: var(--np-radius-lg); box-shadow: var(--np-shadow-sm); padding: 28px; display: flex; flex-direction: column; gap: 18px; }
   .np-dash-char-top { display: flex; align-items: center; gap: 14px; }
   .np-dash-char-top .np-avatar { width: 56px; height: 56px; }
+  .np-dash-char-top { cursor: pointer; border-radius: 14px; margin: -8px; padding: 8px; transition: background .15s var(--np-ease); }
+  .np-dash-char-top:hover, .np-dash-char-top:focus-visible { background: var(--np-surface-2); outline: none; }
+  .np-dash-char-edit-hint { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--np-ink-faint); white-space: nowrap; }
   .np-dash-side { display: flex; flex-direction: column; gap: 16px; }
   .np-dash-mini-card {
     flex: 1; background: var(--np-surface); border: 1px solid var(--np-border); border-radius: var(--np-radius-md);
@@ -3237,12 +3246,13 @@
 
       <div class="np-dash-grid">
         <div class="np-dash-char-card" id="dashCharCard">
-          <div class="np-dash-char-top">
+          <div class="np-dash-char-top" id="dashCharTop" role="button" tabindex="0" title="Charakterbogen öffnen und bearbeiten">
             <span class="np-avatar" id="dashCharAvatar">–</span>
             <div>
               <p class="np-char-name" id="dashCharName" style="margin:0;">–</p>
               <div class="np-char-tags" id="dashCharTags"></div>
             </div>
+            <span class="np-dash-char-edit-hint">✎ Bogen bearbeiten</span>
           </div>
           <div class="np-char-attrs" id="dashCharAttrs" style="margin-bottom:0;"></div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
@@ -5418,10 +5428,27 @@
     return Math.max(0, getLuckPointsTotal() - luckPointsUsed);
   }
 
+  /* Tabelle Basiswert -> Glückspunkte, direkt aus getLuckPointsTotal()-Formel (floor(b/5)+1) abgeleitet. */
+  function luckTableHtml(){
+    var current = getLuckPointsTotal();
+    var rows = [];
+    for (var b = 1; b <= 19; b++){
+      var pts = Math.floor(b / 5) + 1;
+      var last = rows[rows.length - 1];
+      if (last && last.pts === pts) last.to = b; else rows.push({ from: b, to: b, pts: pts });
+    }
+    return '<table class="luck-table"><thead><tr><th>Glück-Basiswert</th><th>Glückspunkte</th></tr></thead><tbody>' +
+      rows.map(function(r){
+        return '<tr' + (r.pts === current ? ' class="current"' : '') + '><td>' + r.from + '–' + r.to + '</td><td>' + r.pts + '</td></tr>';
+      }).join("") + '</tbody></table>';
+  }
+
   function updateLuckPoints(){
     var luckPoints = getLuckPointsTotal();
     var note = document.getElementById("luckNote");
-    note.textContent = "🍀 " + luckPoints + " Glückspunkt" + (luckPoints === 1 ? "" : "e");
+    var wasOpen = !!note.querySelector("details[open]");
+    note.innerHTML = "🍀 " + luckPoints + " Glückspunkt" + (luckPoints === 1 ? "" : "e") +
+      '<details class="luck-details"' + (wasOpen ? " open" : "") + '><summary>So entstehen Glückspunkte</summary>' + luckTableHtml() + '</details>';
     updateLuckDisplay();
   }
 
@@ -8535,6 +8562,15 @@
 
   document.getElementById("sidebarDashboardBtn").addEventListener("click", showDashboard);
   document.getElementById("featureCrumbDashboard").addEventListener("click", showDashboard);
+  function openOwnSheetForEditing(){
+    openOwnCharacterPreview();
+    setEditMode(true);
+  }
+  var dashCharTop = document.getElementById("dashCharTop");
+  dashCharTop.addEventListener("click", openOwnSheetForEditing);
+  dashCharTop.addEventListener("keydown", function(e){
+    if (e.key === "Enter" || e.key === " "){ e.preventDefault(); openOwnSheetForEditing(); }
+  });
   document.getElementById("dashOpenAttrBtn").addEventListener("click", function(){ enterFeaturePage("werte"); });
   document.getElementById("dashOpenTalenteBtn").addEventListener("click", function(){ enterFeaturePage("talente"); });
   document.getElementById("featurePageEditBtn").addEventListener("click", function(){ editToggleBtn.click(); });
@@ -8706,7 +8742,7 @@
   document.getElementById("luckBadgeTop").addEventListener("click", function(e){
     e.stopPropagation();
     var n = getLuckPointsAvailable();
-    luckBadgePanel.textContent = n + " Glückspunkt" + (n === 1 ? "" : "e") + " verfügbar";
+    luckBadgePanel.innerHTML = n + " Glückspunkt" + (n === 1 ? "" : "e") + " verfügbar (von " + getLuckPointsTotal() + ")" + luckTableHtml();
     var willShow = !luckBadgePanel.classList.contains("show");
     luckBadgePanel.classList.toggle("show", willShow);
     if (willShow) positionFixedPanel(luckBadgePanel, document.getElementById("luckBadgeTop"));
