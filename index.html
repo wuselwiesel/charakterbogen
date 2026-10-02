@@ -6971,14 +6971,24 @@
   }
 
   function scheduleAutosave(){
-    if (!currentUser || !activeCharacterId || isApplyingCharacter || !isEditMode) return;
+    if (!currentUser || !viewedCharacterId() || isApplyingCharacter || !isEditMode) return;
     setSaveIndicator("Speichert …");
     clearTimeout(autosaveTimer);
-    autosaveTimer = setTimeout(doAutosave, 800);
+    autosaveTimer = setTimeout(function(){ autosaveTimer = null; doAutosave(); }, 800);
+  }
+
+  /* Ausstehenden Autosave sofort ausfuehren - MUSS vor jedem Wechsel des angezeigten Charakters
+     laufen, sonst gehen Aenderungen verloren (oder landen im falschen Charakter). */
+  function flushAutosave(){
+    if (!autosaveTimer) return;
+    clearTimeout(autosaveTimer);
+    autosaveTimer = null;
+    doAutosave();
   }
 
   function doAutosave(){
-    if (!currentUser || !activeCharacterId) return;
+    var saveId = viewedCharacterId();
+    if (!currentUser || !saveId) return;
     if (talentBudgetExceeded){
       setSaveIndicator("");
       showStatus(
@@ -6998,7 +7008,7 @@
       );
       return;
     }
-    charsColRef().doc(activeCharacterId).set({
+    charsColRef().doc(saveId).set({
       data: data,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true }).then(function(){
@@ -7011,6 +7021,7 @@
   }
 
   function setActiveCharacter(id, name, data){
+    flushAutosave();
     activeCharacterId = id;
     activeCharacterName = name || "Unbenannt";
     isApplyingCharacter = true;
@@ -7085,6 +7096,7 @@
   }
 
   function openCharacterPreview(id, name, data, returnTo){
+    flushAutosave();
     closeLibrary();
     sheetViewSnapshot = {
       id: activeCharacterId,
@@ -7113,6 +7125,8 @@
   }
 
   function closeCharacterPreview(){
+    flushAutosave();
+    var viewedOwn = previewCharacterId === activeCharacterId;
     document.body.classList.remove("sheet-view-mode");
     previewCharacterId = null;
     if (sheetViewSnapshot){
@@ -7120,9 +7134,13 @@
       sheetViewSnapshot = null;
       activeCharacterId = snap.id;
       activeCharacterName = snap.name;
-      isApplyingCharacter = true;
-      applyCharacterData(snap.data);
-      isApplyingCharacter = false;
+      /* Beim Ansehen des eigenen Charakters ist das DOM bereits aktuell (evtl. inzwischen
+         bearbeitet) - der Schnappschuss waere veraltet und wuerde die Aenderungen verwerfen. */
+      if (!viewedOwn){
+        isApplyingCharacter = true;
+        applyCharacterData(snap.data);
+        isApplyingCharacter = false;
+      }
       setEditMode(snap.editMode);
     }
     window.scrollTo({ top: 0 });
@@ -8397,6 +8415,11 @@
 
   fbAuth.onAuthStateChanged(function(user){
     currentUser = user;
+    clearTimeout(autosaveTimer);
+    autosaveTimer = null;
+    document.body.classList.remove("sheet-view-mode");
+    sheetViewSnapshot = null;
+    previewCharacterId = null;
     if (user){
       showTopView("app");
       authForm.reset();
@@ -8470,6 +8493,7 @@
   }
 
   function showDashboard(){
+    if (document.body.classList.contains("sheet-view-mode")) closeCharacterPreview();
     document.body.classList.remove("feature-page-mode");
     document.body.classList.add("view-dashboard");
     renderDashboard();
@@ -8496,6 +8520,7 @@
   function enterFeaturePage(pageKey){
     var config = FEATURE_PAGES[pageKey];
     if (!config) return;
+    if (document.body.classList.contains("sheet-view-mode")) closeCharacterPreview();
     document.body.classList.remove("view-dashboard");
     openTab(pageKey);
     document.body.classList.add("feature-page-mode");
@@ -9764,7 +9789,7 @@
 
   editToggleBtn.addEventListener("click", function(){
     if (isEditMode){
-      if (autosaveTimer){ clearTimeout(autosaveTimer); doAutosave(); }
+      flushAutosave();
       setEditMode(false);
     } else {
       setEditMode(true);
